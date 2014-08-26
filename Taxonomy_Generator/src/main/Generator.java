@@ -27,31 +27,60 @@ public class Generator extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jEditorPane1 = new javax.swing.JEditorPane();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        atributesList = new javax.swing.JList();
+        combineAttributesButton = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        propertiesList = new javax.swing.JList();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new java.awt.GridLayout(2, 3, 5, 5));
+        setTitle("Test");
+        setAlwaysOnTop(true);
+        setLocationByPlatform(true);
+        setName("MainFrame"); // NOI18N
 
-        jPanel1.setLayout(new java.awt.GridLayout(10, 3));
+        jPanel1.setLayout(new java.awt.GridLayout(3, 1, 5, 5));
 
-        jScrollPane1.setViewportView(jEditorPane1);
-
-        jPanel1.add(jScrollPane1);
-
-        jList1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jList1.setModel(new javax.swing.AbstractListModel() {
+        atributesList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane2.setViewportView(jList1);
+        atributesList.setName("atributesList"); // NOI18N
+        jScrollPane3.setViewportView(atributesList);
+        atributesList.getAccessibleContext().setAccessibleName("atributesList");
 
-        jPanel1.add(jScrollPane2);
+        jPanel1.add(jScrollPane3);
 
-        getContentPane().add(jPanel1);
+        combineAttributesButton.setText("jButton1");
+        jPanel1.add(combineAttributesButton);
+
+        propertiesList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        propertiesList.setToolTipText("");
+        jScrollPane4.setViewportView(propertiesList);
+
+        jPanel1.add(jScrollPane4);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(413, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -91,10 +120,11 @@ public class Generator extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JEditorPane jEditorPane1;
-    private javax.swing.JList jList1;
+    private javax.swing.JList atributesList;
+    private javax.swing.JButton combineAttributesButton;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JList propertiesList;
     // End of variables declaration//GEN-END:variables
 }
