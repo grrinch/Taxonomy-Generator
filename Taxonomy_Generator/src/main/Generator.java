@@ -4,6 +4,9 @@
  */
 package main;
 
+import helper.SysP;
+import java.awt.Dimension;
+
 /**
  *
  * @author radmin
@@ -26,20 +29,19 @@ public class Generator extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        rightElementsGridPanel = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         atributesList = new javax.swing.JList();
         combineAttributesButton = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         propertiesList = new javax.swing.JList();
+        leftChartPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Test");
-        setAlwaysOnTop(true);
-        setLocationByPlatform(true);
         setName("MainFrame"); // NOI18N
 
-        jPanel1.setLayout(new java.awt.GridLayout(3, 1, 5, 5));
+        rightElementsGridPanel.setLayout(new java.awt.GridLayout(3, 1, 5, 5));
 
         atributesList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -50,40 +52,58 @@ public class Generator extends javax.swing.JFrame {
         jScrollPane3.setViewportView(atributesList);
         atributesList.getAccessibleContext().setAccessibleName("atributesList");
 
-        jPanel1.add(jScrollPane3);
+        rightElementsGridPanel.add(jScrollPane3);
 
         combineAttributesButton.setText("jButton1");
-        jPanel1.add(combineAttributesButton);
+        rightElementsGridPanel.add(combineAttributesButton);
 
         propertiesList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        propertiesList.setToolTipText("");
+        propertiesList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        propertiesList.setToolTipText("Właściwości obiektu");
+        propertiesList.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                propertiesListPropertyChange(evt);
+            }
+        });
         jScrollPane4.setViewportView(propertiesList);
 
-        jPanel1.add(jScrollPane4);
+        rightElementsGridPanel.add(jScrollPane4);
+
+        leftChartPanel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(213, 213, 213), 1, true));
+        leftChartPanel.setForeground(new java.awt.Color(205, 220, 234));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(413, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(leftChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(leftChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void propertiesListPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_propertiesListPropertyChange
+        // TODO add your handling code here:
+        SysP.SysP("zmiana zawartości listy właściwości taksonomii");
+    }//GEN-LAST:event_propertiesListPropertyChange
 
     /**
      * @param args the command line arguments
@@ -122,9 +142,10 @@ public class Generator extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList atributesList;
     private javax.swing.JButton combineAttributesButton;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JPanel leftChartPanel;
     private javax.swing.JList propertiesList;
+    private javax.swing.JPanel rightElementsGridPanel;
     // End of variables declaration//GEN-END:variables
 }
