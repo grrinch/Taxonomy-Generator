@@ -29,19 +29,51 @@ public class Generator extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        graphObjectsPlacement = new javax.swing.ButtonGroup();
         rightElementsGridPanel = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        atributesList = new javax.swing.JList();
         combineAttributesButton = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         propertiesList = new javax.swing.JList();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        atributesList = new javax.swing.JList();
+        graphPropertiesPanel = new javax.swing.JPanel();
+        graphLinesCrossing = new javax.swing.JRadioButton();
+        graphLinesNotCrossing = new javax.swing.JRadioButton();
         leftChartPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Test");
         setName("MainFrame"); // NOI18N
 
-        rightElementsGridPanel.setLayout(new java.awt.GridLayout(3, 1, 5, 5));
+        rightElementsGridPanel.setLayout(new java.awt.BorderLayout(0, 5));
+
+        combineAttributesButton.setText("Combine attributes");
+        combineAttributesButton.setPreferredSize(new java.awt.Dimension(185, 29));
+        rightElementsGridPanel.add(combineAttributesButton, java.awt.BorderLayout.NORTH);
+
+        jScrollPane4.setPreferredSize(null);
+
+        propertiesList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        propertiesList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        propertiesList.setToolTipText("Właściwości obiektu");
+        propertiesList.setLayoutOrientation(javax.swing.JList.VERTICAL_WRAP);
+        propertiesList.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                propertiesListPropertyChange(evt);
+            }
+        });
+        jScrollPane4.setViewportView(propertiesList);
+
+        rightElementsGridPanel.add(jScrollPane4, java.awt.BorderLayout.CENTER);
+
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        jScrollPane3.setPreferredSize(null);
 
         atributesList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -52,29 +84,43 @@ public class Generator extends javax.swing.JFrame {
         jScrollPane3.setViewportView(atributesList);
         atributesList.getAccessibleContext().setAccessibleName("atributesList");
 
-        rightElementsGridPanel.add(jScrollPane3);
+        jPanel1.add(jScrollPane3, java.awt.BorderLayout.NORTH);
 
-        combineAttributesButton.setText("jButton1");
-        rightElementsGridPanel.add(combineAttributesButton);
+        graphPropertiesPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        graphPropertiesPanel.setLayout(new java.awt.BorderLayout());
 
-        propertiesList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        propertiesList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        propertiesList.setToolTipText("Właściwości obiektu");
-        propertiesList.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                propertiesListPropertyChange(evt);
+        graphObjectsPlacement.add(graphLinesCrossing);
+        graphLinesCrossing.setText("Cross");
+        graphLinesCrossing.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                graphLinesCrossingActionPerformed(evt);
             }
         });
-        jScrollPane4.setViewportView(propertiesList);
+        graphPropertiesPanel.add(graphLinesCrossing, java.awt.BorderLayout.EAST);
+        graphLinesCrossing.getAccessibleContext().setAccessibleName("graphLinesCrossing");
 
-        rightElementsGridPanel.add(jScrollPane4);
+        graphObjectsPlacement.add(graphLinesNotCrossing);
+        graphLinesNotCrossing.setSelected(true);
+        graphLinesNotCrossing.setText("Don't cross");
+        graphPropertiesPanel.add(graphLinesNotCrossing, java.awt.BorderLayout.WEST);
+
+        jPanel1.add(graphPropertiesPanel, java.awt.BorderLayout.SOUTH);
+
+        rightElementsGridPanel.add(jPanel1, java.awt.BorderLayout.PAGE_END);
 
         leftChartPanel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(213, 213, 213), 1, true));
         leftChartPanel.setForeground(new java.awt.Color(205, 220, 234));
+
+        javax.swing.GroupLayout leftChartPanelLayout = new javax.swing.GroupLayout(leftChartPanel);
+        leftChartPanel.setLayout(leftChartPanelLayout);
+        leftChartPanelLayout.setHorizontalGroup(
+            leftChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 393, Short.MAX_VALUE)
+        );
+        leftChartPanelLayout.setVerticalGroup(
+            leftChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 29, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -82,7 +128,7 @@ public class Generator extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(leftChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
+                .addComponent(leftChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -92,8 +138,10 @@ public class Generator extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(leftChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(leftChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 497, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -104,6 +152,10 @@ public class Generator extends javax.swing.JFrame {
         // TODO add your handling code here:
         SysP.SysP("zmiana zawartości listy właściwości taksonomii");
     }//GEN-LAST:event_propertiesListPropertyChange
+
+    private void graphLinesCrossingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_graphLinesCrossingActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_graphLinesCrossingActionPerformed
 
     /**
      * @param args the command line arguments
@@ -142,6 +194,11 @@ public class Generator extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList atributesList;
     private javax.swing.JButton combineAttributesButton;
+    private javax.swing.JRadioButton graphLinesCrossing;
+    private javax.swing.JRadioButton graphLinesNotCrossing;
+    private javax.swing.ButtonGroup graphObjectsPlacement;
+    private javax.swing.JPanel graphPropertiesPanel;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JPanel leftChartPanel;
