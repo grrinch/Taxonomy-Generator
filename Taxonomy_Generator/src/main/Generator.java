@@ -4,8 +4,10 @@
  */
 package main;
 
+import helper.FileChooserHelper;
 import helper.SysP;
-import java.awt.Dimension;
+import java.io.File;
+import javax.swing.JFileChooser;
 
 /**
  *
@@ -31,15 +33,19 @@ public class Generator extends javax.swing.JFrame {
 
         graphObjectsPlacement = new javax.swing.ButtonGroup();
         rightElementsGridPanel = new javax.swing.JPanel();
-        combineAttributesButton = new javax.swing.JButton();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        propertiesList = new javax.swing.JList();
-        jPanel1 = new javax.swing.JPanel();
+        attribPanel = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         atributesList = new javax.swing.JList();
         graphPropertiesPanel = new javax.swing.JPanel();
         graphLinesCrossing = new javax.swing.JRadioButton();
         graphLinesNotCrossing = new javax.swing.JRadioButton();
+        propertyPanel = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        propertiesList = new javax.swing.JList();
+        combineAttribs = new javax.swing.JButton();
+        openSaveButtonPanel = new javax.swing.JPanel();
+        openButton = new javax.swing.JButton();
+        saveButton = new javax.swing.JButton();
         leftChartPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -48,32 +54,7 @@ public class Generator extends javax.swing.JFrame {
 
         rightElementsGridPanel.setLayout(new java.awt.BorderLayout(0, 5));
 
-        combineAttributesButton.setText("Combine attributes");
-        combineAttributesButton.setPreferredSize(new java.awt.Dimension(185, 29));
-        rightElementsGridPanel.add(combineAttributesButton, java.awt.BorderLayout.NORTH);
-
-        jScrollPane4.setPreferredSize(null);
-
-        propertiesList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        propertiesList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        propertiesList.setToolTipText("Właściwości obiektu");
-        propertiesList.setLayoutOrientation(javax.swing.JList.VERTICAL_WRAP);
-        propertiesList.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                propertiesListPropertyChange(evt);
-            }
-        });
-        jScrollPane4.setViewportView(propertiesList);
-
-        rightElementsGridPanel.add(jScrollPane4, java.awt.BorderLayout.CENTER);
-
-        jPanel1.setLayout(new java.awt.BorderLayout());
-
-        jScrollPane3.setPreferredSize(null);
+        attribPanel.setLayout(new java.awt.BorderLayout());
 
         atributesList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -84,7 +65,7 @@ public class Generator extends javax.swing.JFrame {
         jScrollPane3.setViewportView(atributesList);
         atributesList.getAccessibleContext().setAccessibleName("atributesList");
 
-        jPanel1.add(jScrollPane3, java.awt.BorderLayout.NORTH);
+        attribPanel.add(jScrollPane3, java.awt.BorderLayout.NORTH);
 
         graphPropertiesPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         graphPropertiesPanel.setLayout(new java.awt.BorderLayout());
@@ -104,9 +85,49 @@ public class Generator extends javax.swing.JFrame {
         graphLinesNotCrossing.setText("Don't cross");
         graphPropertiesPanel.add(graphLinesNotCrossing, java.awt.BorderLayout.WEST);
 
-        jPanel1.add(graphPropertiesPanel, java.awt.BorderLayout.SOUTH);
+        attribPanel.add(graphPropertiesPanel, java.awt.BorderLayout.SOUTH);
 
-        rightElementsGridPanel.add(jPanel1, java.awt.BorderLayout.PAGE_END);
+        rightElementsGridPanel.add(attribPanel, java.awt.BorderLayout.PAGE_END);
+
+        propertyPanel.setLayout(new java.awt.BorderLayout());
+
+        propertiesList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        propertiesList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        propertiesList.setToolTipText("Właściwości obiektu");
+        propertiesList.setLayoutOrientation(javax.swing.JList.VERTICAL_WRAP);
+        propertiesList.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                propertiesListPropertyChange(evt);
+            }
+        });
+        jScrollPane4.setViewportView(propertiesList);
+
+        propertyPanel.add(jScrollPane4, java.awt.BorderLayout.CENTER);
+
+        combineAttribs.setText("Combine Properties");
+        propertyPanel.add(combineAttribs, java.awt.BorderLayout.SOUTH);
+
+        openSaveButtonPanel.setLayout(new java.awt.GridLayout());
+
+        openButton.setText("Open");
+        openButton.setToolTipText("");
+        openButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openButtonActionPerformed(evt);
+            }
+        });
+        openSaveButtonPanel.add(openButton);
+
+        saveButton.setText("Save");
+        openSaveButtonPanel.add(saveButton);
+
+        propertyPanel.add(openSaveButtonPanel, java.awt.BorderLayout.PAGE_START);
+
+        rightElementsGridPanel.add(propertyPanel, java.awt.BorderLayout.CENTER);
 
         leftChartPanel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(213, 213, 213), 1, true));
         leftChartPanel.setForeground(new java.awt.Color(205, 220, 234));
@@ -119,7 +140,7 @@ public class Generator extends javax.swing.JFrame {
         );
         leftChartPanelLayout.setVerticalGroup(
             leftChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 29, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -138,10 +159,8 @@ public class Generator extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(leftChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 497, Short.MAX_VALUE)))
+                    .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 528, Short.MAX_VALUE)
+                    .addComponent(leftChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -156,6 +175,19 @@ public class Generator extends javax.swing.JFrame {
     private void graphLinesCrossingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_graphLinesCrossingActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_graphLinesCrossingActionPerformed
+
+    private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File("../data/"));
+        fileChooser.setFileFilter(FileChooserHelper.FileChooserFilter());
+
+        int result = fileChooser.showOpenDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            String plik = fileChooser.getSelectedFile().getAbsolutePath();
+            
+        }
+    }//GEN-LAST:event_openButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -186,6 +218,7 @@ public class Generator extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new Generator().setVisible(true);
             }
@@ -193,16 +226,20 @@ public class Generator extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList atributesList;
-    private javax.swing.JButton combineAttributesButton;
+    private javax.swing.JPanel attribPanel;
+    private javax.swing.JButton combineAttribs;
     private javax.swing.JRadioButton graphLinesCrossing;
     private javax.swing.JRadioButton graphLinesNotCrossing;
     private javax.swing.ButtonGroup graphObjectsPlacement;
     private javax.swing.JPanel graphPropertiesPanel;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JPanel leftChartPanel;
+    private javax.swing.JButton openButton;
+    private javax.swing.JPanel openSaveButtonPanel;
     private javax.swing.JList propertiesList;
+    private javax.swing.JPanel propertyPanel;
     private javax.swing.JPanel rightElementsGridPanel;
+    private javax.swing.JButton saveButton;
     // End of variables declaration//GEN-END:variables
 }
