@@ -12,16 +12,30 @@ import javax.swing.filechooser.FileFilter;
  * @author radmin
  */
 public final class FileChooserHelper {
-    public static FileFilter FileChooserFilter() {
+    public static FileFilter OpenFileChooserFilter() {
         return new FileFilter() {
             @Override
             public boolean accept(File f) {
-                return f.isDirectory() || f.getName().startsWith("!") || f.getName().matches("^[a-zA-Z0-9_-](.txt|.data)?$");
+                return f.isDirectory() /*|| f.getName().startsWith("!")*/ || f.getName().matches("^[a-zA-Z0-9_-](.txt|.data)?$");
             }
 
             @Override
             public String getDescription() {
-                return "";
+                return "Data files (.data/.txt)";
+            }
+        };
+    }
+    
+    public static FileFilter SaveFileChooserFilter() {
+        return new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                return f.isDirectory() || f.getName().matches("^[a-zA-Z0-9_-!].taxonomy$");
+            }
+
+            @Override
+            public String getDescription() {
+                return "Taxonomy files (.taxonomy)";
             }
         };
     }

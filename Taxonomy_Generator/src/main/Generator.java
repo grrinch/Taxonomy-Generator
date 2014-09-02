@@ -5,9 +5,19 @@
 package main;
 
 import helper.FileChooserHelper;
-import helper.SysP;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import javax.swing.JFileChooser;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.LinkedHashSet;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -15,10 +25,18 @@ import javax.swing.JFileChooser;
  */
 public class Generator extends javax.swing.JFrame {
 
+    private TreeMap _attributes;
+    private TreeMap _listAttributes;
+    private DefaultListModel _attributesListModel;
+    private DefaultListModel _propertiesListModel;
+
     /**
      * Creates new form Generator
      */
     public Generator() {
+        _propertiesListModel = new DefaultListModel();
+        _attributesListModel = new DefaultListModel();
+
         initComponents();
     }
 
@@ -35,7 +53,7 @@ public class Generator extends javax.swing.JFrame {
         rightElementsGridPanel = new javax.swing.JPanel();
         attribPanel = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        atributesList = new javax.swing.JList();
+        attributesList = new javax.swing.JList();
         graphPropertiesPanel = new javax.swing.JPanel();
         graphLinesCrossing = new javax.swing.JRadioButton();
         graphLinesNotCrossing = new javax.swing.JRadioButton();
@@ -56,14 +74,15 @@ public class Generator extends javax.swing.JFrame {
 
         attribPanel.setLayout(new java.awt.BorderLayout());
 
-        atributesList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+        attributesList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        attributesList.setName("attributesList"); // NOI18N
+        attributesList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                attributesListValueChanged(evt);
+            }
         });
-        atributesList.setName("atributesList"); // NOI18N
-        jScrollPane3.setViewportView(atributesList);
-        atributesList.getAccessibleContext().setAccessibleName("atributesList");
+        jScrollPane3.setViewportView(attributesList);
+        attributesList.getAccessibleContext().setAccessibleName("atributesList");
 
         attribPanel.add(jScrollPane3, java.awt.BorderLayout.NORTH);
 
@@ -91,13 +110,8 @@ public class Generator extends javax.swing.JFrame {
 
         propertyPanel.setLayout(new java.awt.BorderLayout());
 
-        propertiesList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        propertiesList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         propertiesList.setToolTipText("Właściwości obiektu");
+        propertiesList.setDropMode(javax.swing.DropMode.INSERT);
         propertiesList.setLayoutOrientation(javax.swing.JList.VERTICAL_WRAP);
         propertiesList.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
@@ -111,7 +125,7 @@ public class Generator extends javax.swing.JFrame {
         combineAttribs.setText("Combine Properties");
         propertyPanel.add(combineAttribs, java.awt.BorderLayout.SOUTH);
 
-        openSaveButtonPanel.setLayout(new java.awt.GridLayout());
+        openSaveButtonPanel.setLayout(new java.awt.GridLayout(1, 0));
 
         openButton.setText("Open");
         openButton.setToolTipText("");
@@ -169,7 +183,6 @@ public class Generator extends javax.swing.JFrame {
 
     private void propertiesListPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_propertiesListPropertyChange
         // TODO add your handling code here:
-        SysP.SysP("zmiana zawartości listy właściwości taksonomii");
     }//GEN-LAST:event_propertiesListPropertyChange
 
     private void graphLinesCrossingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_graphLinesCrossingActionPerformed
@@ -179,15 +192,80 @@ public class Generator extends javax.swing.JFrame {
     private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File("../data/"));
-        fileChooser.setFileFilter(FileChooserHelper.FileChooserFilter());
+        fileChooser.setFileFilter(FileChooserHelper.OpenFileChooserFilter());
 
         int result = fileChooser.showOpenDialog(this);
 
         if (result == JFileChooser.APPROVE_OPTION) {
-            String plik = fileChooser.getSelectedFile().getAbsolutePath();
-            
+            this._attributes = new TreeMap<Integer, LinkedHashSet>();
+            this._listAttributes = new TreeMap<Integer, String>();
+
+            _attributesListModel.clear();
+            _propertiesListModel.clear();
+
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(fileChooser.getSelectedFile().getAbsolutePath()));
+
+                for (String linia; (linia = br.readLine()) != null;) {
+                    String[] learnerCaseProperties = linia.split(",");
+
+                    for (int i = 0; i < learnerCaseProperties.length; i++) {
+                        LinkedHashSet _properties = (LinkedHashSet) this._attributes.get(i);
+
+                        if (_properties == null) {
+                            _properties = new LinkedHashSet<String>();
+                            this._attributes.put(i, _properties);
+                        } else {
+                            _properties.add(learnerCaseProperties[i]);
+                        }
+
+                        this._listAttributes.put(i, "");
+                    }
+                }
+
+                Iterator it = this._listAttributes.entrySet().iterator();
+
+                while (it.hasNext()) {
+                    Map.Entry pole = (Map.Entry) it.next();
+                    if (pole.getValue() == "") {
+                        _attributesListModel.addElement(pole.getKey());
+                    } else {
+                        _attributesListModel.add((int) pole.getKey(), pole.getValue());
+                    }
+                }
+
+                propertiesList.setModel(_propertiesListModel);
+                attributesList.setModel(_attributesListModel);
+
+                attributesList.addListSelectionListener(new ListSelectionListener() {
+                    @Override
+                    public void valueChanged(ListSelectionEvent arg0) {
+                        try {
+                            if (!arg0.getValueIsAdjusting()) {
+                                LinkedHashSet _properties = (LinkedHashSet) _attributes.get(attributesList.getSelectedValue());
+
+                                if (_properties != null) {
+                                    Iterator it = _properties.iterator();
+                                    _propertiesListModel.clear();
+
+                                    while (it.hasNext()) {
+                                        _propertiesListModel.addElement(it.next());
+                                    }
+                                }
+                            }
+                        } catch (NullPointerException ex) {
+                        }
+                    }
+                });
+
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Nie można czytać z podanego pliku.\n" + ex.toString(), "Błąd", JOptionPane.WARNING_MESSAGE);
+            }
         }
     }//GEN-LAST:event_openButtonActionPerformed
+
+    private void attributesListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_attributesListValueChanged
+    }//GEN-LAST:event_attributesListValueChanged
 
     /**
      * @param args the command line arguments
@@ -225,8 +303,8 @@ public class Generator extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JList atributesList;
     private javax.swing.JPanel attribPanel;
+    private javax.swing.JList attributesList;
     private javax.swing.JButton combineAttribs;
     private javax.swing.JRadioButton graphLinesCrossing;
     private javax.swing.JRadioButton graphLinesNotCrossing;
