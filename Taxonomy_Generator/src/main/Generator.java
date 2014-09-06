@@ -16,8 +16,6 @@ import java.util.TreeMap;
 import java.util.LinkedHashSet;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -190,11 +188,11 @@ public class Generator extends javax.swing.JFrame {
     }//GEN-LAST:event_graphLinesCrossingActionPerformed
 
     private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(new File("../data/"));
-        fileChooser.setFileFilter(FileChooserHelper.OpenFileChooserFilter());
+        JFileChooser plikDanych = new JFileChooser();
+        plikDanych.setCurrentDirectory(new File("../data/"));
+        plikDanych.setFileFilter(FileChooserHelper.OpenFileChooserFilter());
 
-        int result = fileChooser.showOpenDialog(this);
+        int result = plikDanych.showOpenDialog(this);
 
         if (result == JFileChooser.APPROVE_OPTION) {
             this._attributes = new TreeMap<Integer, LinkedHashSet>();
@@ -204,19 +202,19 @@ public class Generator extends javax.swing.JFrame {
             _propertiesListModel.clear();
 
             try {
-                BufferedReader br = new BufferedReader(new FileReader(fileChooser.getSelectedFile().getAbsolutePath()));
+                BufferedReader br = new BufferedReader(new FileReader(plikDanych.getSelectedFile().getAbsolutePath()));
 
                 for (String linia; (linia = br.readLine()) != null;) {
-                    String[] learnerCaseProperties = linia.split(",");
+                    String[] learningCaseProperties = linia.split(",");
 
-                    for (int i = 0; i < learnerCaseProperties.length; i++) {
+                    for (int i = 0; i < learningCaseProperties.length; i++) {
                         LinkedHashSet _properties = (LinkedHashSet) this._attributes.get(i);
 
                         if (_properties == null) {
                             _properties = new LinkedHashSet<String>();
                             this._attributes.put(i, _properties);
                         } else {
-                            _properties.add(learnerCaseProperties[i]);
+                            _properties.add(learningCaseProperties[i]);
                         }
 
                         this._listAttributes.put(i, "");
@@ -237,26 +235,7 @@ public class Generator extends javax.swing.JFrame {
                 propertiesList.setModel(_propertiesListModel);
                 attributesList.setModel(_attributesListModel);
 
-                attributesList.addListSelectionListener(new ListSelectionListener() {
-                    @Override
-                    public void valueChanged(ListSelectionEvent arg0) {
-                        try {
-                            if (!arg0.getValueIsAdjusting()) {
-                                LinkedHashSet _properties = (LinkedHashSet) _attributes.get(attributesList.getSelectedValue());
-
-                                if (_properties != null) {
-                                    Iterator it = _properties.iterator();
-                                    _propertiesListModel.clear();
-
-                                    while (it.hasNext()) {
-                                        _propertiesListModel.addElement(it.next());
-                                    }
-                                }
-                            }
-                        } catch (NullPointerException ex) {
-                        }
-                    }
-                });
+                attributesList.addListSelectionListener(helper.Listeners.AttributesListListener(_attributes, attributesList, _propertiesListModel));
 
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, "Nie można czytać z podanego pliku.\n" + ex.toString(), "Błąd", JOptionPane.WARNING_MESSAGE);
