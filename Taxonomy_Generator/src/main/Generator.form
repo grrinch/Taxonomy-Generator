@@ -7,7 +7,7 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
-    <Property name="title" type="java.lang.String" value="Test"/>
+    <Property name="title" type="java.lang.String" value="Taxonomy Generator"/>
     <Property name="name" type="java.lang.String" value="MainFrame" noResource="true"/>
   </Properties>
   <SyntheticProperties>

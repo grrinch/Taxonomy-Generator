@@ -65,7 +65,7 @@ public class Generator extends javax.swing.JFrame {
         leftChartPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Test");
+        setTitle("Taxonomy Generator");
         setName("MainFrame"); // NOI18N
 
         rightElementsGridPanel.setLayout(new java.awt.BorderLayout(0, 5));
@@ -188,12 +188,19 @@ public class Generator extends javax.swing.JFrame {
     }//GEN-LAST:event_graphLinesCrossingActionPerformed
 
     private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
+        // nowy obiekt wyboru plików
         JFileChooser plikDanych = new JFileChooser();
+        
+        // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "data"
         plikDanych.setCurrentDirectory(new File("../data/"));
+        
+        // ustawiam filtr dozwolonych plików na *.txt, *.data oraz katalogi
         plikDanych.setFileFilter(FileChooserHelper.OpenFileChooserFilter());
 
+        // uruchamiam okno z wyborem plików
         int result = plikDanych.showOpenDialog(this);
 
+        // jeśli wybrany został plik
         if (result == JFileChooser.APPROVE_OPTION) {
             this._attributes = new TreeMap<Integer, LinkedHashSet>();
             this._listAttributes = new TreeMap<Integer, String>();
