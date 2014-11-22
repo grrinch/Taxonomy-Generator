@@ -1,16 +1,16 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package helper;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.TreeMap;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import models.Attribute;
 
 /**
  *
@@ -21,7 +21,7 @@ public class Listeners {
     public static ListSelectionListener AttributesListListener(TreeMap _attributes, final JList attributesList, DefaultListModel _propertiesListModel) {
         final TreeMap tempAttr = _attributes;
         final DefaultListModel tempPropModel = _propertiesListModel;
-        
+
         return new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
@@ -40,6 +40,28 @@ public class Listeners {
                     }
                 } catch (NullPointerException ex) {
                 }
+            }
+        };
+    }
+
+    public static MouseAdapter AttributesDoubleClickListener(TreeMap _attributes) {
+        final TreeMap tempAttr = _attributes;
+        
+        return new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                JList list = (JList) evt.getSource();
+                
+                if (evt.getClickCount() == 2) {
+                    int index = list.locationToIndex(evt.getPoint());
+                    Attribute atr = (Attribute) tempAttr.get(index);
+                    String nazwa = JOptionPane.showInputDialog("Please input attribute name: ");
+                    atr.setNazwa(nazwa);
+                } 
+                /*else if (evt.getClickCount() == 3) {   // Triple-click
+                    int index = list.locationToIndex(evt.getPoint());
+
+                }*/
             }
         };
     }
