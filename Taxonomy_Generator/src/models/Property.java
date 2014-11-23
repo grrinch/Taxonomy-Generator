@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 /**
  * Klasa właściwości
+ *
  * @author radmin
  */
 public class Property implements Comparable<Property>, Serializable {
@@ -12,7 +13,7 @@ public class Property implements Comparable<Property>, Serializable {
     /**
      * kolejność z JListy
      */
-    private int _id = 0;
+    private int _id = 1;
 
     /**
      * nazwa właściwości jeśli podana
@@ -30,8 +31,7 @@ public class Property implements Comparable<Property>, Serializable {
     private Property[] _elementy;
 
     /**
-     * Konstruktor - tylko podany koszt (nie ma nazwy właściwości, ale jej koszt).
-     * Kiedy używany: 
+     * Konstruktor - tylko podany koszt (nie ma nazwy właściwości, ale jej koszt). Kiedy używany:
      *
      * @param _koszt koszt połączenia właściwości
      */
@@ -40,8 +40,7 @@ public class Property implements Comparable<Property>, Serializable {
     }
 
     /**
-     * Konstruktor - podana nazwa i koszt rozdzielenia.
-     * Kiedy używany: 
+     * Konstruktor - podana nazwa i koszt rozdzielenia. Kiedy używany:
      *
      * @param nazwa nazwa właściwości
      * @param _koszt koszt
@@ -52,6 +51,7 @@ public class Property implements Comparable<Property>, Serializable {
 
     /**
      * Konstruktor - podana pozycja na JLiście
+     *
      * @param id pozycja na JLiście
      */
     public Property(int id) {
@@ -59,9 +59,8 @@ public class Property implements Comparable<Property>, Serializable {
     }
 
     /**
-     * Konstruktor - podana pozycja na JLiście, nazwa oraz koszt. 
-     * Ten konstruktor powinien z definicji być najczęściej używanym. Zwłaszcza w kontekście populacji JListy/modelu.
-     * 
+     * Konstruktor - podana pozycja na JLiście, nazwa oraz koszt. Ten konstruktor powinien z definicji być najczęściej używanym. Zwłaszcza w kontekście populacji JListy/modelu.
+     *
      * @param id pozycja na JLiście
      * @param nazwa nazwa właściwości
      * @param _koszt koszt
@@ -73,6 +72,7 @@ public class Property implements Comparable<Property>, Serializable {
 
     /**
      * Zwraca nazwę właściwości
+     *
      * @return string nazwa
      */
     public String getNazwa() {
@@ -81,6 +81,7 @@ public class Property implements Comparable<Property>, Serializable {
 
     /**
      * Ustala nazwę właściwości
+     *
      * @param _nazwa nazwa
      */
     public void setNazwa(String _nazwa) {
@@ -89,14 +90,16 @@ public class Property implements Comparable<Property>, Serializable {
 
     /**
      * Zwraca pozycję elementu na JLiście
+     *
      * @return int pozycja (id)
      */
     public int getId() {
         return _id;
     }
-    
+
     /**
      * Ustala kolejność (id) tego elementu na JLiście.
+     *
      * @param id kolejność
      */
     public void setId(int id) {
@@ -104,46 +107,62 @@ public class Property implements Comparable<Property>, Serializable {
     }
 
     /**
-     * Zwraca koszt właściwości. Jeśli koszt jest zerowy, podaje sumę kosztów wszystkich właściwości.
+     * Zwraca koszt, jaki jest ustawiony dla właściwości.
+     *
      * @return double koszt
      */
     public double getKoszt() {
-        if(_koszt != 0) {
-            return _koszt;
-        }
-        else if(_elementy.length > 0) {
+        return _koszt;
+    }
+
+    /**
+     * Zwraca sumę kosztów wszystkich wewnętrznych właściwości.
+     *
+     * @return double koszt
+     */
+    public double getInternalPropertiesKoszt() {
+        if (_elementy.length > 0) {
             Double koszt = (double) 0;
-            
-            for(Property element: getElementy()) {
+
+            for (Property element : getElementy()) {
                 koszt += element.getKoszt();
             }
-            
+
             return koszt;
-        }
-        else {
+        } else {
             return (double) 0;
         }
     }
 
     /**
+     * Ustala koszt danej właściwości
+     *
+     * @param _koszt koszt
+     */
+    public void setKoszt(double _koszt) {
+        this._koszt = _koszt;
+    }
+
+    /**
      * Zwraca tablicę właściwości wewnątrz tej właściwości
+     *
      * @return Property[] właściwości wewnątrz właściwości (połączone)
      */
     public Property[] getElementy() {
         return _elementy;
     }
-    
+
     public void add(Property p) throws InvalidPropertyException {
-        if(this != p) {
+        if (this != p) {
             _elementy[_elementy.length] = p;
-        }
-        else {
+        } else {
             throw new InvalidPropertyException("Nie można dodać właściwości do niej samej (nieskończona rekurencja).");
         }
     }
 
     /**
      * Pozwala na porównanie obiektu właściwości (kryterium jest koszt)
+     *
      * @param o podawany obiekt właściwości
      * @return podaje, który obiekt ma większy koszt
      */

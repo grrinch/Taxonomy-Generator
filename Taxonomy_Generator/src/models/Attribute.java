@@ -11,7 +11,7 @@ public class Attribute implements Serializable {
     /**
      * kolejność na JLiście lub modelu.
      */
-    private int _id = 0;
+    private int _id = 1;
     
     /**
      * Nazwa atrybutu.

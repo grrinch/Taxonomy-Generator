@@ -4,6 +4,7 @@
  */
 package main;
 
+import exceptions.InvalidPropertyException;
 import helper.FileChooserHelper;
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,8 +15,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.LinkedHashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import models.*;
 
 /**
  *
@@ -23,9 +27,19 @@ import javax.swing.JOptionPane;
  */
 public class Generator extends javax.swing.JFrame {
 
+    /**
+     * atrybuty
+     */
     private TreeMap _attributes;
-    private TreeMap _listAttributes;
+
+    /**
+     * Model dla JListy atrybutów
+     */
     private DefaultListModel _attributesListModel;
+    
+    /**
+     * Model dla JListy właściwości
+     */
     private DefaultListModel _propertiesListModel;
 
     /**
@@ -202,8 +216,8 @@ public class Generator extends javax.swing.JFrame {
 
         // jeśli wybrany został plik
         if (result == JFileChooser.APPROVE_OPTION) {
-            this._attributes = new TreeMap<Integer, LinkedHashSet>();
-            this._listAttributes = new TreeMap<Integer, String>();
+            // ~...
+            this._attributes = new TreeMap<Integer, Attribute>();
 
             _attributesListModel.clear();
             _propertiesListModel.clear();
@@ -212,32 +226,15 @@ public class Generator extends javax.swing.JFrame {
                 BufferedReader br = new BufferedReader(new FileReader(plikDanych.getSelectedFile().getAbsolutePath()));
 
                 for (String linia; (linia = br.readLine()) != null;) {
+                    // każdą linię dzielimy po przecinkach na przypadki uczące (powinno ich w każdej linii być tyle samo - jest to nasza lista atrybutów
                     String[] learningCaseProperties = linia.split(",");
 
                     for (int i = 0; i < learningCaseProperties.length; i++) {
-                        LinkedHashSet _properties = (LinkedHashSet) this._attributes.get(i);
-
-                        if (_properties == null) {
-                            _properties = new LinkedHashSet<String>();
-                            this._attributes.put(i, _properties);
-                        } else {
-                            _properties.add(learningCaseProperties[i]);
-                        }
-
-                        this._listAttributes.put(i, "");
+                        // ~...
                     }
                 }
 
-                Iterator it = this._listAttributes.entrySet().iterator();
-
-                while (it.hasNext()) {
-                    Map.Entry pole = (Map.Entry) it.next();
-                    if (pole.getValue() == "") {
-                        _attributesListModel.addElement(pole.getKey());
-                    } else {
-                        _attributesListModel.add((int) pole.getKey(), pole.getValue());
-                    }
-                }
+                // ~...
 
                 propertiesList.setModel(_propertiesListModel);
                 attributesList.setModel(_attributesListModel);
