@@ -2,6 +2,8 @@ package models;
 
 import exceptions.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Klasa właściwości
@@ -28,7 +30,7 @@ public class Property implements Comparable<Property>, Serializable {
     /**
      * tablica właściwości, które mogą należeć do danej właściwości
      */
-    private Property[] _elementy;
+    private List<Property> _elementy = new ArrayList<Property>();
 
     /**
      * Konstruktor - tylko podany koszt (nie ma nazwy właściwości, ale jej koszt). Kiedy używany:
@@ -63,9 +65,21 @@ public class Property implements Comparable<Property>, Serializable {
      *
      * @param id pozycja na JLiście
      * @param nazwa nazwa właściwości
-     * @param _koszt koszt
+     * @param koszt koszt
      */
-    public Property(int id, String nazwa, double _koszt) {
+    public Property(int id, String nazwa, double koszt) {
+        _nazwa = nazwa;
+        _id = id;
+        _koszt = koszt;
+    }
+    
+    /**
+     * Konstruktor - podana pozycja na JLiście oraz nazwa.
+     * 
+     * @param id pozycja na JLiście/w modelu/tablicy
+     * @param nazwa nazwa (wartość)
+     */
+    public Property(int id, String nazwa) {
         _nazwa = nazwa;
         _id = id;
     }
@@ -121,7 +135,7 @@ public class Property implements Comparable<Property>, Serializable {
      * @return double koszt
      */
     public double getInternalPropertiesKoszt() {
-        if (_elementy.length > 0) {
+        if (_elementy.size() > 0) {
             Double koszt = (double) 0;
 
             for (Property element : getElementy()) {
@@ -149,12 +163,12 @@ public class Property implements Comparable<Property>, Serializable {
      * @return Property[] właściwości wewnątrz właściwości (połączone)
      */
     public Property[] getElementy() {
-        return _elementy;
+        return _elementy.toArray(new Property[_elementy.size()]);
     }
 
     public void add(Property p) throws InvalidPropertyException {
         if (this != p) {
-            _elementy[_elementy.length] = p;
+            _elementy.add(p);
         } else {
             throw new InvalidPropertyException("Nie można dodać właściwości do niej samej (nieskończona rekurencja).");
         }
@@ -184,9 +198,11 @@ public class Property implements Comparable<Property>, Serializable {
      */
     @Override
     public String toString() {
-        if (_elementy.length == 1) {
-            return _elementy[0].toString();
-        } else if (_elementy.length > 1) {
+        if (_nazwa.length() > 0) { // ma własną nazwę, więc ją zwracam
+            return getNazwa();
+        } else if (_elementy.size() == 1) { // ma tylko 1 element wewnętrzny, więc zwracam jego nazwę
+            return _elementy.get(_elementy.size() - 1).toString();
+        } else if (_elementy.size() > 1) { // ma więcej niż 1 element wewnętrzny, więc zwracam wszystkie ich nazwy po przecinku
             String ret = new String();
             int i = 0;
 
@@ -194,15 +210,13 @@ public class Property implements Comparable<Property>, Serializable {
                 if (i == 0) {
                     ret += element.toString();
                 } else {
-                    ret += ", " + element.toString();
+                    ret += "," + element.toString();
                 }
                 i++;
             }
             return ret;
-        } else if (_nazwa.length() > 0) {
-            return getNazwa();
-        } else {
-            return _id + ": " + _koszt;
+        } else { // jeśli nie ma ustawionej nazwy ani nie ma elementów wewnętrznych, to zwracam nazwę w postaci "id: koszt"
+            return _id + ":" + _koszt;
         }
     }
 

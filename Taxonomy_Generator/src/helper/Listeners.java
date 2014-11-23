@@ -2,15 +2,13 @@ package helper;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.TreeMap;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import models.Attribute;
+import models.*;
 
 /**
  *
@@ -18,8 +16,8 @@ import models.Attribute;
  */
 public class Listeners {
 
-    public static ListSelectionListener AttributesListListener(TreeMap _attributes, final JList attributesList, DefaultListModel _propertiesListModel) {
-        final TreeMap tempAttr = _attributes;
+    public static ListSelectionListener AttributesListListener(Attribute[] _attributes, final JList attributesList, DefaultListModel _propertiesListModel) {
+        final Attribute[] tempAttr = _attributes;
         final DefaultListModel tempPropModel = _propertiesListModel;
 
         return new ListSelectionListener() {
@@ -27,14 +25,14 @@ public class Listeners {
             public void valueChanged(ListSelectionEvent arg0) {
                 try {
                     if (!arg0.getValueIsAdjusting()) {
-                        LinkedHashSet _properties = (LinkedHashSet) tempAttr.get(attributesList.getSelectedValue());
-
-                        if (_properties != null) {
-                            Iterator it = _properties.iterator();
+                        Property[] _properties;
+                        _properties = tempAttr[attributesList.getSelectedIndex()].getWłaściwości();
+                        
+                        if (null != _properties) {
                             tempPropModel.clear();
 
-                            while (it.hasNext()) {
-                                tempPropModel.addElement(it.next());
+                            for(Property property: _properties) {
+                                tempPropModel.addElement(property);
                             }
                         }
                     }
@@ -44,8 +42,8 @@ public class Listeners {
         };
     }
 
-    public static MouseAdapter AttributesDoubleClickListener(TreeMap _attributes) {
-        final TreeMap tempAttr = _attributes;
+    public static MouseAdapter AttributesDoubleClickListener(Attribute[] _attributes) {
+        final Attribute[] tempAttr = _attributes;
         
         return new MouseAdapter() {
             @Override
@@ -54,9 +52,12 @@ public class Listeners {
                 
                 if (evt.getClickCount() == 2) {
                     int index = list.locationToIndex(evt.getPoint());
-                    Attribute atr = (Attribute) tempAttr.get(index);
-                    String nazwa = JOptionPane.showInputDialog("Please input attribute name: ");
-                    atr.setNazwa(nazwa);
+                    Attribute atr = (Attribute) tempAttr[index];
+                    Object result = JOptionPane.showInputDialog(null, "Please input attribute name: ", "Attribute name", JOptionPane.QUESTION_MESSAGE);
+                    if(result instanceof String) {
+                        String nazwa = result.toString();
+                        atr.setNazwa(nazwa);
+                    }
                 } 
                 /*else if (evt.getClickCount() == 3) {   // Triple-click
                     int index = list.locationToIndex(evt.getPoint());
