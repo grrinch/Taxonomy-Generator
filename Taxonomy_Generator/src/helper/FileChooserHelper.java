@@ -6,12 +6,14 @@ package helper;
 
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
  * @author radmin
  */
 public final class FileChooserHelper {
+
     public static FileFilter OpenFileChooserFilter() {
         return new FileFilter() {
             @Override
@@ -25,12 +27,12 @@ public final class FileChooserHelper {
             }
         };
     }
-    
+
     public static FileFilter SaveFileChooserFilter() {
         return new FileFilter() {
             @Override
             public boolean accept(File f) {
-                return f.isDirectory() || f.getName().matches("^[a-zA-Z0-9_-!].taxonomy$");
+                return f.isDirectory() || f.getName().matches("^[a-zA-Z0-9_-].taxonomy$");
             }
 
             @Override
@@ -39,4 +41,10 @@ public final class FileChooserHelper {
             }
         };
     }
+
+    public static FileFilter OpenSaveProjectChooserFilter() {
+        return new FileNameExtensionFilter(
+                "Taxonomy generator project (.taxp)", "taxp");
+    }
+
 }

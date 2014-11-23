@@ -6,10 +6,17 @@ package main;
 
 import exceptions.InvalidPropertyException;
 import helper.FileChooserHelper;
+import helper.SysP;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import javax.swing.JFileChooser;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -44,6 +51,9 @@ public class Generator extends javax.swing.JFrame {
         _attributesListModel = new DefaultListModel();
 
         initComponents();
+        
+        SysP.SysP("JPanel attributesList "+attributesList.getSize());
+        SysP.SysP("JPanel propertiesList "+propertiesList.getSize());
     }
 
     /**
@@ -56,17 +66,17 @@ public class Generator extends javax.swing.JFrame {
         graphObjectsPlacement = new javax.swing.ButtonGroup();
         rightElementsGridPanel = new javax.swing.JPanel();
         attribPanel = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
+        attributesListScrollPane = new javax.swing.JScrollPane();
         attributesList = new javax.swing.JList();
-        jPanel1 = new javax.swing.JPanel();
+        projectAndGraphPropertiesPanel = new javax.swing.JPanel();
         graphPropertiesPanel = new javax.swing.JPanel();
         graphLinesCrossing = new javax.swing.JRadioButton();
         graphLinesNotCrossing = new javax.swing.JRadioButton();
-        jPanel3 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        openSaveProjectButtonPanel = new javax.swing.JPanel();
+        openProjectButton = new javax.swing.JButton();
+        saveProjectButton = new javax.swing.JButton();
         propertyPanel = new javax.swing.JPanel();
-        jScrollPane4 = new javax.swing.JScrollPane();
+        propertiesListScrollPane = new javax.swing.JScrollPane();
         propertiesList = new javax.swing.JList();
         combineAttribs = new javax.swing.JButton();
         openSaveButtonPanel = new javax.swing.JPanel();
@@ -91,12 +101,12 @@ public class Generator extends javax.swing.JFrame {
                 attributesListValueChanged(evt);
             }
         });
-        jScrollPane3.setViewportView(attributesList);
+        attributesListScrollPane.setViewportView(attributesList);
         attributesList.getAccessibleContext().setAccessibleName("atributesList");
 
-        attribPanel.add(jScrollPane3, java.awt.BorderLayout.NORTH);
+        attribPanel.add(attributesListScrollPane, java.awt.BorderLayout.NORTH);
 
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        projectAndGraphPropertiesPanel.setLayout(new java.awt.BorderLayout());
 
         graphPropertiesPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         graphPropertiesPanel.setLayout(new java.awt.BorderLayout());
@@ -118,23 +128,31 @@ public class Generator extends javax.swing.JFrame {
         graphLinesNotCrossing.setToolTipText("Avoids crossing of the lines in the graph");
         graphPropertiesPanel.add(graphLinesNotCrossing, java.awt.BorderLayout.WEST);
 
-        jPanel1.add(graphPropertiesPanel, java.awt.BorderLayout.SOUTH);
+        projectAndGraphPropertiesPanel.add(graphPropertiesPanel, java.awt.BorderLayout.SOUTH);
 
-        jPanel3.setLayout(new java.awt.GridLayout());
+        openSaveProjectButtonPanel.setLayout(new java.awt.GridLayout());
 
-        jButton1.setText("Open project");
-        jButton1.setToolTipText("Opens previously saved project");
-        jButton1.setName("openProjectButton"); // NOI18N
-        jPanel3.add(jButton1);
+        openProjectButton.setText("Open project");
+        openProjectButton.setToolTipText("Opens previously saved project");
+        openProjectButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openProjectButtonActionPerformed(evt);
+            }
+        });
+        openSaveProjectButtonPanel.add(openProjectButton);
 
-        jButton2.setText("Save project");
-        jButton2.setToolTipText("saves current project. Useful if you set attribute names, property combinations and wish to finish working later.");
-        jButton2.setName("saveProjectButton"); // NOI18N
-        jPanel3.add(jButton2);
+        saveProjectButton.setText("Save project");
+        saveProjectButton.setToolTipText("saves current project. Useful if you set attribute names, property combinations and wish to finish working later.");
+        saveProjectButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveProjectButtonActionPerformed(evt);
+            }
+        });
+        openSaveProjectButtonPanel.add(saveProjectButton);
 
-        jPanel1.add(jPanel3, java.awt.BorderLayout.PAGE_START);
+        projectAndGraphPropertiesPanel.add(openSaveProjectButtonPanel, java.awt.BorderLayout.PAGE_START);
 
-        attribPanel.add(jPanel1, java.awt.BorderLayout.SOUTH);
+        attribPanel.add(projectAndGraphPropertiesPanel, java.awt.BorderLayout.SOUTH);
 
         rightElementsGridPanel.add(attribPanel, java.awt.BorderLayout.PAGE_END);
 
@@ -148,11 +166,16 @@ public class Generator extends javax.swing.JFrame {
                 propertiesListPropertyChange(evt);
             }
         });
-        jScrollPane4.setViewportView(propertiesList);
+        propertiesListScrollPane.setViewportView(propertiesList);
 
-        propertyPanel.add(jScrollPane4, java.awt.BorderLayout.CENTER);
+        propertyPanel.add(propertiesListScrollPane, java.awt.BorderLayout.CENTER);
 
         combineAttribs.setText("Combine Properties");
+        combineAttribs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                combineAttribsActionPerformed(evt);
+            }
+        });
         propertyPanel.add(combineAttribs, java.awt.BorderLayout.SOUTH);
 
         openSaveButtonPanel.setLayout(new java.awt.GridLayout(1, 0));
@@ -182,7 +205,7 @@ public class Generator extends javax.swing.JFrame {
         leftChartPanel.setLayout(leftChartPanelLayout);
         leftChartPanelLayout.setHorizontalGroup(
             leftChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 551, Short.MAX_VALUE)
+            .addGap(0, 540, Short.MAX_VALUE)
         );
         leftChartPanelLayout.setVerticalGroup(
             leftChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -197,7 +220,7 @@ public class Generator extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(leftChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -225,6 +248,9 @@ public class Generator extends javax.swing.JFrame {
         // nowy obiekt wyboru plików
         JFileChooser plikDanych = new JFileChooser();
 
+        // nadaję oknu tytuł
+        plikDanych.setDialogTitle("Select raw data file to open");
+
         // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "data"
         plikDanych.setCurrentDirectory(new File("../data/"));
 
@@ -242,7 +268,7 @@ public class Generator extends javax.swing.JFrame {
                 for (String linia; (linia = br.readLine()) != null;) {
                     // każdą linię dzielimy po przecinkach na przypadki uczące (powinno ich w każdej linii być tyle samo - jest to nasza lista atrybutów
                     String[] learningCaseProperties = linia.split(",");
-                    
+
                     createAttributesArrayIfRequired(learningCaseProperties);
 
                     for (int j = 0; j < learningCaseProperties.length; j++) {
@@ -285,29 +311,38 @@ public class Generator extends javax.swing.JFrame {
     }
 
     /**
-     * Tworzy atrybut w tablicy jeśli jeszcze nie istnieje 
+     * Tworzy atrybut w tablicy jeśli jeszcze nie istnieje
+     *
      * @param j aktualna iteracja po właściwościach w linii
      */
     private void createAttributeInArrayIfRequired(int j) {
-        if(null == _attributes[j] && !(_attributes[j] instanceof models.Attribute)) {
-            _attributes[j] = new Attribute(j+1);
+        if (null == _attributes[j] && !(_attributes[j] instanceof models.Attribute)) {
+            _attributes[j] = new Attribute(j + 1);
             _attributesListModel.addElement(_attributes[j]);
+        }
+    }
+
+    private void recreateAttributesListModel() {
+        for (int i = 0; i < _attributes.length; i++) {
+            _attributesListModel.addElement(_attributes[i]);
         }
     }
 
     /**
      * Tworzę tablicę x atrybutów, gdzie x = learningCaseProperties.length, jeśli lista atrybutów jeszcze nie istnieje
+     *
      * @param learningCaseProperties właściwości z aktualnie czytanej linii pliku
      */
     private void createAttributesArrayIfRequired(String[] learningCaseProperties) {
         // tworzę tablicę x atrybutów, gdzie x = learningCaseProperties.length, jeśli lista atrybutów jeszcze nie istnieje
-        if(_attributes == null) {
+        if (_attributes == null) {
             _attributes = new Attribute[learningCaseProperties.length];
         }
     }
 
     /**
      * Dodaje właściwości do odpowiednich atrybutów
+     *
      * @param j aktualna iteracja po właściwościach w linii
      * @param learningCaseProperties właściwości z aktualnie czytanej linii pliku
      */
@@ -318,22 +353,117 @@ public class Generator extends javax.swing.JFrame {
                 try {
                     _attributes[j].add(new Property(j + 1, learningCaseProperties[j]));
                 } catch (InvalidPropertyException ex) {
-                    
+
                 }
             } // byłby else, ale jeśli taka właściwość już istnieje, to jej nie dodaję
-            
+
         } else { // nie ma jeszcze żadnych właściwości w tym atrybucie
             // próbuję dodać nową właściwość w danym miejscu oraz o odpowiedniej wartości
             try {
                 _attributes[j].add(new Property(j + 1, learningCaseProperties[j]));
             } catch (InvalidPropertyException ex) {
-                
+
             }
         }
     }
 
     private void attributesListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_attributesListValueChanged
     }//GEN-LAST:event_attributesListValueChanged
+
+    private void saveProjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveProjectButtonActionPerformed
+        // okno wyboru pliku
+        JFileChooser plikProjektu = new JFileChooser();
+
+        // tytuł okna
+        plikProjektu.setDialogTitle("Specify a project file to save");
+
+        // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "projects"
+        plikProjektu.setCurrentDirectory(new File("../projects/"));
+
+        // ustawiam filtr dozwolonych plików na *.txt, *.data oraz katalogi
+        plikProjektu.setFileFilter(FileChooserHelper.OpenSaveProjectChooserFilter());
+
+        // pokaż okno i zwróć co zostało naciśnięte
+        int result = plikProjektu.showSaveDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            String filename = plikProjektu.getSelectedFile().getAbsolutePath();
+            filename += filename.endsWith(".taxp") ? "" : ".taxp";
+            saveProject(filename);
+        }
+    }//GEN-LAST:event_saveProjectButtonActionPerformed
+
+    private void openProjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openProjectButtonActionPerformed
+        // okno wyboru pliku
+        JFileChooser plikProjektu = new JFileChooser();
+
+        // tytuł okna
+        plikProjektu.setDialogTitle("Specify a project file to save");
+
+        // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "projects"
+        plikProjektu.setCurrentDirectory(new File("../projects/"));
+
+        // ustawiam filtr dozwolonych plików na *.txt, *.data oraz katalogi
+        plikProjektu.setFileFilter(FileChooserHelper.OpenSaveProjectChooserFilter());
+
+        // pokaż okno i zwróć co zostało naciśnięte
+        int result = plikProjektu.showOpenDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            String filename = plikProjektu.getSelectedFile().getAbsolutePath();
+
+            try {
+                try (ObjectInputStream ser = new ObjectInputStream(
+                        new BufferedInputStream(
+                                new FileInputStream(filename)))) {
+                            clearAttributeAndPropertyLists();
+
+                            _attributes = (Attribute[]) ser.readObject();
+
+                            recreateAttributesListModel();
+
+                            setModelsForAttributeAndPropertyLists();
+                            
+                            setEventListenersForAttributeAndPropertyLists();
+                        }
+                        // komunikat o powodzeniu
+                        JOptionPane.showMessageDialog(this, "Project opened successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+            } catch (IOException ex) {
+                // komunikat o błędzie
+                JOptionPane.showMessageDialog(this, "Unable to read the project file ...\n" + ex.toString(), "Error", JOptionPane.WARNING_MESSAGE);
+            } catch (ClassNotFoundException ex) {
+                // komunikat o błędzie
+                JOptionPane.showMessageDialog(this, "Unable to deserialize the project file ...\n" + ex.toString(), "Error", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_openProjectButtonActionPerformed
+
+    private void combineAttribsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combineAttribsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_combineAttribsActionPerformed
+
+    /**
+     *
+     * @param filename
+     * @return
+     */
+    public Boolean saveProject(String filename) {
+        try {
+            try (ObjectOutputStream ser = new ObjectOutputStream(
+                    new BufferedOutputStream(
+                            new FileOutputStream(filename)))) {
+                        ser.writeObject(_attributes);
+                    }
+                    // komunikat o powodzeniu
+                    JOptionPane.showMessageDialog(this, "Project saved successfully.", "Saved!", JOptionPane.INFORMATION_MESSAGE);
+                    return true;
+        } catch (IOException e) {
+            // komunikat o błędzie
+            JOptionPane.showMessageDialog(this, "Unable to serialize to project file ...\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -373,23 +503,23 @@ public class Generator extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel attribPanel;
     private javax.swing.JList attributesList;
+    private javax.swing.JScrollPane attributesListScrollPane;
     private javax.swing.JButton combineAttribs;
     private javax.swing.JRadioButton graphLinesCrossing;
     private javax.swing.JRadioButton graphLinesNotCrossing;
     private javax.swing.ButtonGroup graphObjectsPlacement;
     private javax.swing.JPanel graphPropertiesPanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JPanel leftChartPanel;
     private javax.swing.JButton openButton;
+    private javax.swing.JButton openProjectButton;
     private javax.swing.JPanel openSaveButtonPanel;
+    private javax.swing.JPanel openSaveProjectButtonPanel;
+    private javax.swing.JPanel projectAndGraphPropertiesPanel;
     private javax.swing.JList propertiesList;
+    private javax.swing.JScrollPane propertiesListScrollPane;
     private javax.swing.JPanel propertyPanel;
     private javax.swing.JPanel rightElementsGridPanel;
     private javax.swing.JButton saveButton;
+    private javax.swing.JButton saveProjectButton;
     // End of variables declaration//GEN-END:variables
 }
