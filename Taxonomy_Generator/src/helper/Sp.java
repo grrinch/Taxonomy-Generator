@@ -6,13 +6,17 @@ package helper;
  *
  * @author radmin
  */
-public class SysP {
+public class Sp {
 
-    public static void SysP(String s) {
+    public static void s(String s) {
         System.out.println(s);
     }
 
-    public static void SysP(int i) {
+    public static void i(int i) {
+        System.out.println(i);
+    }
+    
+    public static void d(double i) {
         System.out.println(i);
     }
 }

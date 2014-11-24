@@ -6,7 +6,7 @@ package main;
 
 import exceptions.InvalidPropertyException;
 import helper.FileChooserHelper;
-import helper.SysP;
+import helper.Sp;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -51,9 +51,6 @@ public class Generator extends javax.swing.JFrame {
         _attributesListModel = new DefaultListModel();
 
         initComponents();
-        
-        SysP.SysP("JPanel attributesList "+attributesList.getSize());
-        SysP.SysP("JPanel propertiesList "+propertiesList.getSize());
     }
 
     /**
@@ -440,13 +437,21 @@ public class Generator extends javax.swing.JFrame {
     }//GEN-LAST:event_openProjectButtonActionPerformed
 
     private void combineAttribsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combineAttribsActionPerformed
-        // TODO add your handling code here:
+        PropertyCombineModal modal = new PropertyCombineModal(this, true);
+        /*
+        int[] indexes = propertiesList.getSelectedIndices();
+        tutaj będzie odwołanie do wewnętrznej metody na JDialogu, gdzie poda się tablicę zaznaczonych indeksów oraz _propertyListModel celem wyjęcia odpowiednich właściwości.
+        */
+        Property p = modal.showDialog();
+        
+        Sp.s(p.getNazwa());
+        Sp.d(p.getKoszt());
     }//GEN-LAST:event_combineAttribsActionPerformed
 
     /**
-     *
-     * @param filename
-     * @return
+     * Zapisuje projekt jako zaserializowany plik Javy
+     * @param filename nazwa pliku do zapisu
+     * @return boolean czy zapis udany
      */
     public Boolean saveProject(String filename) {
         try {
