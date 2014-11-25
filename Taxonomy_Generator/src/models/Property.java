@@ -31,6 +31,11 @@ public class Property implements Comparable<Property>, Serializable {
      * tablica właściwości, które mogą należeć do danej właściwości
      */
     private List<Property> _elementy = new ArrayList<Property>();
+    
+    /**
+     * poziom na którym znajduje się dana właściwość na liście
+     */
+    private int _poziom = 0;
 
     /**
      * Konstruktor - tylko podany koszt (nie ma nazwy właściwości, ale jej koszt). Kiedy używany:
