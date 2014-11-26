@@ -2,7 +2,6 @@ package helper;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.TreeMap;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -11,7 +10,7 @@ import javax.swing.event.ListSelectionListener;
 import models.*;
 
 /**
- *
+ * Helpery do nasłuchiwania (aplikowane na listach itp)
  * @author radmin
  */
 public class Listeners {
