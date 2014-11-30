@@ -17,6 +17,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -241,6 +243,11 @@ public class Generator extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_graphLinesCrossingActionPerformed
 
+    /**
+     * Akcja kliknięcia przycisku otwórz (plik z danymi)
+     *
+     * @param evt
+     */
     private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
         // nowy obiekt wyboru plików
         JFileChooser plikDanych = new JFileChooser();
@@ -367,6 +374,11 @@ public class Generator extends javax.swing.JFrame {
     private void attributesListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_attributesListValueChanged
     }//GEN-LAST:event_attributesListValueChanged
 
+    /**
+     * Akcja po kliknięciu przycisku Zapisz projekt
+     *
+     * @param evt
+     */
     private void saveProjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveProjectButtonActionPerformed
         // okno wyboru pliku
         JFileChooser plikProjektu = new JFileChooser();
@@ -390,6 +402,11 @@ public class Generator extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_saveProjectButtonActionPerformed
 
+    /**
+     * Akcja po kliknięciu przycisku Otwórz projekt
+     *
+     * @param evt
+     */
     private void openProjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openProjectButtonActionPerformed
         // okno wyboru pliku
         JFileChooser plikProjektu = new JFileChooser();
@@ -420,7 +437,7 @@ public class Generator extends javax.swing.JFrame {
                             recreateAttributesListModel();
 
                             setModelsForAttributeAndPropertyLists();
-                            
+
                             setEventListenersForAttributeAndPropertyLists();
                         }
                         // komunikat o powodzeniu
@@ -436,20 +453,68 @@ public class Generator extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_openProjectButtonActionPerformed
 
+    /**
+     * Akcja po kliknięciu przycisku Połącz właściwości
+     *
+     * @param evt
+     */
     private void combineAttribsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combineAttribsActionPerformed
-        PropertyCombineModal modal = new PropertyCombineModal(this, true);
-        /*
         int[] indexes = propertiesList.getSelectedIndices();
-        tutaj będzie odwołanie do wewnętrznej metody na JDialogu, gdzie poda się tablicę zaznaczonych indeksów oraz _propertyListModel celem wyjęcia odpowiednich właściwości.
-        */
-        Property p = modal.showDialog();
-        
-        Sp.s(p.getNazwa());
-        Sp.d(p.getKoszt());
+        if (indexes.length > 1) {
+            PropertyCombineModal modal = new PropertyCombineModal(this, true);
+
+            // dostaję tymczasową właściwość - w niej będą wszystkie połączone
+            Property p = modal.showDialog();
+
+            // dodajemy do tymczasowej właściwości wszystkie z listy
+            for (int e : indexes) {
+                try {
+                    //wyciągamy z modelu właściwości odpowiednią z danego indeksu
+                    Property temp = (Property) _propertiesListModel.get(e);
+                    Sp.s("Wyjmuję z modelu właściwości: " + temp.getNazwa());
+                    
+                    // usuwamy ją również z atrybutów
+                    if(_attributes[attributesList.getSelectedIndex()].remove(temp)) {
+                        // dodajemy do tymczasowej właściwości
+                        p.add(temp);
+                        Sp.s("Dodaję do właściwości: " + temp.getNazwa());
+                    }
+                    else {
+                        throw new InvalidPropertyException("Unable to delete property at index(" + e + ") from the attributes list.");
+                    }
+                } catch (InvalidPropertyException ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error deleting combined properties", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            for (Property pp : p.getElementy()) {
+                Sp.s("Staram się usunąć z modelu właściwości właściwość: " + pp.getNazwa());
+                _propertiesListModel.removeElement(pp);
+            }
+            // teraz musimy zaktualizować poziom naszej nowej właściwości, dodać ją w odpowiednim atrybucie zamiast poprzednich oraz zaktualizować listę
+            p.updatePoziomOnCombine();
+            
+            try {
+                // dodajemy do listy atrybutów
+                _attributes[attributesList.getSelectedIndex()].add(p);
+                // dodajemy do modelu właściwości
+                _propertiesListModel.addElement(p);
+                
+                for(Property pp: _attributes[attributesList.getSelectedIndex()].getWłaściwości()) {
+                    Sp.s(pp.getNazwa());
+                }
+            } catch (InvalidPropertyException ex) {
+                // w przypadku gdy nie można dodać właściwości do atrybutów
+                JOptionPane.showMessageDialog(this, "Unable to add combined property to argument\n" + ex.getMessage(), "Error setting combined properties", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(this, "At least two properties must be selected for this action", "Too few arguments", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_combineAttribsActionPerformed
 
     /**
      * Zapisuje projekt jako zaserializowany plik Javy
+     *
      * @param filename nazwa pliku do zapisu
      * @return boolean czy zapis udany
      */

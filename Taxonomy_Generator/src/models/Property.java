@@ -1,7 +1,9 @@
 package models;
 
 import exceptions.*;
+import helper.Sp;
 import java.io.Serializable;
+import static java.lang.Math.max;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +33,7 @@ public class Property implements Comparable<Property>, Serializable {
      * tablica właściwości, które mogą należeć do danej właściwości
      */
     private List<Property> _elementy = new ArrayList<Property>();
-    
+
     /**
      * poziom na którym znajduje się dana właściwość na liście
      */
@@ -77,10 +79,10 @@ public class Property implements Comparable<Property>, Serializable {
         _id = id;
         _koszt = koszt;
     }
-    
+
     /**
      * Konstruktor - podana pozycja na JLiście oraz nazwa.
-     * 
+     *
      * @param id pozycja na JLiście/w modelu/tablicy
      * @param nazwa nazwa (wartość)
      */
@@ -171,11 +173,17 @@ public class Property implements Comparable<Property>, Serializable {
         return _elementy.toArray(new Property[_elementy.size()]);
     }
 
+    /**
+     * Dodaje właściwość do listy
+     *
+     * @param p właściwość, którą dodajemy
+     * @throws InvalidPropertyException
+     */
     public void add(Property p) throws InvalidPropertyException {
         if (this != p) {
             _elementy.add(p);
         } else {
-            throw new InvalidPropertyException("Nie można dodać właściwości do niej samej (nieskończona rekurencja).");
+            throw new InvalidPropertyException("Unable to add properties to itself (infinite recursion).");
         }
     }
 
@@ -223,6 +231,30 @@ public class Property implements Comparable<Property>, Serializable {
         } else { // jeśli nie ma ustawionej nazwy ani nie ma elementów wewnętrznych, to zwracam nazwę w postaci "id: koszt"
             return _id + ":" + _koszt;
         }
+    }
+
+    /**
+     * zwraca aktualny poziom
+     *
+     * @return
+     */
+    public int getPoziom() {
+        return _poziom;
+    }
+
+    /**
+     * Funkcja, która aktualizuje poziom właściwości
+     */
+    public void updatePoziomOnCombine() {
+        int max = -1;
+        for (Property temp : _elementy) {
+            if (temp.getPoziom() > max) {
+                max = temp.getPoziom();
+            }
+        }
+
+        _poziom = max + 1;
+        Sp.s("Aktualizuję poziom (" + _poziom + ") właściwości '" + getNazwa() + "'");
     }
 
 }

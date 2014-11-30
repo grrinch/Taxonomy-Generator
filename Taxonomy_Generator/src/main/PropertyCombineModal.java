@@ -45,6 +45,9 @@ public class PropertyCombineModal extends javax.swing.JDialog {
         p = new Property(null, 0);
     }
 
+    /**
+     * inicjuje automatycznie formatowane pole
+     */
     private void formatterInit() {
         doubleFormat = NumberFormat.getNumberInstance();
         /*
@@ -147,11 +150,18 @@ public class PropertyCombineModal extends javax.swing.JDialog {
         exit();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
+    /**
+     * wyjście z modalu
+     */
     private void exit() {
         setVisible(false);
         dispose();
     }
 
+    /**
+     * Akcja po kliknięciu przycisku ok
+     * @param evt 
+     */
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         String nazwa = nazwaField.getText();
         Double koszt = (double) 0;

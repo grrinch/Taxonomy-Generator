@@ -1,17 +1,11 @@
 package models;
 
-import com.sun.xml.internal.bind.v2.runtime.RuntimeUtil;
 import exceptions.*;
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -127,10 +121,15 @@ public class Attribute implements Serializable {
         this._id = id;
     }
 
+    /**
+     * Dodaje właściwość do tego atrybutu
+     * @param p
+     * @throws InvalidPropertyException
+     */
     public void add(Property p) throws InvalidPropertyException {
         for (Property element : _właściwości) {
             if (p == element) {
-                throw new InvalidPropertyException("Nie można wielokrotnie dodać tej samej właściwości!");
+                throw new InvalidPropertyException("Not allowed to add the same property multiple times!");
             }
         }
 
@@ -152,6 +151,21 @@ public class Attribute implements Serializable {
             }
         }
         return false;
+    }
+    
+    /**
+     * Usuwa z atrybutu zadaną właściwość
+     * @param p właściwość
+     * @return boolean
+     */
+    public boolean remove(Property p) {
+        if(_właściwości.contains(p)) {
+            _właściwości.remove(p);
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     /**

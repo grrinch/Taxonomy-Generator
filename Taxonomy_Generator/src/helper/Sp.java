@@ -16,6 +16,14 @@ public class Sp {
         System.out.println(i);
     }
     
+    public static void i(int[] ints) {
+        int i = 0;
+        for(int e: ints) {
+            System.out.println(i + ": " +e);
+            i++;
+        }
+    }
+    
     public static void d(double i) {
         System.out.println(i);
     }
