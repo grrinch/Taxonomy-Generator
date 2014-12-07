@@ -223,13 +223,13 @@ public class Property implements Comparable<Property>, Serializable {
                 if (i == 0) {
                     ret += element.toString();
                 } else {
-                    ret += "," + element.toString();
+                    ret += "|" + element.toString();
                 }
                 i++;
             }
             return ret;
-        } else { // jeśli nie ma ustawionej nazwy ani nie ma elementów wewnętrznych, to zwracam nazwę w postaci "id: koszt"
-            return _id + ":" + _koszt;
+        } else { // jeśli nie ma ustawionej nazwy ani nie ma elementów wewnętrznych, to zwracam nazwę w postaci "id: koszt (hash)"
+            return _id + ":" + _koszt + "(" + this.hashCode() + ")";
         }
     }
 
