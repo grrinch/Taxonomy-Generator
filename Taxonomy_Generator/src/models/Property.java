@@ -3,7 +3,6 @@ package models;
 import exceptions.*;
 import helper.Sp;
 import java.io.Serializable;
-import static java.lang.Math.max;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -255,6 +254,27 @@ public class Property implements Comparable<Property>, Serializable {
 
         _poziom = max + 1;
         Sp.s("Aktualizuję poziom (" + _poziom + ") właściwości '" + getNazwa() + "'");
+    }
+
+    public String taxonomy() {
+        String tax = "";
+
+        // rekurencyjnie sprawdzamy wszystkie właściwości, by stworzyć z nich atrybuty abstrakcyjne
+        if (getPoziom() > 0) {
+            for (Property p : getElementy()) {
+                if (p.getPoziom() == 0) {
+                    tax += ".." + p.getNazwa() + ",,";
+                } else if (p.getPoziom() == 1) {
+                    for (Property pp : p.getElementy()) {
+                        tax += "|;" + pp.getNazwa();
+                    }
+                } else {
+                    tax += p.taxonomy();
+                }
+            }
+        }
+
+        return tax;
     }
 
 }

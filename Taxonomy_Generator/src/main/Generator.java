@@ -4,9 +4,16 @@
  */
 package main;
 
+import com.mxgraph.model.mxGraphModel;
+import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.util.mxConstants;
+import com.mxgraph.util.mxUtils;
+import com.mxgraph.view.mxGraph;
 import exceptions.InvalidPropertyException;
 import helper.FileChooserHelper;
 import helper.Sp;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -17,8 +24,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.PrintWriter;
+import java.util.Collection;
 import javax.swing.JFileChooser;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -29,6 +36,8 @@ import models.*;
  * @author radmin
  */
 public class Generator extends javax.swing.JFrame {
+
+    private static final long serialVersionUID = -2707712944901661771L;
 
     /**
      * atrybuty
@@ -53,6 +62,7 @@ public class Generator extends javax.swing.JFrame {
         _attributesListModel = new DefaultListModel();
 
         initComponents();
+        graphTest();
     }
 
     /**
@@ -86,7 +96,6 @@ public class Generator extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Taxonomy Generator");
         setName("MainFrame"); // NOI18N
-        setPreferredSize(new java.awt.Dimension(800, 600));
 
         rightElementsGridPanel.setLayout(new java.awt.BorderLayout(0, 5));
 
@@ -129,7 +138,7 @@ public class Generator extends javax.swing.JFrame {
 
         projectAndGraphPropertiesPanel.add(graphPropertiesPanel, java.awt.BorderLayout.SOUTH);
 
-        openSaveProjectButtonPanel.setLayout(new java.awt.GridLayout());
+        openSaveProjectButtonPanel.setLayout(new java.awt.GridLayout(1, 0));
 
         openProjectButton.setText("Open project");
         openProjectButton.setToolTipText("Opens previously saved project");
@@ -190,6 +199,11 @@ public class Generator extends javax.swing.JFrame {
 
         saveButton.setText("Save file");
         saveButton.setToolTipText("Saves currently set data file");
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveButtonActionPerformed(evt);
+            }
+        });
         openSaveButtonPanel.add(saveButton);
 
         propertyPanel.add(openSaveButtonPanel, java.awt.BorderLayout.PAGE_START);
@@ -472,14 +486,13 @@ public class Generator extends javax.swing.JFrame {
                     //wyciągamy z modelu właściwości odpowiednią z danego indeksu
                     Property temp = (Property) _propertiesListModel.get(e);
                     Sp.s("Wyjmuję z modelu właściwości: " + temp.getNazwa());
-                    
+
                     // usuwamy ją również z atrybutów
-                    if(_attributes[attributesList.getSelectedIndex()].remove(temp)) {
+                    if (_attributes[attributesList.getSelectedIndex()].remove(temp)) {
                         // dodajemy do tymczasowej właściwości
                         p.add(temp);
                         Sp.s("Dodaję do właściwości: " + temp.getNazwa());
-                    }
-                    else {
+                    } else {
                         throw new InvalidPropertyException("Unable to delete property at index(" + e + ") from the attributes list.");
                     }
                 } catch (InvalidPropertyException ex) {
@@ -492,14 +505,14 @@ public class Generator extends javax.swing.JFrame {
             }
             // teraz musimy zaktualizować poziom naszej nowej właściwości, dodać ją w odpowiednim atrybucie zamiast poprzednich oraz zaktualizować listę
             p.updatePoziomOnCombine();
-            
+
             try {
                 // dodajemy do listy atrybutów
                 _attributes[attributesList.getSelectedIndex()].add(p);
                 // dodajemy do modelu właściwości
                 _propertiesListModel.addElement(p);
-                
-                for(Property pp: _attributes[attributesList.getSelectedIndex()].getWłaściwości()) {
+
+                for (Property pp : _attributes[attributesList.getSelectedIndex()].getWłaściwości()) {
                     Sp.s(pp.getNazwa());
                 }
             } catch (InvalidPropertyException ex) {
@@ -511,6 +524,92 @@ public class Generator extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "At least two properties must be selected for this action", "Too few arguments", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_combineAttribsActionPerformed
+
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        // okno wyboru pliku
+        JFileChooser plikTaksonomii = new JFileChooser();
+
+        // tytuł okna
+        plikTaksonomii.setDialogTitle("Specify a taxonomy file to save");
+
+        // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "taxonomy"
+        plikTaksonomii.setCurrentDirectory(new File("../taxonomy/"));
+
+        // ustawiam filtr dozwolonych plików na *.taxonomy
+        plikTaksonomii.setFileFilter(FileChooserHelper.SaveFileChooserFilter());
+
+        // pokaż okno i zwróć co zostało naciśnięte
+        int result = plikTaksonomii.showSaveDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            String filename = plikTaksonomii.getSelectedFile().getAbsolutePath();
+            filename += filename.endsWith(".taxonomy") ? "" : ".taxonomy";
+            try ( // Uproszczony zapis, który inspirował StackOverflow
+                    // http://stackoverflow.com/questions/1053467/how-do-i-save-a-string-to-a-text-file-using-java   ser.writeObject(_attributes);
+                    PrintWriter out = new PrintWriter(filename)) {
+                for (Attribute a : _attributes) {
+                    Boolean flag = false;
+                    for (Property p : a.getWłaściwości()) {
+                        if (p.getPoziom() > 0) {
+                            if (flag == false) {
+                                out.print(a.getId());
+                                flag = true;
+                            }
+                            out.print("," + p.taxonomy());
+                        }
+                    }
+                    if (flag == true) {
+                        out.println();
+                    }
+                }
+            } catch (Exception e) {
+                // komunikat o błędzie
+                JOptionPane.showMessageDialog(this, "Unable to save taxonomy file...\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                //return false;
+            }
+            JOptionPane.showMessageDialog(this, "Taxonomy saved successfully.", "Saved!", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_saveButtonActionPerformed
+
+    private void graphTest() {
+        mxGraph graph = new mxGraph();
+        Object parent = graph.getDefaultParent();
+        graph.getModel().beginUpdate();
+        try {
+            Object v1 = graph.insertVertex(parent, null, "Hello,", 20, 20, 80,
+                    60, "defaultVertex;fillColor=red");
+            Object v2 = graph.insertVertex(parent, null, "World!", 200, 150,
+                    80, 60, "defaultVertex;fillColor=yellow");
+            Object v3 = graph.insertVertex(parent, null, "Hello,", 200, 20, 80,
+                    30);
+            Object e1 = graph
+                    .insertEdge(
+                            parent,
+                            null,
+                            "",
+                            v1,
+                            v2,
+                            "edgeStyle=elbowEdgeStyle;elbow=horizontal;"
+                            + "exitX=0.5;exitY=1;exitPerimeter=1;entryX=0;entryY=0;entryPerimeter=1;");
+            Object e2 = graph.insertEdge(parent, null, "", v3, v2,
+                    "edgeStyle=elbowEdgeStyle;elbow=horizontal;orthogonal=0;"
+                    + "entryX=0;entryY=0;entryPerimeter=1;");
+        } finally {
+            graph.getModel().endUpdate();
+        }
+        mxGraphComponent graphComponent = new mxGraphComponent(graph);
+        graphComponent.setDragEnabled(false);
+        graphComponent.setConnectable(false);
+        graphComponent.setBackground(Color.white);
+
+        mxGraphModel graphModel = (mxGraphModel) graphComponent.getGraph().getModel();
+        Collection<Object> cells = graphModel.getCells().values();
+        mxUtils.setCellStyles(graphComponent.getGraph().getModel(),
+                cells.toArray(), mxConstants.STYLE_ENDARROW, mxConstants.NONE);
+
+        leftChartPanel.setLayout(new BorderLayout());
+        leftChartPanel.add(graphComponent);
+    }
 
     /**
      * Zapisuje projekt jako zaserializowany plik Javy

@@ -29,17 +29,8 @@ public final class FileChooserHelper {
     }
 
     public static FileFilter SaveFileChooserFilter() {
-        return new FileFilter() {
-            @Override
-            public boolean accept(File f) {
-                return f.isDirectory() || f.getName().matches("^[a-zA-Z0-9_-].taxonomy$");
-            }
-
-            @Override
-            public String getDescription() {
-                return "Taxonomy files (.taxonomy)";
-            }
-        };
+        return new FileNameExtensionFilter(
+                "Taxonomy files (.taxonomy)", "taxonomy");
     }
 
     public static FileFilter OpenSaveProjectChooserFilter() {
