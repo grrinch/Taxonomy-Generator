@@ -258,23 +258,29 @@ public class Property implements Comparable<Property>, Serializable {
 
     public String taxonomy() {
         String tax = "";
-
-        // rekurencyjnie sprawdzamy wszystkie właściwości, by stworzyć z nich atrybuty abstrakcyjne
-        if (getPoziom() > 0) {
-            for (Property p : getElementy()) {
-                if (p.getPoziom() == 0) {
-                    tax += ".." + p.getNazwa() + ",,";
-                } else if (p.getPoziom() == 1) {
-                    for (Property pp : p.getElementy()) {
-                        tax += "|;" + pp.getNazwa();
-                    }
+        int i = 0;
+        for (Property p : getElementy()) {
+            if (p.getPoziom() == 0) {
+                if (i == 0) {
+                    tax += p.toString();
+                    i++;
+                    
                 } else {
+                    tax += "|" + p.toString();
+                }
+            } else {
+                if (i == 0) {
+                    tax += "|" + p.taxonomy();
+                }
+                else {
                     tax += p.taxonomy();
                 }
             }
         }
-
+        
         return tax;
+        // łatwiej usuwać wielokrotności "|", niż wypersfadować programowi, żeby ich nie dodawał ;)
+        //.replaceAll("[|]+", "|"); // na wszelki wypadek
     }
 
 }

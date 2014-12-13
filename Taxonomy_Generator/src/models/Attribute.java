@@ -173,9 +173,10 @@ public class Attribute implements Serializable {
      *
      * @return string nazwa/id
      */
+    @Override
     public String toString() {
         if (_nazwa.length() > 0) {
-            return getNazwa();
+            return String.valueOf(getId()) + "] " + getNazwa();
         } else {
             return String.valueOf(getId());
         }
