@@ -567,6 +567,7 @@ public class Generator extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Unable to save taxonomy file...\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 //return false;
             }
+            // komunikat powodzenia
             JOptionPane.showMessageDialog(this, "Taxonomy saved successfully.", "Saved!", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_saveButtonActionPerformed
