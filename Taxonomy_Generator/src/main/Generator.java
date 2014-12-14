@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package main;
 
 import com.mxgraph.model.mxGraphModel;
@@ -50,7 +46,7 @@ public class Generator extends javax.swing.JFrame {
     private final DefaultListModel _attributesListModel;
 
     /**
-     * Model dla JListy właściwości
+     * Model dla JListy wartości
      */
     private final DefaultListModel _propertiesListModel;
 
@@ -150,7 +146,7 @@ public class Generator extends javax.swing.JFrame {
         openSaveProjectButtonPanel.add(openProjectButton);
 
         saveProjectButton.setText("Save project");
-        saveProjectButton.setToolTipText("saves current project. Useful if you set attribute names, property combinations and wish to finish working later.");
+        saveProjectButton.setToolTipText("saves current project. Useful if you set attribute names, abstract Value combinations and wish to finish working later.");
         saveProjectButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveProjectButtonActionPerformed(evt);
@@ -166,7 +162,7 @@ public class Generator extends javax.swing.JFrame {
 
         propertyPanel.setLayout(new java.awt.BorderLayout());
 
-        propertiesList.setToolTipText("List representing properties in currently selected attribute");
+        propertiesList.setToolTipText("List representing Values in currently selected attribute");
         propertiesList.setDropMode(javax.swing.DropMode.INSERT);
         propertiesList.setLayoutOrientation(javax.swing.JList.VERTICAL_WRAP);
         propertiesList.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -178,7 +174,8 @@ public class Generator extends javax.swing.JFrame {
 
         propertyPanel.add(propertiesListScrollPane, java.awt.BorderLayout.CENTER);
 
-        combineAttribs.setText("Combine Properties");
+        combineAttribs.setText("Combine Values");
+        combineAttribs.setToolTipText("");
         combineAttribs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 combineAttribsActionPerformed(evt);
@@ -298,13 +295,13 @@ public class Generator extends javax.swing.JFrame {
                 setEventListenersForAttributeAndPropertyLists();
 
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Nie można czytać z podanego pliku.\n" + ex.toString(), "Błąd", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Unable to read selected file.\n" + ex.toString(), "Error", JOptionPane.WARNING_MESSAGE);
             }
         }
     }//GEN-LAST:event_openButtonActionPerformed
 
     /**
-     * Czyści modele list atrybutów i właściwości (JListy powinny być puste)
+     * Czyści modele list atrybutów i wartości (JListy powinny być puste)
      */
     private void clearAttributeAndPropertyLists() {
         // ~...
@@ -313,7 +310,7 @@ public class Generator extends javax.swing.JFrame {
     }
 
     /**
-     * Binduje nasłuchiwanie na listach atrybutów i właściwości
+     * Binduje nasłuchiwanie na listach atrybutów i wartości
      */
     private void setEventListenersForAttributeAndPropertyLists() {
         attributesList.addListSelectionListener(helper.Listeners.AttributesListListener(_attributes, attributesList, _propertiesListModel));
@@ -321,7 +318,7 @@ public class Generator extends javax.swing.JFrame {
     }
 
     /**
-     * Ustawia modele dla list atrybutów i właściwości
+     * Ustawia modele dla list atrybutów i wartości
      */
     private void setModelsForAttributeAndPropertyLists() {
         propertiesList.setModel(_propertiesListModel);
@@ -331,7 +328,7 @@ public class Generator extends javax.swing.JFrame {
     /**
      * Tworzy atrybut w tablicy jeśli jeszcze nie istnieje
      *
-     * @param j aktualna iteracja po właściwościach w linii
+     * @param j aktualna iteracja po wartościach w linii
      */
     private void createAttributeInArrayIfRequired(int j) {
         if (null == _attributes[j] && !(_attributes[j] instanceof models.Attribute)) {
@@ -349,7 +346,7 @@ public class Generator extends javax.swing.JFrame {
     /**
      * Tworzę tablicę x atrybutów, gdzie x = learningCaseProperties.length, jeśli lista atrybutów jeszcze nie istnieje
      *
-     * @param learningCaseProperties właściwości z aktualnie czytanej linii pliku
+     * @param learningCaseProperties wartości z aktualnie czytanej linii pliku
      */
     private void createAttributesArrayIfRequired(String[] learningCaseProperties) {
         // tworzę tablicę x atrybutów, gdzie x = learningCaseProperties.length, jeśli lista atrybutów jeszcze nie istnieje
@@ -359,24 +356,24 @@ public class Generator extends javax.swing.JFrame {
     }
 
     /**
-     * Dodaje właściwości do odpowiednich atrybutów
+     * Dodaje wartości do odpowiednich atrybutów
      *
-     * @param j aktualna iteracja po właściwościach w linii
-     * @param learningCaseProperties właściwości z aktualnie czytanej linii pliku
+     * @param j aktualna iteracja po wartościach w linii
+     * @param learningCaseProperties wartości z aktualnie czytanej linii pliku
      */
     private void fileReadPropertyAddToAttribute(int j, String[] learningCaseProperties) {
-        if (_attributes[j].getWłaściwości().length > 0) { // w atrybucie są już właściwości
-            if (!_attributes[j].find(j + 1, learningCaseProperties[j])) { // sprawdzam, czy atrybut ma już właściwość o dokładnie takim ID oraz wartości/nazwie
+        if (_attributes[j].getWartości().length > 0) { // w atrybucie są już wartości
+            if (!_attributes[j].find(j + 1, learningCaseProperties[j])) { // sprawdzam, czy atrybut ma już wartość o dokładnie takim ID oraz wartości/nazwie
                 // nie ma, więc próbuję dodać
                 try {
                     _attributes[j].add(new Property(j + 1, learningCaseProperties[j]));
                 } catch (InvalidPropertyException ex) {
 
                 }
-            } // byłby else, ale jeśli taka właściwość już istnieje, to jej nie dodaję
+            } // byłby else, ale jeśli taka wartość już istnieje, to jej nie dodaję
 
-        } else { // nie ma jeszcze żadnych właściwości w tym atrybucie
-            // próbuję dodać nową właściwość w danym miejscu oraz o odpowiedniej wartości
+        } else { // nie ma jeszcze żadnych wartości w tym atrybucie
+            // próbuję dodać nową wartość w danym miejscu oraz o odpowiedniej wartości
             try {
                 _attributes[j].add(new Property(j + 1, learningCaseProperties[j]));
             } catch (InvalidPropertyException ex) {
@@ -468,7 +465,7 @@ public class Generator extends javax.swing.JFrame {
     }//GEN-LAST:event_openProjectButtonActionPerformed
 
     /**
-     * Akcja po kliknięciu przycisku Połącz właściwości
+     * Akcja po kliknięciu przycisku Połącz wartości
      *
      * @param evt
      */
@@ -477,51 +474,51 @@ public class Generator extends javax.swing.JFrame {
         if (indexes.length > 1) {
             PropertyCombineModal modal = new PropertyCombineModal(this, true);
 
-            // dostaję tymczasową właściwość - w niej będą wszystkie połączone
+            // dostaję tymczasową wartość - w niej będą wszystkie połączone
             Property p = modal.showDialog();
 
-            // dodajemy do tymczasowej właściwości wszystkie z listy
+            // dodajemy do tymczasowej wartości wszystkie z listy
             for (int e : indexes) {
                 try {
-                    //wyciągamy z modelu właściwości odpowiednią z danego indeksu
+                    //wyciągamy z modelu wartości odpowiednią z danego indeksu
                     Property temp = (Property) _propertiesListModel.get(e);
-                    Sp.s("Wyjmuję z modelu właściwości: " + temp.getNazwa());
+                    Sp.s("Wyjmuję z modelu wartości: " + temp.getNazwa());
 
                     // usuwamy ją również z atrybutów
                     if (_attributes[attributesList.getSelectedIndex()].remove(temp)) {
-                        // dodajemy do tymczasowej właściwości
+                        // dodajemy do tymczasowej wartości
                         p.add(temp);
-                        Sp.s("Dodaję do właściwości: " + temp.getNazwa());
+                        Sp.s("Dodaję do wartości: " + temp.getNazwa());
                     } else {
-                        throw new InvalidPropertyException("Unable to delete property at index(" + e + ") from the attributes list.");
+                        throw new InvalidPropertyException("Unable to delete the Value at index(" + e + ") from the attributes list.");
                     }
                 } catch (InvalidPropertyException ex) {
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error deleting combined properties", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error deleting abstract Values", JOptionPane.ERROR_MESSAGE);
                 }
             }
             for (Property pp : p.getElementy()) {
-                Sp.s("Staram się usunąć z modelu właściwości właściwość: " + pp.getNazwa());
+                Sp.s("Staram się usunąć z modelu wartości wartość: " + pp.getNazwa());
                 _propertiesListModel.removeElement(pp);
             }
-            // teraz musimy zaktualizować poziom naszej nowej właściwości, dodać ją w odpowiednim atrybucie zamiast poprzednich oraz zaktualizować listę
+            // teraz musimy zaktualizować poziom naszej nowej wartości, dodać ją w odpowiednim atrybucie zamiast poprzednich oraz zaktualizować listę
             p.updatePoziomOnCombine();
 
             try {
                 // dodajemy do listy atrybutów
                 _attributes[attributesList.getSelectedIndex()].add(p);
-                // dodajemy do modelu właściwości
+                // dodajemy do modelu wartości
                 _propertiesListModel.addElement(p);
 
-                for (Property pp : _attributes[attributesList.getSelectedIndex()].getWłaściwości()) {
+                for (Property pp : _attributes[attributesList.getSelectedIndex()].getWartości()) {
                     Sp.s(pp.getNazwa());
                 }
             } catch (InvalidPropertyException ex) {
-                // w przypadku gdy nie można dodać właściwości do atrybutów
-                JOptionPane.showMessageDialog(this, "Unable to add combined property to argument\n" + ex.getMessage(), "Error setting combined properties", JOptionPane.ERROR_MESSAGE);
+                // w przypadku gdy nie można dodać wartości do atrybutów
+                JOptionPane.showMessageDialog(this, "Unable to add abstract Value to argument\n" + ex.getMessage(), "Error setting abstract Values", JOptionPane.ERROR_MESSAGE);
             }
 
         } else {
-            JOptionPane.showMessageDialog(this, "At least two properties must be selected for this action", "Too few arguments", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "At least two Values must be selected for this action", "Too few arguments", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_combineAttribsActionPerformed
 
@@ -549,7 +546,7 @@ public class Generator extends javax.swing.JFrame {
                     PrintWriter out = new PrintWriter(filename)) {
                 for (Attribute a : _attributes) {
                     Boolean flag = false;
-                    for (Property p : a.getWłaściwości()) {
+                    for (Property p : a.getWartości()) {
                         if (p.getPoziom() > 0) {
                             if (flag == false) {
                                 out.print(a.getId());

@@ -25,7 +25,7 @@ public class Listeners {
                 try {
                     if (!arg0.getValueIsAdjusting()) {
                         Property[] _properties;
-                        _properties = tempAttr[attributesList.getSelectedIndex()].getWłaściwości();
+                        _properties = tempAttr[attributesList.getSelectedIndex()].getWartości();
                         
                         if (null != _properties) {
                             tempPropModel.clear();

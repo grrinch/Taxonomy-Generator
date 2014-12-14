@@ -183,7 +183,7 @@
                     <Component class="javax.swing.JButton" name="saveProjectButton">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Save project"/>
-                        <Property name="toolTipText" type="java.lang.String" value="saves current project. Useful if you set attribute names, property combinations and wish to finish working later."/>
+                        <Property name="toolTipText" type="java.lang.String" value="saves current project. Useful if you set attribute names, abstract Value combinations and wish to finish working later."/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveProjectButtonActionPerformed"/>
@@ -221,7 +221,7 @@
                     <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
                       <StringArray count="0"/>
                     </Property>
-                    <Property name="toolTipText" type="java.lang.String" value="List representing properties in currently selected attribute"/>
+                    <Property name="toolTipText" type="java.lang.String" value="List representing Values in currently selected attribute"/>
                     <Property name="dropMode" type="javax.swing.DropMode" editor="org.netbeans.modules.form.editors.EnumEditor">
                       <Value id="INSERT"/>
                     </Property>
@@ -235,7 +235,8 @@
             </Container>
             <Component class="javax.swing.JButton" name="combineAttribs">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Combine Properties"/>
+                <Property name="text" type="java.lang.String" value="Combine Values"/>
+                <Property name="toolTipText" type="java.lang.String" value=""/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="combineAttribsActionPerformed"/>

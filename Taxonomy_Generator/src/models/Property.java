@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Klasa właściwości
+ * Klasa wartości
  *
  * @author radmin
  */
@@ -19,29 +19,29 @@ public class Property implements Comparable<Property>, Serializable {
     private int _id = 1;
 
     /**
-     * nazwa właściwości jeśli podana
+     * nazwa wartości jeśli podana
      */
     private String _nazwa = "";
 
     /**
-     * koszt danej właściwości
+     * koszt danej wartości
      */
     private double _koszt = 0.0;
 
     /**
-     * tablica właściwości, które mogą należeć do danej właściwości
+     * tablica wartości, które mogą należeć do danej wartości
      */
     private List<Property> _elementy = new ArrayList<Property>();
 
     /**
-     * poziom na którym znajduje się dana właściwość na liście
+     * poziom na którym znajduje się dana wartości na liście
      */
     private int _poziom = 0;
 
     /**
-     * Konstruktor - tylko podany koszt (nie ma nazwy właściwości, ale jej koszt). Kiedy używany:
+     * Konstruktor - tylko podany koszt (nie ma nazwy wartości, ale jej koszt). Kiedy używany:
      *
-     * @param _koszt koszt połączenia właściwości
+     * @param _koszt koszt połączenia wartości
      */
     public Property(double _koszt) {
         this._koszt = _koszt;
@@ -50,7 +50,7 @@ public class Property implements Comparable<Property>, Serializable {
     /**
      * Konstruktor - podana nazwa i koszt rozdzielenia. Kiedy używany:
      *
-     * @param nazwa nazwa właściwości
+     * @param nazwa nazwa wartości
      * @param _koszt koszt
      */
     public Property(String nazwa, double _koszt) {
@@ -70,7 +70,7 @@ public class Property implements Comparable<Property>, Serializable {
      * Konstruktor - podana pozycja na JLiście, nazwa oraz koszt. Ten konstruktor powinien z definicji być najczęściej używanym. Zwłaszcza w kontekście populacji JListy/modelu.
      *
      * @param id pozycja na JLiście
-     * @param nazwa nazwa właściwości
+     * @param nazwa nazwa wartości
      * @param koszt koszt
      */
     public Property(int id, String nazwa, double koszt) {
@@ -91,7 +91,7 @@ public class Property implements Comparable<Property>, Serializable {
     }
 
     /**
-     * Zwraca nazwę właściwości
+     * Zwraca nazwę wartości
      *
      * @return string nazwa
      */
@@ -100,7 +100,7 @@ public class Property implements Comparable<Property>, Serializable {
     }
 
     /**
-     * Ustala nazwę właściwości
+     * Ustala nazwę wartości
      *
      * @param _nazwa nazwa
      */
@@ -127,7 +127,7 @@ public class Property implements Comparable<Property>, Serializable {
     }
 
     /**
-     * Zwraca koszt, jaki jest ustawiony dla właściwości.
+     * Zwraca koszt, jaki jest ustawiony dla wartości.
      *
      * @return double koszt
      */
@@ -136,7 +136,7 @@ public class Property implements Comparable<Property>, Serializable {
     }
 
     /**
-     * Zwraca sumę kosztów wszystkich wewnętrznych właściwości.
+     * Zwraca sumę kosztów wszystkich wewnętrznych wartości.
      *
      * @return double koszt
      */
@@ -155,7 +155,7 @@ public class Property implements Comparable<Property>, Serializable {
     }
 
     /**
-     * Ustala koszt danej właściwości
+     * Ustala koszt danej wartości
      *
      * @param _koszt koszt
      */
@@ -164,18 +164,18 @@ public class Property implements Comparable<Property>, Serializable {
     }
 
     /**
-     * Zwraca tablicę właściwości wewnątrz tej właściwości
+     * Zwraca tablicę wartości wewnątrz tej wartości
      *
-     * @return Property[] właściwości wewnątrz właściwości (połączone)
+     * @return Property[] wartości wewnątrz wartości (połączone)
      */
     public Property[] getElementy() {
         return _elementy.toArray(new Property[_elementy.size()]);
     }
 
     /**
-     * Dodaje właściwość do listy
+     * Dodaje wartość do listy
      *
-     * @param p właściwość, którą dodajemy
+     * @param p wartość, którą dodajemy
      * @throws InvalidPropertyException
      */
     public void add(Property p) throws InvalidPropertyException {
@@ -187,9 +187,9 @@ public class Property implements Comparable<Property>, Serializable {
     }
 
     /**
-     * Pozwala na porównanie obiektu właściwości (kryterium jest koszt)
+     * Pozwala na porównanie obiektu wartości (kryterium jest koszt)
      *
-     * @param o podawany obiekt właściwości
+     * @param o podawany obiekt wartości
      * @return podaje, który obiekt ma większy koszt
      */
     @Override
@@ -200,9 +200,9 @@ public class Property implements Comparable<Property>, Serializable {
     /**
      * Zwraca znakową reprezentację obiektu:
      * <ul>
-     * <li>jeśli nie ma właściwości, to jest to nazwa obiektu</li>
-     * <li>jeśli ma 1 właściwość, to jest to jej nazwa</li>
-     * <li>jeśli ma więcej niż 1 właściwośc, jest to postać z rodzaju: <code>nazwa_wł1, nazwa_wł2
+     * <li>jeśli nie ma wartości, to jest to nazwa obiektu</li>
+     * <li>jeśli ma 1 wartość, to jest to jej nazwa</li>
+     * <li>jeśli ma więcej niż 1 wartość, jest to postać z rodzaju: <code>nazwa_wart1, nazwa_wart2
      * ...</code></li>
      * </ul>
      *
@@ -242,7 +242,7 @@ public class Property implements Comparable<Property>, Serializable {
     }
 
     /**
-     * Funkcja, która aktualizuje poziom właściwości
+     * Funkcja, która aktualizuje poziom wartości
      */
     public void updatePoziomOnCombine() {
         int max = -1;
@@ -253,7 +253,7 @@ public class Property implements Comparable<Property>, Serializable {
         }
 
         _poziom = max + 1;
-        Sp.s("Aktualizuję poziom (" + _poziom + ") właściwości '" + getNazwa() + "'");
+        Sp.s("Aktualizuję poziom (" + _poziom + ") wartości '" + getNazwa() + "'");
     }
 
     public String taxonomy() {
