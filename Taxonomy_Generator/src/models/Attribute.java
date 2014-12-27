@@ -100,6 +100,14 @@ public class Attribute implements Serializable {
                 return p1.getNazwa().compareTo(p2.getNazwa());
             }
         });
+        
+        Collections.sort(_wartości, new Comparator<Property>() {
+            @Override
+            public int compare(Property p1, Property p2) {
+
+                return p1.getId() - p2.getId();
+            }
+        });
         return _wartości.toArray(new Property[_wartości.size()]);
     }
 
@@ -179,6 +187,18 @@ public class Attribute implements Serializable {
             return String.valueOf(getId()) + "] " + getNazwa();
         } else {
             return String.valueOf(getId());
+        }
+    }
+    
+    /**
+     * Odtwarza listę wartości na podstawie podanej tablicy
+     * @param array wartosci 
+     */
+    public void recreateWartosci(Property[] wartosci) {
+        _wartości.clear();
+        
+        for(Property p: wartosci) {
+            _wartości.add(p);
         }
     }
 }

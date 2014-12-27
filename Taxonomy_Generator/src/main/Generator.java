@@ -8,6 +8,7 @@ import com.mxgraph.view.mxGraph;
 import exceptions.InvalidPropertyException;
 import helper.FileChooserHelper;
 import helper.Sp;
+import helper.jListSwapperHelper;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Insets;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.Collection;
 import javax.swing.JFileChooser;
 import javax.swing.DefaultListModel;
@@ -220,10 +222,20 @@ public class Generator extends javax.swing.JFrame {
 
         upArrowButton.setText("↑");
         upArrowButton.setMargin(new Insets(0,0,0,0));
+        upArrowButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                upArrowButtonActionPerformed(evt);
+            }
+        });
         arrowPanel.add(upArrowButton, java.awt.BorderLayout.NORTH);
 
         downArrowButton.setText("↓");
         downArrowButton.setMargin(new Insets(0,0,0,0));
+        downArrowButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                downArrowButtonActionPerformed(evt);
+            }
+        });
         arrowPanel.add(downArrowButton, java.awt.BorderLayout.SOUTH);
 
         listAndArrowPanel.add(arrowPanel, java.awt.BorderLayout.EAST);
@@ -303,6 +315,8 @@ public class Generator extends javax.swing.JFrame {
         // jeśli wybrany został plik
         if (result == JFileChooser.APPROVE_OPTION) {
             clearAttributeAndPropertyLists();
+            _attributes = null;
+            System.gc();
             try {
                 BufferedReader br = new BufferedReader(new FileReader(plikDanych.getSelectedFile().getAbsolutePath()));
                 for (String linia; (linia = br.readLine()) != null;) {
@@ -347,7 +361,9 @@ public class Generator extends javax.swing.JFrame {
      */
     private void setModelsForAttributeAndPropertyLists() {
         propertiesList.setModel(_propertiesListModel);
+        propertiesList.updateUI();
         attributesList.setModel(_attributesListModel);
+        attributesList.updateUI();
     }
 
     /**
@@ -363,8 +379,10 @@ public class Generator extends javax.swing.JFrame {
     }
 
     private void recreateAttributesListModel() {
-        for (int i = 0; i < _attributes.length; i++) {
-            _attributesListModel.addElement(_attributes[i]);
+        _attributesListModel.clear();
+
+        for (Attribute _attribute : _attributes) {
+            _attributesListModel.addElement(_attribute);
         }
     }
 
@@ -593,6 +611,32 @@ public class Generator extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Taxonomy saved successfully.", "Saved!", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_saveButtonActionPerformed
+
+    private void arrowButtonSwapAction(String direction) {
+        int pos1 = propertiesList.getSelectedIndex();
+        int pos2 = direction.equals("up") ? propertiesList.getSelectedIndex() - 1 : propertiesList.getSelectedIndex() + 1;
+        int att = attributesList.getSelectedIndex();
+        jListSwapperHelper.swapElements(pos1, pos2, _propertiesListModel);
+        propertiesList.setSelectedIndex(pos2);
+        propertiesList.updateUI();
+        jListSwapperHelper.swapAttributeValues(_attributesListModel, att, _propertiesListModel, (Attribute) _attributesListModel.get(att));
+    }
+
+    private void upArrowButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upArrowButtonActionPerformed
+        if (propertiesList.getSelectedIndices().length != 1) {
+            JOptionPane.showMessageDialog(this, "You can only move one value at the time!", "Value swap error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            arrowButtonSwapAction("up");
+        }
+    }//GEN-LAST:event_upArrowButtonActionPerformed
+
+    private void downArrowButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downArrowButtonActionPerformed
+        if (propertiesList.getSelectedIndices().length != 1) {
+            JOptionPane.showMessageDialog(this, "You can only move one value at the time!", "Value swap error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            arrowButtonSwapAction("down");
+        }
+    }//GEN-LAST:event_downArrowButtonActionPerformed
 
     private void graphTest() {
         mxGraph graph = new mxGraph();

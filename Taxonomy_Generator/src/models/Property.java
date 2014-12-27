@@ -212,17 +212,23 @@ public class Property implements Comparable<Property>, Serializable {
     public String toString() {
         if (_nazwa.length() > 0) { // ma własną nazwę, więc ją zwracam
             return getNazwa();
-        } else if (_elementy.size() == 1) { // ma tylko 1 element wewnętrzny, więc zwracam jego nazwę
-            return _elementy.get(_elementy.size() - 1).toString();
+        } else {
+            return rawNazwa(true);
+        }
+    }
+
+    public String rawNazwa(boolean forToString) {
+        if (_elementy.size() == 1) { // ma tylko 1 element wewnętrzny, więc zwracam jego nazwę
+            return (forToString ? (_elementy.get(_elementy.size() - 1).toString()) : (_elementy.get(_elementy.size() - 1).rawNazwa(false)));
         } else if (_elementy.size() > 1) { // ma więcej niż 1 element wewnętrzny, więc zwracam wszystkie ich nazwy po przecinku
             String ret = new String();
             int i = 0;
 
             for (Property element : getElementy()) {
                 if (i == 0) {
-                    ret += element.toString();
+                    ret = forToString ? element.toString() : element.rawNazwa(false);
                 } else {
-                    ret += "|" + element.toString();
+                    ret += "|" + (forToString ? element.toString() : element.rawNazwa(false));
                 }
                 i++;
             }
@@ -231,7 +237,6 @@ public class Property implements Comparable<Property>, Serializable {
             return _id + ":" + _koszt + "(" + this.hashCode() + ")";
         }
     }
-
     /**
      * zwraca aktualny poziom
      *
