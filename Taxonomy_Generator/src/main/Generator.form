@@ -207,11 +207,9 @@
             <Component class="javax.swing.JButton" name="combineAttribs">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Combine Values"/>
-                <Property name="toolTipText" type="java.lang.String" value=""/>
+                <Property name="toolTipText" type="java.lang.String" value="Combine primitive Values to Abstract Values"/>
+                <Property name="focusable" type="boolean" value="false"/>
               </Properties>
-              <AccessibilityProperties>
-                <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="Combine primitive Values to Abstract Values"/>
-              </AccessibilityProperties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="combineAttribsActionPerformed"/>
               </Events>
@@ -295,6 +293,18 @@
                   </SubComponents>
                 </Container>
                 <Container class="javax.swing.JPanel" name="arrowPanel">
+                  <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="fe" green="fe" red="fe" type="rgb"/>
+                    </Property>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                        <LineBorder>
+                          <Color PropertyName="color" blue="cf" green="cf" red="cf" type="rgb"/>
+                        </LineBorder>
+                      </Border>
+                    </Property>
+                  </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
                       <BorderConstraints direction="East"/>
@@ -305,7 +315,7 @@
                   <SubComponents>
                     <Component class="javax.swing.JButton" name="upArrowButton">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&#x2191;"/>
+                        <Property name="text" type="java.lang.String" value="&#x2191;" postCode="upArrowButton.setMargin(new Insets(0,0,0,0));"/>
                       </Properties>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
@@ -315,7 +325,7 @@
                     </Component>
                     <Component class="javax.swing.JButton" name="downArrowButton">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&#x2193;"/>
+                        <Property name="text" type="java.lang.String" value="&#x2193;" postCode="downArrowButton.setMargin(new Insets(0,0,0,0));"/>
                       </Properties>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">

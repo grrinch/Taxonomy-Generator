@@ -10,6 +10,7 @@ import helper.FileChooserHelper;
 import helper.Sp;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Insets;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -167,14 +168,14 @@ public class Generator extends javax.swing.JFrame {
         propertyPanel.setLayout(new java.awt.BorderLayout());
 
         combineAttribs.setText("Combine Values");
-        combineAttribs.setToolTipText("");
+        combineAttribs.setToolTipText("Combine primitive Values to Abstract Values");
+        combineAttribs.setFocusable(false);
         combineAttribs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 combineAttribsActionPerformed(evt);
             }
         });
         propertyPanel.add(combineAttribs, java.awt.BorderLayout.SOUTH);
-        combineAttribs.getAccessibleContext().setAccessibleDescription("Combine primitive Values to Abstract Values");
 
         openSaveButtonPanel.setLayout(new java.awt.GridLayout(1, 0));
 
@@ -213,12 +214,16 @@ public class Generator extends javax.swing.JFrame {
 
         listAndArrowPanel.add(propertiesListScrollPane, java.awt.BorderLayout.CENTER);
 
+        arrowPanel.setBackground(new java.awt.Color(254, 254, 254));
+        arrowPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(207, 207, 207)));
         arrowPanel.setLayout(new java.awt.BorderLayout());
 
         upArrowButton.setText("↑");
+        upArrowButton.setMargin(new Insets(0,0,0,0));
         arrowPanel.add(upArrowButton, java.awt.BorderLayout.NORTH);
 
         downArrowButton.setText("↓");
+        downArrowButton.setMargin(new Insets(0,0,0,0));
         arrowPanel.add(downArrowButton, java.awt.BorderLayout.SOUTH);
 
         listAndArrowPanel.add(arrowPanel, java.awt.BorderLayout.EAST);
