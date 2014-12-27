@@ -81,12 +81,16 @@ public class Generator extends javax.swing.JFrame {
         openProjectButton = new javax.swing.JButton();
         saveProjectButton = new javax.swing.JButton();
         propertyPanel = new javax.swing.JPanel();
-        propertiesListScrollPane = new javax.swing.JScrollPane();
-        propertiesList = new javax.swing.JList();
         combineAttribs = new javax.swing.JButton();
         openSaveButtonPanel = new javax.swing.JPanel();
         openButton = new javax.swing.JButton();
         saveButton = new javax.swing.JButton();
+        listAndArrowPanel = new javax.swing.JPanel();
+        propertiesListScrollPane = new javax.swing.JScrollPane();
+        propertiesList = new javax.swing.JList();
+        arrowPanel = new javax.swing.JPanel();
+        upArrowButton = new javax.swing.JButton();
+        downArrowButton = new javax.swing.JButton();
         leftChartPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -162,18 +166,6 @@ public class Generator extends javax.swing.JFrame {
 
         propertyPanel.setLayout(new java.awt.BorderLayout());
 
-        propertiesList.setToolTipText("List representing Values in currently selected attribute");
-        propertiesList.setDropMode(javax.swing.DropMode.INSERT);
-        propertiesList.setLayoutOrientation(javax.swing.JList.VERTICAL_WRAP);
-        propertiesList.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                propertiesListPropertyChange(evt);
-            }
-        });
-        propertiesListScrollPane.setViewportView(propertiesList);
-
-        propertyPanel.add(propertiesListScrollPane, java.awt.BorderLayout.CENTER);
-
         combineAttribs.setText("Combine Values");
         combineAttribs.setToolTipText("");
         combineAttribs.addActionListener(new java.awt.event.ActionListener() {
@@ -182,6 +174,7 @@ public class Generator extends javax.swing.JFrame {
             }
         });
         propertyPanel.add(combineAttribs, java.awt.BorderLayout.SOUTH);
+        combineAttribs.getAccessibleContext().setAccessibleDescription("Combine primitive Values to Abstract Values");
 
         openSaveButtonPanel.setLayout(new java.awt.GridLayout(1, 0));
 
@@ -202,8 +195,35 @@ public class Generator extends javax.swing.JFrame {
             }
         });
         openSaveButtonPanel.add(saveButton);
+        saveButton.getAccessibleContext().setAccessibleDescription("Saves currently set Taxonomy file");
 
         propertyPanel.add(openSaveButtonPanel, java.awt.BorderLayout.PAGE_START);
+
+        listAndArrowPanel.setLayout(new java.awt.BorderLayout());
+
+        propertiesList.setToolTipText("List representing Values in currently selected attribute");
+        propertiesList.setDropMode(javax.swing.DropMode.INSERT);
+        propertiesList.setLayoutOrientation(javax.swing.JList.VERTICAL_WRAP);
+        propertiesList.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                propertiesListPropertyChange(evt);
+            }
+        });
+        propertiesListScrollPane.setViewportView(propertiesList);
+
+        listAndArrowPanel.add(propertiesListScrollPane, java.awt.BorderLayout.CENTER);
+
+        arrowPanel.setLayout(new java.awt.BorderLayout());
+
+        upArrowButton.setText("↑");
+        arrowPanel.add(upArrowButton, java.awt.BorderLayout.NORTH);
+
+        downArrowButton.setText("↓");
+        arrowPanel.add(downArrowButton, java.awt.BorderLayout.SOUTH);
+
+        listAndArrowPanel.add(arrowPanel, java.awt.BorderLayout.EAST);
+
+        propertyPanel.add(listAndArrowPanel, java.awt.BorderLayout.CENTER);
 
         rightElementsGridPanel.add(propertyPanel, java.awt.BorderLayout.CENTER);
 
@@ -219,7 +239,7 @@ public class Generator extends javax.swing.JFrame {
         );
         leftChartPanelLayout.setVerticalGroup(
             leftChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 574, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -238,7 +258,7 @@ public class Generator extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
+                    .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(leftChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -668,15 +688,18 @@ public class Generator extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel arrowPanel;
     private javax.swing.JPanel attribPanel;
     private javax.swing.JList attributesList;
     private javax.swing.JScrollPane attributesListScrollPane;
     private javax.swing.JButton combineAttribs;
+    private javax.swing.JButton downArrowButton;
     private javax.swing.JRadioButton graphLinesCrossing;
     private javax.swing.JRadioButton graphLinesNotCrossing;
     private javax.swing.ButtonGroup graphObjectsPlacement;
     private javax.swing.JPanel graphPropertiesPanel;
     private javax.swing.JPanel leftChartPanel;
+    private javax.swing.JPanel listAndArrowPanel;
     private javax.swing.JButton openButton;
     private javax.swing.JButton openProjectButton;
     private javax.swing.JPanel openSaveButtonPanel;
@@ -688,5 +711,6 @@ public class Generator extends javax.swing.JFrame {
     private javax.swing.JPanel rightElementsGridPanel;
     private javax.swing.JButton saveButton;
     private javax.swing.JButton saveProjectButton;
+    private javax.swing.JButton upArrowButton;
     // End of variables declaration//GEN-END:variables
 }
