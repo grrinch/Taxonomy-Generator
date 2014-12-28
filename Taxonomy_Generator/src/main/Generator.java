@@ -314,8 +314,8 @@ public class Generator extends javax.swing.JFrame {
 
         // jeśli wybrany został plik
         if (result == JFileChooser.APPROVE_OPTION) {
-            clearAttributeAndPropertyLists();
             _attributes = null;
+            clearAttributeAndPropertyLists();
             System.gc();
             try {
                 BufferedReader br = new BufferedReader(new FileReader(plikDanych.getSelectedFile().getAbsolutePath()));
@@ -566,50 +566,71 @@ public class Generator extends javax.swing.JFrame {
     }//GEN-LAST:event_combineAttribsActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        // okno wyboru pliku
-        JFileChooser plikTaksonomii = new JFileChooser();
 
-        // tytuł okna
-        plikTaksonomii.setDialogTitle("Specify a taxonomy file to save");
-
-        // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "taxonomy"
-        plikTaksonomii.setCurrentDirectory(new File("../taxonomy/"));
-
-        // ustawiam filtr dozwolonych plików na *.taxonomy
-        plikTaksonomii.setFileFilter(FileChooserHelper.SaveFileChooserFilter());
-
-        // pokaż okno i zwróć co zostało naciśnięte
-        int result = plikTaksonomii.showSaveDialog(this);
-
-        if (result == JFileChooser.APPROVE_OPTION) {
-            String filename = plikTaksonomii.getSelectedFile().getAbsolutePath();
-            filename += filename.endsWith(".taxonomy") ? "" : ".taxonomy";
-            try ( // Uproszczony zapis, który inspirował StackOverflow
-                    // http://stackoverflow.com/questions/1053467/how-do-i-save-a-string-to-a-text-file-using-java   ser.writeObject(_attributes);
-                    PrintWriter out = new PrintWriter(filename)) {
-                for (Attribute a : _attributes) {
-                    Boolean flag = false;
-                    for (Property p : a.getWartości()) {
-                        if (p.getPoziom() > 0) {
-                            if (flag == false) {
-                                out.print(a.getId());
-                                flag = true;
-                            }
-                            out.print("," + p.taxonomy());
-                        }
+        for (Attribute a : _attributes) {
+            Boolean flag = false;
+            for (Property p : a.getWartości()) {
+//                Sp.s("attr: " + a.getNazwa() + " / ind: " + p.getId() + " / wart: " + p.getNazwa());
+                if (p.getPoziom() > 0) {
+                    if (flag == false) {
+                        System.out.print(a.getId());
+                        flag = true;
                     }
-                    if (flag == true) {
-                        out.println();
-                    }
+                    Sp.s("," + p.taxonomy());
                 }
-            } catch (Exception e) {
-                // komunikat o błędzie
-                JOptionPane.showMessageDialog(this, "Unable to save taxonomy file...\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                //return false;
             }
-            // komunikat powodzenia
-            JOptionPane.showMessageDialog(this, "Taxonomy saved successfully.", "Saved!", JOptionPane.INFORMATION_MESSAGE);
+            if (flag == true) {
+                Sp.s();
+            }
         }
+
+
+        /*
+         // okno wyboru pliku
+         JFileChooser plikTaksonomii = new JFileChooser();
+
+         // tytuł okna
+         plikTaksonomii.setDialogTitle("Specify a taxonomy file to save");
+
+         // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "taxonomy"
+         plikTaksonomii.setCurrentDirectory(new File("../taxonomy/"));
+
+         // ustawiam filtr dozwolonych plików na *.taxonomy
+         plikTaksonomii.setFileFilter(FileChooserHelper.SaveFileChooserFilter());
+
+         // pokaż okno i zwróć co zostało naciśnięte
+         int result = plikTaksonomii.showSaveDialog(this);
+
+         if (result == JFileChooser.APPROVE_OPTION) {
+         String filename = plikTaksonomii.getSelectedFile().getAbsolutePath();
+         filename += filename.endsWith(".taxonomy") ? "" : ".taxonomy";
+         try ( // Uproszczony zapis, który inspirował StackOverflow
+         // http://stackoverflow.com/questions/1053467/how-do-i-save-a-string-to-a-text-file-using-java   ser.writeObject(_attributes);
+         PrintWriter out = new PrintWriter(filename)) {
+         for (Attribute a : _attributes) {
+         Boolean flag = false;
+         for (Property p : a.getWartości()) {
+         if (p.getPoziom() > 0) {
+         if (flag == false) {
+         out.print(a.getId());
+         flag = true;
+         }
+         out.print("," + p.taxonomy());
+         }
+         }
+         if (flag == true) {
+         out.println();
+         }
+         }
+         } catch (Exception e) {
+         // komunikat o błędzie
+         JOptionPane.showMessageDialog(this, "Unable to save taxonomy file...\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+         //return false;
+         }
+         // komunikat powodzenia
+         JOptionPane.showMessageDialog(this, "Taxonomy saved successfully.", "Saved!", JOptionPane.INFORMATION_MESSAGE);
+         }
+         */
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void arrowButtonSwapAction(String direction) {

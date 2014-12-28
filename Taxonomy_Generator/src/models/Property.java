@@ -4,7 +4,9 @@ import exceptions.*;
 import helper.Sp;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Klasa wartości
@@ -210,15 +212,13 @@ public class Property implements Comparable<Property>, Serializable {
      */
     @Override
     public String toString() {
-        if (_nazwa.length() > 0) { // ma własną nazwę, więc ją zwracam
-            return getNazwa();
-        } else {
-            return rawNazwa(true);
-        }
+        return rawNazwa(true);
     }
 
     public String rawNazwa(boolean forToString) {
-        if (_elementy.size() == 1) { // ma tylko 1 element wewnętrzny, więc zwracam jego nazwę
+        if (forToString && _nazwa.length() > 0) { // ma własną nazwę, więc ją zwracam
+            return getNazwa();
+        } else if (_elementy.size() == 1) { // ma tylko 1 element wewnętrzny, więc zwracam jego nazwę
             return (forToString ? (_elementy.get(_elementy.size() - 1).toString()) : (_elementy.get(_elementy.size() - 1).rawNazwa(false)));
         } else if (_elementy.size() > 1) { // ma więcej niż 1 element wewnętrzny, więc zwracam wszystkie ich nazwy po przecinku
             String ret = new String();
@@ -233,10 +233,13 @@ public class Property implements Comparable<Property>, Serializable {
                 i++;
             }
             return ret;
+        } else if (!forToString && _nazwa.length() > 0) {
+            return getNazwa();
         } else { // jeśli nie ma ustawionej nazwy ani nie ma elementów wewnętrznych, to zwracam nazwę w postaci "id: koszt (hash)"
             return _id + ":" + _koszt + "(" + this.hashCode() + ")";
         }
     }
+
     /**
      * zwraca aktualny poziom
      *
@@ -263,29 +266,23 @@ public class Property implements Comparable<Property>, Serializable {
 
     public String taxonomy() {
         String tax = "";
-        int i = 0;
+        TreeMap lst = new TreeMap<Integer, LinkedList<String>>();
+        String tmp1 = "";
         for (Property p : getElementy()) {
-            if (p.getPoziom() == 0) {
-                if (i == 0) {
-                    tax += p.toString();
-                    i++;
-                    
-                } else {
-                    tax += "|" + p.toString();
-                }
-            } else {
-                if (i == 0) {
-                    tax += "|" + p.taxonomy();
-                }
-                else {
-                    tax += p.taxonomy();
-                }
+            if(null == lst.get(p.getPoziom())) {
+                LinkedList l = new LinkedList<String>();
+                l.add(p.rawNazwa(false));
+                lst.put(p.getPoziom(), l);
+            }
+            else {
+                LinkedList l = (LinkedList) lst.get(p.getPoziom());
+                l.add(p.rawNazwa(false));
             }
         }
-        
+
+        Sp.s(lst.toString());
+
         return tax;
-        // łatwiej usuwać wielokrotności "|", niż wypersfadować programowi, żeby ich nie dodawał ;)
-        //.replaceAll("[|]+", "|"); // na wszelki wypadek
     }
 
 }

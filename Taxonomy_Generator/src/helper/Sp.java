@@ -11,6 +11,10 @@ public class Sp {
     public static void s(String s) {
         System.out.println(s);
     }
+    
+    public static void s() {
+        System.out.println();
+    }
 
     public static void i(int i) {
         System.out.println(i);
