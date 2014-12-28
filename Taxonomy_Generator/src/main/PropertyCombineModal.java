@@ -41,6 +41,7 @@ public class PropertyCombineModal extends javax.swing.JDialog {
         super(parent, modal);
         formatterInit();
         initComponents();
+        getRootPane().setDefaultButton(okButton);
         kosztField.setValue((double) 0);
         p = new Property(null, 0);
     }

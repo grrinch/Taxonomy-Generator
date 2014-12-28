@@ -8,6 +8,7 @@ import com.mxgraph.view.mxGraph;
 import exceptions.InvalidPropertyException;
 import helper.FileChooserHelper;
 import helper.Sp;
+import helper.jDialogEscapeKeyHelper;
 import helper.jListSwapperHelper;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -23,7 +24,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.Collection;
 import javax.swing.JFileChooser;
 import javax.swing.DefaultListModel;
@@ -275,7 +275,7 @@ public class Generator extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 496, Short.MAX_VALUE)
                     .addComponent(leftChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -516,49 +516,54 @@ public class Generator extends javax.swing.JFrame {
         int[] indexes = propertiesList.getSelectedIndices();
         if (indexes.length > 1) {
             PropertyCombineModal modal = new PropertyCombineModal(this, true);
+            jDialogEscapeKeyHelper.addEscapeListener(modal);
+                    
+                // dostaję tymczasową wartość - w niej będą wszystkie połączone
+                Property p = modal.showDialog();
+                
+                if(p.getNazwa() == null) {
+                    return;
+                }
 
-            // dostaję tymczasową wartość - w niej będą wszystkie połączone
-            Property p = modal.showDialog();
+                // dodajemy do tymczasowej wartości wszystkie z listy
+                for (int e : indexes) {
+                    try {
+                        //wyciągamy z modelu wartości odpowiednią z danego indeksu
+                        Property temp = (Property) _propertiesListModel.get(e);
+//                    Sp.s("Wyjmuję z modelu wartości: " + temp.getNazwa());
 
-            // dodajemy do tymczasowej wartości wszystkie z listy
-            for (int e : indexes) {
-                try {
-                    //wyciągamy z modelu wartości odpowiednią z danego indeksu
-                    Property temp = (Property) _propertiesListModel.get(e);
-                    Sp.s("Wyjmuję z modelu wartości: " + temp.getNazwa());
-
-                    // usuwamy ją również z atrybutów
-                    if (_attributes[attributesList.getSelectedIndex()].remove(temp)) {
-                        // dodajemy do tymczasowej wartości
-                        p.add(temp);
-                        Sp.s("Dodaję do wartości: " + temp.getNazwa());
-                    } else {
-                        throw new InvalidPropertyException("Unable to delete the Value at index(" + e + ") from the attributes list.");
+                        // usuwamy ją również z atrybutów
+                        if (_attributes[attributesList.getSelectedIndex()].remove(temp)) {
+                            // dodajemy do tymczasowej wartości
+                            p.add(temp);
+//                        Sp.s("Dodaję do wartości: " + temp.getNazwa());
+                        } else {
+                            throw new InvalidPropertyException("Unable to delete the Value at index(" + e + ") from the attributes list.");
+                        }
+                    } catch (InvalidPropertyException ex) {
+                        JOptionPane.showMessageDialog(this, ex.getMessage(), "Error deleting abstract Values", JOptionPane.ERROR_MESSAGE);
                     }
+                }
+                for (Property pp : p.getElementy()) {
+//                Sp.s("Staram się usunąć z modelu wartości wartość: " + pp.getNazwa());
+                    _propertiesListModel.removeElement(pp);
+                }
+                // teraz musimy zaktualizować poziom naszej nowej wartości, dodać ją w odpowiednim atrybucie zamiast poprzednich oraz zaktualizować listę
+                p.updatePoziomOnCombine();
+
+                try {
+                    // dodajemy do listy atrybutów
+                    _attributes[attributesList.getSelectedIndex()].add(p);
+                    // dodajemy do modelu wartości
+                    _propertiesListModel.addElement(p);
+
+//                for (Property pp : _attributes[attributesList.getSelectedIndex()].getWartości()) {
+//                    Sp.s(pp.getNazwa());
+//                }
                 } catch (InvalidPropertyException ex) {
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error deleting abstract Values", JOptionPane.ERROR_MESSAGE);
+                    // w przypadku gdy nie można dodać wartości do atrybutów
+                    JOptionPane.showMessageDialog(this, "Unable to add Abstract Value to Attribute\n" + ex.getMessage(), "Error setting Abstract Values", JOptionPane.ERROR_MESSAGE);
                 }
-            }
-            for (Property pp : p.getElementy()) {
-                Sp.s("Staram się usunąć z modelu wartości wartość: " + pp.getNazwa());
-                _propertiesListModel.removeElement(pp);
-            }
-            // teraz musimy zaktualizować poziom naszej nowej wartości, dodać ją w odpowiednim atrybucie zamiast poprzednich oraz zaktualizować listę
-            p.updatePoziomOnCombine();
-
-            try {
-                // dodajemy do listy atrybutów
-                _attributes[attributesList.getSelectedIndex()].add(p);
-                // dodajemy do modelu wartości
-                _propertiesListModel.addElement(p);
-
-                for (Property pp : _attributes[attributesList.getSelectedIndex()].getWartości()) {
-                    Sp.s(pp.getNazwa());
-                }
-            } catch (InvalidPropertyException ex) {
-                // w przypadku gdy nie można dodać wartości do atrybutów
-                JOptionPane.showMessageDialog(this, "Unable to add abstract Value to argument\n" + ex.getMessage(), "Error setting abstract Values", JOptionPane.ERROR_MESSAGE);
-            }
 
         } else {
             JOptionPane.showMessageDialog(this, "At least two Values must be selected for this action", "Too few arguments", JOptionPane.WARNING_MESSAGE);
@@ -567,70 +572,51 @@ public class Generator extends javax.swing.JFrame {
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
 
-        for (Attribute a : _attributes) {
-            Boolean flag = false;
-            for (Property p : a.getWartości()) {
-//                Sp.s("attr: " + a.getNazwa() + " / ind: " + p.getId() + " / wart: " + p.getNazwa());
-                if (p.getPoziom() > 0) {
-                    if (flag == false) {
-                        System.out.print(a.getId());
-                        flag = true;
+        // okno wyboru pliku
+        JFileChooser plikTaksonomii = new JFileChooser();
+
+        // tytuł okna
+        plikTaksonomii.setDialogTitle("Specify a taxonomy file to save");
+
+        // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "taxonomy"
+        plikTaksonomii.setCurrentDirectory(new File("../taxonomy/"));
+
+        // ustawiam filtr dozwolonych plików na *.taxonomy
+        plikTaksonomii.setFileFilter(FileChooserHelper.SaveFileChooserFilter());
+
+        // pokaż okno i zwróć co zostało naciśnięte
+        int result = plikTaksonomii.showSaveDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            String filename = plikTaksonomii.getSelectedFile().getAbsolutePath();
+            filename += filename.endsWith(".taxonomy") ? "" : ".taxonomy";
+            try ( // Uproszczony zapis, który inspirował StackOverflow
+                    // http://stackoverflow.com/questions/1053467/how-do-i-save-a-string-to-a-text-file-using-java   ser.writeObject(_attributes);
+                    PrintWriter out = new PrintWriter(filename)) {
+                for (Attribute a : _attributes) {
+                    Boolean flag = false;
+                    for (Property p : a.getWartości()) {
+                        if (p.getPoziom() > 0) {
+                            if (flag == false) {
+                                out.print(a.getId());
+                                flag = true;
+                            }
+                            out.print(p.taxonomy());
+                        }
                     }
-                    Sp.s("," + p.taxonomy());
+                    if (flag == true) {
+                        out.println();
+                    }
                 }
+            } catch (Exception e) {
+                // komunikat o błędzie
+                JOptionPane.showMessageDialog(this, "Unable to save taxonomy file...\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                //return false;
             }
-            if (flag == true) {
-                Sp.s();
-            }
+            // komunikat powodzenia
+            JOptionPane.showMessageDialog(this, "Taxonomy saved successfully.", "Saved!", JOptionPane.INFORMATION_MESSAGE);
         }
 
-
-        /*
-         // okno wyboru pliku
-         JFileChooser plikTaksonomii = new JFileChooser();
-
-         // tytuł okna
-         plikTaksonomii.setDialogTitle("Specify a taxonomy file to save");
-
-         // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "taxonomy"
-         plikTaksonomii.setCurrentDirectory(new File("../taxonomy/"));
-
-         // ustawiam filtr dozwolonych plików na *.taxonomy
-         plikTaksonomii.setFileFilter(FileChooserHelper.SaveFileChooserFilter());
-
-         // pokaż okno i zwróć co zostało naciśnięte
-         int result = plikTaksonomii.showSaveDialog(this);
-
-         if (result == JFileChooser.APPROVE_OPTION) {
-         String filename = plikTaksonomii.getSelectedFile().getAbsolutePath();
-         filename += filename.endsWith(".taxonomy") ? "" : ".taxonomy";
-         try ( // Uproszczony zapis, który inspirował StackOverflow
-         // http://stackoverflow.com/questions/1053467/how-do-i-save-a-string-to-a-text-file-using-java   ser.writeObject(_attributes);
-         PrintWriter out = new PrintWriter(filename)) {
-         for (Attribute a : _attributes) {
-         Boolean flag = false;
-         for (Property p : a.getWartości()) {
-         if (p.getPoziom() > 0) {
-         if (flag == false) {
-         out.print(a.getId());
-         flag = true;
-         }
-         out.print("," + p.taxonomy());
-         }
-         }
-         if (flag == true) {
-         out.println();
-         }
-         }
-         } catch (Exception e) {
-         // komunikat o błędzie
-         JOptionPane.showMessageDialog(this, "Unable to save taxonomy file...\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-         //return false;
-         }
-         // komunikat powodzenia
-         JOptionPane.showMessageDialog(this, "Taxonomy saved successfully.", "Saved!", JOptionPane.INFORMATION_MESSAGE);
-         }
-         */
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void arrowButtonSwapAction(String direction) {

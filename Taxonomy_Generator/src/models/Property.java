@@ -4,9 +4,7 @@ import exceptions.*;
 import helper.Sp;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.TreeMap;
 
 /**
  * Klasa wartości
@@ -261,28 +259,39 @@ public class Property implements Comparable<Property>, Serializable {
         }
 
         _poziom = max + 1;
-        Sp.s("Aktualizuję poziom (" + _poziom + ") wartości '" + getNazwa() + "'");
+//        Sp.s("Aktualizuję poziom (" + _poziom + ") wartości '" + getNazwa() + "'");
     }
 
     public String taxonomy() {
-        String tax = "";
-        TreeMap lst = new TreeMap<Integer, LinkedList<String>>();
-        String tmp1 = "";
-        for (Property p : getElementy()) {
-            if(null == lst.get(p.getPoziom())) {
-                LinkedList l = new LinkedList<String>();
-                l.add(p.rawNazwa(false));
-                lst.put(p.getPoziom(), l);
+        StringBuilder tax = new StringBuilder();
+        int i;
+        if (getPoziom() < 2) {
+            i = 0;
+            StringBuilder tmp = new StringBuilder();
+            Boolean flag = false;
+            for (Property p : getElementy()) {
+                if (i == 0) {
+                    tmp.append(p.rawNazwa(false));
+                    flag = true;
+                } else {
+                    tmp.append("|").append(p.rawNazwa(false));
+                }
+                i++;
             }
-            else {
-                LinkedList l = (LinkedList) lst.get(p.getPoziom());
-                l.add(p.rawNazwa(false));
+            if (flag == true) {
+                tax.append(",").append(tmp);
+                flag = false;
             }
+        } else {
+            StringBuilder tmp = new StringBuilder();
+            for (Property p : getElementy()) {
+                tmp.append(p.taxonomy());
+
+            }
+            tax.append(tmp).append(",").append(rawNazwa(false));
         }
 
-        Sp.s(lst.toString());
-
-        return tax;
+        return tax.toString();
     }
 
 }
