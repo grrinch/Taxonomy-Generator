@@ -29,11 +29,12 @@ public class Attribute implements Serializable {
     private List<Property> _wartości = new ArrayList<Property>();
 
     /* *
-     * Konstruktor - pusty atrybut. Kiedy używamy:
+     * Konstruktor - pusty atrybut. Kiedy używamy: tylko w przypadku serializacji do XMLa
      *
      * /
-     public Attribute() {
-     }*/
+    public Attribute() {
+    }*/
+
     /**
      * Konstruktor - podajemy id kolejności w JLiście/modelu. Kiedy używamy: podstawowy konstruktor.
      *
@@ -100,7 +101,7 @@ public class Attribute implements Serializable {
                 return p1.getNazwa().compareTo(p2.getNazwa());
             }
         });
-        
+
         Collections.sort(_wartości, new Comparator<Property>() {
             @Override
             public int compare(Property p1, Property p2) {
@@ -131,6 +132,7 @@ public class Attribute implements Serializable {
 
     /**
      * Dodaje wartości do tego atrybutu
+     *
      * @param p
      * @throws InvalidPropertyException
      */
@@ -160,18 +162,18 @@ public class Attribute implements Serializable {
         }
         return false;
     }
-    
+
     /**
      * Usuwa z atrybutu zadaną wartość
+     *
      * @param p wartość
      * @return boolean
      */
     public boolean remove(Property p) {
-        if(_wartości.contains(p)) {
+        if (_wartości.contains(p)) {
             _wartości.remove(p);
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -189,15 +191,16 @@ public class Attribute implements Serializable {
             return String.valueOf(getId());
         }
     }
-    
+
     /**
      * Odtwarza listę wartości na podstawie podanej tablicy
-     * @param array wartosci 
+     *
+     * @param array wartosci
      */
     public void recreateWartosci(Property[] wartosci) {
         _wartości.clear();
-        
-        for(Property p: wartosci) {
+
+        for (Property p : wartosci) {
             _wartości.add(p);
         }
     }

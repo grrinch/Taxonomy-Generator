@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="1.7.0_67" class="java.beans.XMLDecoder">
+ <array class="models.Attribute" length="9">
+  <void index="0">
+   <object class="models.Attribute"/>
+  </void>
+  <void index="1">
+   <object class="models.Attribute">
+    <void property="id">
+     <int>2</int>
+    </void>
+   </object>
+  </void>
+  <void index="2">
+   <object class="models.Attribute">
+    <void property="id">
+     <int>3</int>
+    </void>
+   </object>
+  </void>
+  <void index="3">
+   <object class="models.Attribute">
+    <void property="id">
+     <int>4</int>
+    </void>
+   </object>
+  </void>
+  <void index="4">
+   <object class="models.Attribute">
+    <void property="id">
+     <int>5</int>
+    </void>
+   </object>
+  </void>
+  <void index="5">
+   <object class="models.Attribute">
+    <void property="id">
+     <int>6</int>
+    </void>
+   </object>
+  </void>
+  <void index="6">
+   <object class="models.Attribute">
+    <void property="id">
+     <int>7</int>
+    </void>
+   </object>
+  </void>
+  <void index="7">
+   <object class="models.Attribute">
+    <void property="id">
+     <int>8</int>
+    </void>
+   </object>
+  </void>
+  <void index="8">
+   <object class="models.Attribute">
+    <void property="id">
+     <int>9</int>
+    </void>
+   </object>
+  </void>
+ </array>
+</java>

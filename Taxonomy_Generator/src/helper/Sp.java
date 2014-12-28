@@ -31,4 +31,8 @@ public class Sp {
     public static void d(double i) {
         System.out.println(i);
     }
+    
+    public static void l(long i) {
+        System.out.println(i);
+    }
 }

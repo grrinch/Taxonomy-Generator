@@ -1,21 +1,19 @@
 package main;
 
-import com.mxgraph.model.mxGraphModel;
-import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.util.mxConstants;
-import com.mxgraph.util.mxUtils;
-import com.mxgraph.view.mxGraph;
 import exceptions.InvalidPropertyException;
-import helper.FileChooserHelper;
+import helper.BracketNotationHelper;
 import helper.Sp;
+import helper.FileChooserHelper;
 import helper.jDialogEscapeKeyHelper;
 import helper.jListSwapperHelper;
 import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.Component;
 import java.awt.Insets;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -23,10 +21,19 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.Collection;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.net.URLEncoder;
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import models.*;
 
@@ -61,7 +68,58 @@ public class Generator extends javax.swing.JFrame {
         _attributesListModel = new DefaultListModel();
 
         initComponents();
-        graphTest();
+        //graphTest();
+    }
+
+    private void writeBrackets(Property[] p) {
+        writeBrackets(p, null);
+    }
+
+    private void writeBrackets(Property[] p, String rootName) {
+        BracketNotationHelper bnh = new BracketNotationHelper(p);
+        if (rootName == null || rootName.equals("")) {
+            graphTest(bnh.print());
+        } else {
+            graphTest(bnh.print(rootName));
+        }
+    }
+
+    private void graphTest(String bnh) {
+        try {
+            Component[] comps = chartPanel.getComponents();
+            for(Component c: comps) {
+                if(c instanceof JLabel) {
+                    chartPanel.remove(c);
+                }
+            }
+            String toSend = URLEncoder.encode(bnh, "UTF-8");
+
+            // Define the server endpoint to send the HTTP request to
+            URL serverUrl = new URL("http://p43.pl/inz/stgraph.png.php");
+            HttpURLConnection urlConnection = (HttpURLConnection) serverUrl.openConnection();
+
+            // Indicate that we want to write to the HTTP request body
+            urlConnection.setDoOutput(true);
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty("User-Agent", "Mozilla 5.0");
+
+            // Writing the post data to the HTTP request body
+            BufferedWriter httpRequestBodyWriter
+                    = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
+            httpRequestBodyWriter.write("data=" + toSend);
+            httpRequestBodyWriter.close();
+
+            BufferedImage image = ImageIO.read(urlConnection.getInputStream());
+            JLabel lab = new JLabel(new ImageIcon(image, "Attribute Taxonomy"));
+            chartPanel.add(lab, BorderLayout.CENTER);
+            chartPanel.updateUI();
+        } catch (UnsupportedEncodingException | MalformedURLException | ProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -94,7 +152,8 @@ public class Generator extends javax.swing.JFrame {
         arrowPanel = new javax.swing.JPanel();
         upArrowButton = new javax.swing.JButton();
         downArrowButton = new javax.swing.JButton();
-        leftChartPanel = new javax.swing.JPanel();
+        chartPanel = new javax.swing.JPanel();
+        reDrawButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Taxonomy Generator");
@@ -123,7 +182,7 @@ public class Generator extends javax.swing.JFrame {
         graphPropertiesPanel.setLayout(new java.awt.BorderLayout());
 
         graphObjectsPlacement.add(graphLinesCrossing);
-        graphLinesCrossing.setText("Cross");
+        graphLinesCrossing.setText("Root ren.");
         graphLinesCrossing.setToolTipText("Lines in the graph might cross");
         graphLinesCrossing.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -135,7 +194,7 @@ public class Generator extends javax.swing.JFrame {
 
         graphObjectsPlacement.add(graphLinesNotCrossing);
         graphLinesNotCrossing.setSelected(true);
-        graphLinesNotCrossing.setText("Don't cross");
+        graphLinesNotCrossing.setText("Don't rename");
         graphLinesNotCrossing.setToolTipText("Avoids crossing of the lines in the graph");
         graphPropertiesPanel.add(graphLinesNotCrossing, java.awt.BorderLayout.WEST);
 
@@ -244,20 +303,20 @@ public class Generator extends javax.swing.JFrame {
 
         rightElementsGridPanel.add(propertyPanel, java.awt.BorderLayout.CENTER);
 
-        leftChartPanel.setBackground(new java.awt.Color(254, 254, 254));
-        leftChartPanel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(66, 66, 66), 1, true));
-        leftChartPanel.setForeground(new java.awt.Color(205, 220, 234));
+        chartPanel.setBackground(new java.awt.Color(254, 254, 254));
+        chartPanel.setLayout(new java.awt.BorderLayout());
 
-        javax.swing.GroupLayout leftChartPanelLayout = new javax.swing.GroupLayout(leftChartPanel);
-        leftChartPanel.setLayout(leftChartPanelLayout);
-        leftChartPanelLayout.setHorizontalGroup(
-            leftChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 540, Short.MAX_VALUE)
-        );
-        leftChartPanelLayout.setVerticalGroup(
-            leftChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
+        reDrawButton.setText("Re Draw");
+        reDrawButton.setToolTipText("Click to redraw the graph");
+        reDrawButton.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        reDrawButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        reDrawButton.setOpaque(true);
+        reDrawButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reDrawButtonActionPerformed(evt);
+            }
+        });
+        chartPanel.add(reDrawButton, java.awt.BorderLayout.SOUTH);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -265,18 +324,18 @@ public class Generator extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(leftChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 644, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 496, Short.MAX_VALUE)
-                    .addComponent(leftChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -517,58 +576,66 @@ public class Generator extends javax.swing.JFrame {
         if (indexes.length > 1) {
             PropertyCombineModal modal = new PropertyCombineModal(this, true);
             jDialogEscapeKeyHelper.addEscapeListener(modal);
-                    
-                // dostaję tymczasową wartość - w niej będą wszystkie połączone
-                Property p = modal.showDialog();
-                
-                if(p.getNazwa() == null) {
-                    return;
-                }
 
-                // dodajemy do tymczasowej wartości wszystkie z listy
-                for (int e : indexes) {
-                    try {
-                        //wyciągamy z modelu wartości odpowiednią z danego indeksu
-                        Property temp = (Property) _propertiesListModel.get(e);
+            // dostaję tymczasową wartość - w niej będą wszystkie połączone
+            Property p = modal.showDialog();
+
+            if (p.getNazwa() == null) {
+                return;
+            }
+
+            // dodajemy do tymczasowej wartości wszystkie z listy
+            for (int e : indexes) {
+                try {
+                    //wyciągamy z modelu wartości odpowiednią z danego indeksu
+                    Property temp = (Property) _propertiesListModel.get(e);
 //                    Sp.s("Wyjmuję z modelu wartości: " + temp.getNazwa());
 
-                        // usuwamy ją również z atrybutów
-                        if (_attributes[attributesList.getSelectedIndex()].remove(temp)) {
-                            // dodajemy do tymczasowej wartości
-                            p.add(temp);
+                    // usuwamy ją również z atrybutów
+                    if (_attributes[attributesList.getSelectedIndex()].remove(temp)) {
+                        // dodajemy do tymczasowej wartości
+                        p.add(temp);
 //                        Sp.s("Dodaję do wartości: " + temp.getNazwa());
-                        } else {
-                            throw new InvalidPropertyException("Unable to delete the Value at index(" + e + ") from the attributes list.");
-                        }
-                    } catch (InvalidPropertyException ex) {
-                        JOptionPane.showMessageDialog(this, ex.getMessage(), "Error deleting abstract Values", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        throw new InvalidPropertyException("Unable to delete the Value at index(" + e + ") from the attributes list.");
                     }
-                }
-                for (Property pp : p.getElementy()) {
-//                Sp.s("Staram się usunąć z modelu wartości wartość: " + pp.getNazwa());
-                    _propertiesListModel.removeElement(pp);
-                }
-                // teraz musimy zaktualizować poziom naszej nowej wartości, dodać ją w odpowiednim atrybucie zamiast poprzednich oraz zaktualizować listę
-                p.updatePoziomOnCombine();
-
-                try {
-                    // dodajemy do listy atrybutów
-                    _attributes[attributesList.getSelectedIndex()].add(p);
-                    // dodajemy do modelu wartości
-                    _propertiesListModel.addElement(p);
-
-//                for (Property pp : _attributes[attributesList.getSelectedIndex()].getWartości()) {
-//                    Sp.s(pp.getNazwa());
-//                }
                 } catch (InvalidPropertyException ex) {
-                    // w przypadku gdy nie można dodać wartości do atrybutów
-                    JOptionPane.showMessageDialog(this, "Unable to add Abstract Value to Attribute\n" + ex.getMessage(), "Error setting Abstract Values", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error deleting abstract Values", JOptionPane.ERROR_MESSAGE);
                 }
+            }
+            for (Property pp : p.getElementy()) {
+//                Sp.s("Staram się usunąć z modelu wartości wartość: " + pp.getNazwa());
+                _propertiesListModel.removeElement(pp);
+            }
+            // teraz musimy zaktualizować poziom naszej nowej wartości, dodać ją w odpowiednim atrybucie zamiast poprzednich oraz zaktualizować listę
+            p.updatePoziomOnCombine();
+
+            try {
+                // dodajemy do listy atrybutów
+                _attributes[attributesList.getSelectedIndex()].add(p);
+                // dodajemy do modelu wartości
+                _propertiesListModel.addElement(p);
+
+                graphRedraw();
+
+            } catch (InvalidPropertyException ex) {
+                // w przypadku gdy nie można dodać wartości do atrybutów
+                JOptionPane.showMessageDialog(this, "Unable to add Abstract Value to Attribute\n" + ex.getMessage(), "Error setting Abstract Values", JOptionPane.ERROR_MESSAGE);
+            }
 
         } else {
             JOptionPane.showMessageDialog(this, "At least two Values must be selected for this action", "Too few arguments", JOptionPane.WARNING_MESSAGE);
         }
+
     }//GEN-LAST:event_combineAttribsActionPerformed
+
+    private void graphRedraw() {
+        if (graphLinesCrossing.isSelected()) {
+            writeBrackets(_attributes[attributesList.getSelectedIndex()].getWartości(), _attributes[attributesList.getSelectedIndex()].getNazwa());
+        } else {
+            writeBrackets(_attributes[attributesList.getSelectedIndex()].getWartości());
+        }
+    }
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
 
@@ -608,10 +675,11 @@ public class Generator extends javax.swing.JFrame {
                         out.println();
                     }
                 }
+                out.close();
             } catch (Exception e) {
                 // komunikat o błędzie
                 JOptionPane.showMessageDialog(this, "Unable to save taxonomy file...\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                //return false;
+                return;
             }
             // komunikat powodzenia
             JOptionPane.showMessageDialog(this, "Taxonomy saved successfully.", "Saved!", JOptionPane.INFORMATION_MESSAGE);
@@ -645,45 +713,13 @@ public class Generator extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_downArrowButtonActionPerformed
 
-    private void graphTest() {
-        mxGraph graph = new mxGraph();
-        Object parent = graph.getDefaultParent();
-        graph.getModel().beginUpdate();
-        try {
-            Object v1 = graph.insertVertex(parent, null, "Hello,", 20, 20, 80,
-                    60, "defaultVertex;fillColor=red");
-            Object v2 = graph.insertVertex(parent, null, "World!", 200, 150,
-                    80, 60, "defaultVertex;fillColor=yellow");
-            Object v3 = graph.insertVertex(parent, null, "Hello,", 200, 20, 80,
-                    30);
-            Object e1 = graph
-                    .insertEdge(
-                            parent,
-                            null,
-                            "",
-                            v1,
-                            v2,
-                            "edgeStyle=elbowEdgeStyle;elbow=horizontal;"
-                            + "exitX=0.5;exitY=1;exitPerimeter=1;entryX=0;entryY=0;entryPerimeter=1;");
-            Object e2 = graph.insertEdge(parent, null, "", v3, v2,
-                    "edgeStyle=elbowEdgeStyle;elbow=horizontal;orthogonal=0;"
-                    + "entryX=0;entryY=0;entryPerimeter=1;");
-        } finally {
-            graph.getModel().endUpdate();
+    private void reDrawButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reDrawButtonActionPerformed
+        int attr = attributesList.getSelectedIndex();
+        Sp.i(attr);
+        if(attr > -1) {
+            graphRedraw();
         }
-        mxGraphComponent graphComponent = new mxGraphComponent(graph);
-        graphComponent.setDragEnabled(false);
-        graphComponent.setConnectable(false);
-        graphComponent.setBackground(Color.white);
-
-        mxGraphModel graphModel = (mxGraphModel) graphComponent.getGraph().getModel();
-        Collection<Object> cells = graphModel.getCells().values();
-        mxUtils.setCellStyles(graphComponent.getGraph().getModel(),
-                cells.toArray(), mxConstants.STYLE_ENDARROW, mxConstants.NONE);
-
-        leftChartPanel.setLayout(new BorderLayout());
-        leftChartPanel.add(graphComponent);
-    }
+    }//GEN-LAST:event_reDrawButtonActionPerformed
 
     /**
      * Zapisuje projekt jako zaserializowany plik Javy
@@ -748,13 +784,13 @@ public class Generator extends javax.swing.JFrame {
     private javax.swing.JPanel attribPanel;
     private javax.swing.JList attributesList;
     private javax.swing.JScrollPane attributesListScrollPane;
+    private javax.swing.JPanel chartPanel;
     private javax.swing.JButton combineAttribs;
     private javax.swing.JButton downArrowButton;
     private javax.swing.JRadioButton graphLinesCrossing;
     private javax.swing.JRadioButton graphLinesNotCrossing;
     private javax.swing.ButtonGroup graphObjectsPlacement;
     private javax.swing.JPanel graphPropertiesPanel;
-    private javax.swing.JPanel leftChartPanel;
     private javax.swing.JPanel listAndArrowPanel;
     private javax.swing.JButton openButton;
     private javax.swing.JButton openProjectButton;
@@ -764,6 +800,7 @@ public class Generator extends javax.swing.JFrame {
     private javax.swing.JList propertiesList;
     private javax.swing.JScrollPane propertiesListScrollPane;
     private javax.swing.JPanel propertyPanel;
+    private javax.swing.JButton reDrawButton;
     private javax.swing.JPanel rightElementsGridPanel;
     private javax.swing.JButton saveButton;
     private javax.swing.JButton saveProjectButton;
