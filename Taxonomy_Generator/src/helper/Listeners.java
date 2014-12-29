@@ -3,10 +3,12 @@ package helper;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import main.Generator;
 import models.*;
 
 /**
@@ -16,7 +18,7 @@ import models.*;
  */
 public class Listeners {
 
-    public static ListSelectionListener AttributesListListener(Attribute[] _attributes, final JList attributesList, DefaultListModel _propertiesListModel) {
+    public static ListSelectionListener AttributesListListener(Attribute[] _attributes, final JList attributesList, DefaultListModel _propertiesListModel, final Generator frame) {
         final Attribute[] tempAttr = _attributes;
         final DefaultListModel tempPropModel = _propertiesListModel;
 
@@ -40,6 +42,7 @@ public class Listeners {
                     }
                 } catch (NullPointerException ex) {
                 }
+                frame.graphRedraw();
             }
         };
     }

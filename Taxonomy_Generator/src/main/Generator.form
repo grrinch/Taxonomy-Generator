@@ -128,7 +128,7 @@
                           <ComponentRef name="graphObjectsPlacement"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Root ren."/>
-                        <Property name="toolTipText" type="java.lang.String" value="Lines in the graph might cross"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Graph will rename ROOT with attribute name when possible"/>
                       </Properties>
                       <AccessibilityProperties>
                         <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="graphLinesCrossing"/>
@@ -149,7 +149,7 @@
                         </Property>
                         <Property name="selected" type="boolean" value="true"/>
                         <Property name="text" type="java.lang.String" value="Don&apos;t rename"/>
-                        <Property name="toolTipText" type="java.lang.String" value="Avoids crossing of the lines in the graph"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Graph won&apos;t rename ROOT"/>
                       </Properties>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">

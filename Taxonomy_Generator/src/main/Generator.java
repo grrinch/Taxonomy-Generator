@@ -68,7 +68,9 @@ public class Generator extends javax.swing.JFrame {
         _attributesListModel = new DefaultListModel();
 
         initComponents();
-        //graphTest();
+        ImageIcon icon = new ImageIcon(this.getClass().getResource("/icons/ikona.png"));
+        this.setIconImage(icon.getImage());
+        getRootPane().setDefaultButton(combineAttribs);
     }
 
     private void writeBrackets(Property[] p) {
@@ -87,8 +89,8 @@ public class Generator extends javax.swing.JFrame {
     private void graphTest(String bnh) {
         try {
             Component[] comps = chartPanel.getComponents();
-            for(Component c: comps) {
-                if(c instanceof JLabel) {
+            for (Component c : comps) {
+                if (c instanceof JLabel) {
                     chartPanel.remove(c);
                 }
             }
@@ -103,22 +105,24 @@ public class Generator extends javax.swing.JFrame {
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("User-Agent", "Mozilla 5.0");
 
-            // Writing the post data to the HTTP request body
-            BufferedWriter httpRequestBodyWriter
-                    = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
-            httpRequestBodyWriter.write("data=" + toSend);
-            httpRequestBodyWriter.close();
+            try ( // Writing the post data to the HTTP request body
+                    BufferedWriter httpRequestBodyWriter = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()))) {
+                httpRequestBodyWriter.write("data=" + toSend);
+            }
 
             BufferedImage image = ImageIO.read(urlConnection.getInputStream());
             JLabel lab = new JLabel(new ImageIcon(image, "Attribute Taxonomy"));
             chartPanel.add(lab, BorderLayout.CENTER);
             chartPanel.updateUI();
         } catch (UnsupportedEncodingException | MalformedURLException | ProtocolException e) {
-            e.printStackTrace();
+            // komunikat o błędzie
+            JOptionPane.showMessageDialog(this, "Unable to re-draw taxonomy. No internet access?\n" + e.toString(), "Communication IO Exception", JOptionPane.WARNING_MESSAGE);
         } catch (IOException e) {
-            e.printStackTrace();
+            // komunikat o błędzie
+            JOptionPane.showMessageDialog(this, "Unable to re-draw taxonomy. Input/Output exception:\n" + e.toString(), "File IO Exception", JOptionPane.WARNING_MESSAGE);
         } catch (Exception e) {
-            e.printStackTrace();
+            // komunikat o błędzie
+            JOptionPane.showMessageDialog(this, "Unable to re-draw taxonomy. Input/Output exception:\n" + e.toString(), "File IO Exception", JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -183,7 +187,7 @@ public class Generator extends javax.swing.JFrame {
 
         graphObjectsPlacement.add(graphLinesCrossing);
         graphLinesCrossing.setText("Root ren.");
-        graphLinesCrossing.setToolTipText("Lines in the graph might cross");
+        graphLinesCrossing.setToolTipText("Graph will rename ROOT with attribute name when possible");
         graphLinesCrossing.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 graphLinesCrossingActionPerformed(evt);
@@ -195,7 +199,7 @@ public class Generator extends javax.swing.JFrame {
         graphObjectsPlacement.add(graphLinesNotCrossing);
         graphLinesNotCrossing.setSelected(true);
         graphLinesNotCrossing.setText("Don't rename");
-        graphLinesNotCrossing.setToolTipText("Avoids crossing of the lines in the graph");
+        graphLinesNotCrossing.setToolTipText("Graph won't rename ROOT");
         graphPropertiesPanel.add(graphLinesNotCrossing, java.awt.BorderLayout.WEST);
 
         projectAndGraphPropertiesPanel.add(graphPropertiesPanel, java.awt.BorderLayout.SOUTH);
@@ -411,7 +415,7 @@ public class Generator extends javax.swing.JFrame {
      * Binduje nasłuchiwanie na listach atrybutów i wartości
      */
     private void setEventListenersForAttributeAndPropertyLists() {
-        attributesList.addListSelectionListener(helper.Listeners.AttributesListListener(_attributes, attributesList, _propertiesListModel));
+        attributesList.addListSelectionListener(helper.Listeners.AttributesListListener(_attributes, attributesList, _propertiesListModel, this));
         attributesList.addMouseListener(helper.Listeners.AttributesDoubleClickListener(_attributes));
     }
 
@@ -629,7 +633,7 @@ public class Generator extends javax.swing.JFrame {
 
     }//GEN-LAST:event_combineAttribsActionPerformed
 
-    private void graphRedraw() {
+    public void graphRedraw() {
         if (graphLinesCrossing.isSelected()) {
             writeBrackets(_attributes[attributesList.getSelectedIndex()].getWartości(), _attributes[attributesList.getSelectedIndex()].getNazwa());
         } else {
@@ -695,6 +699,7 @@ public class Generator extends javax.swing.JFrame {
         propertiesList.setSelectedIndex(pos2);
         propertiesList.updateUI();
         jListSwapperHelper.swapAttributeValues(_attributesListModel, att, _propertiesListModel, (Attribute) _attributesListModel.get(att));
+        graphRedraw();
     }
 
     private void upArrowButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upArrowButtonActionPerformed
@@ -715,8 +720,8 @@ public class Generator extends javax.swing.JFrame {
 
     private void reDrawButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reDrawButtonActionPerformed
         int attr = attributesList.getSelectedIndex();
-        Sp.i(attr);
-        if(attr > -1) {
+//        Sp.i(attr);
+        if (attr > -1) {
             graphRedraw();
         }
     }//GEN-LAST:event_reDrawButtonActionPerformed
