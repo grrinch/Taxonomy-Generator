@@ -18,9 +18,9 @@ import models.*;
  */
 public class Listeners {
 
-    public static ListSelectionListener AttributesListListener(Attribute[] _attributes, final JList attributesList, DefaultListModel _propertiesListModel, final Generator frame) {
+    public static ListSelectionListener AttributesListListener(Attribute[] _attributes, final JList attributesList, DefaultListModel _valuesListModel, final Generator frame) {
         final Attribute[] tempAttr = _attributes;
-        final DefaultListModel tempPropModel = _propertiesListModel;
+        final DefaultListModel tempPropModel = _valuesListModel;
 
         return new ListSelectionListener() {
             @Override
@@ -28,14 +28,14 @@ public class Listeners {
                 try {
                     if (!arg0.getValueIsAdjusting()) {
                         if (attributesList.getSelectedIndex() > -1) {
-                            Property[] _properties;
-                            _properties = tempAttr[attributesList.getSelectedIndex()].getWartości();
+                            Value[] _values;
+                            _values = tempAttr[attributesList.getSelectedIndex()].getWartości();
 
-                            if (null != _properties) {
+                            if (null != _values) {
                                 tempPropModel.clear();
 
-                                for (Property property : _properties) {
-                                    tempPropModel.addElement(property);
+                                for (Value valuee : _values) {
+                                    tempPropModel.addElement(valuee);
                                 }
                             }
                         }

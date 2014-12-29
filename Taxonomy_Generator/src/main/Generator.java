@@ -73,11 +73,11 @@ public class Generator extends javax.swing.JFrame {
         getRootPane().setDefaultButton(combineAttribs);
     }
 
-    private void writeBrackets(Property[] p) {
+    private void writeBrackets(Value[] p) {
         writeBrackets(p, null);
     }
 
-    private void writeBrackets(Property[] p, String rootName) {
+    private void writeBrackets(Value[] p, String rootName) {
         BracketNotationHelper bnh = new BracketNotationHelper(p);
         if (rootName == null || rootName.equals("")) {
             graphTest(bnh.print());
@@ -472,7 +472,7 @@ public class Generator extends javax.swing.JFrame {
             if (!_attributes[j].find(j + 1, learningCaseProperties[j])) { // sprawdzam, czy atrybut ma już wartość o dokładnie takim ID oraz wartości/nazwie
                 // nie ma, więc próbuję dodać
                 try {
-                    _attributes[j].add(new Property(j + 1, learningCaseProperties[j]));
+                    _attributes[j].add(new Value(j + 1, learningCaseProperties[j]));
                 } catch (InvalidPropertyException ex) {
 
                 }
@@ -481,7 +481,7 @@ public class Generator extends javax.swing.JFrame {
         } else { // nie ma jeszcze żadnych wartości w tym atrybucie
             // próbuję dodać nową wartość w danym miejscu oraz o odpowiedniej wartości
             try {
-                _attributes[j].add(new Property(j + 1, learningCaseProperties[j]));
+                _attributes[j].add(new Value(j + 1, learningCaseProperties[j]));
             } catch (InvalidPropertyException ex) {
 
             }
@@ -582,7 +582,7 @@ public class Generator extends javax.swing.JFrame {
             jDialogEscapeKeyHelper.addEscapeListener(modal);
 
             // dostaję tymczasową wartość - w niej będą wszystkie połączone
-            Property p = modal.showDialog();
+            Value p = modal.showDialog();
 
             if (p.getNazwa() == null) {
                 return;
@@ -592,7 +592,7 @@ public class Generator extends javax.swing.JFrame {
             for (int e : indexes) {
                 try {
                     //wyciągamy z modelu wartości odpowiednią z danego indeksu
-                    Property temp = (Property) _propertiesListModel.get(e);
+                    Value temp = (Value) _propertiesListModel.get(e);
 //                    Sp.s("Wyjmuję z modelu wartości: " + temp.getNazwa());
 
                     // usuwamy ją również z atrybutów
@@ -607,7 +607,7 @@ public class Generator extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error deleting abstract Values", JOptionPane.ERROR_MESSAGE);
                 }
             }
-            for (Property pp : p.getElementy()) {
+            for (Value pp : p.getElementy()) {
 //                Sp.s("Staram się usunąć z modelu wartości wartość: " + pp.getNazwa());
                 _propertiesListModel.removeElement(pp);
             }
@@ -666,7 +666,7 @@ public class Generator extends javax.swing.JFrame {
                     PrintWriter out = new PrintWriter(filename)) {
                 for (Attribute a : _attributes) {
                     Boolean flag = false;
-                    for (Property p : a.getWartości()) {
+                    for (Value p : a.getWartości()) {
                         if (p.getPoziom() > 0) {
                             if (flag == false) {
                                 out.print(a.getId());

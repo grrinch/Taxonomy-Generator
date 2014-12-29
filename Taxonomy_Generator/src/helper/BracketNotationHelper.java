@@ -1,11 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package helper;
 
-import models.Property;
+import models.Value;
 
 /**
  *
@@ -13,13 +8,13 @@ import models.Property;
  */
 public class BracketNotationHelper {
 
-    private Property[] property;
+    private Value[] valuee;
     private String root = "ROOT";
     public static final String BR_START = "[";
     public static final String BR_END = "]";
 
-    public BracketNotationHelper(Property[] p) {
-        property = p;
+    public BracketNotationHelper(Value[] p) {
+        valuee = p;
     }
 
     public void setRoot(String r) {
@@ -52,7 +47,7 @@ public class BracketNotationHelper {
                 .replace("Ć", "C")
         );
         s.append(" ");
-        for (Property pp : property) {
+        for (Value pp : valuee) {
             s.append(writeProperty(pp));
         }
         s.append(" ");
@@ -65,7 +60,7 @@ public class BracketNotationHelper {
         return print();
     }
 
-    public String writeProperty(Property p) {
+    public String writeProperty(Value p) {
         StringBuilder s = new StringBuilder();
         s.append(getStart());
         s.append(p.toString()
@@ -92,7 +87,7 @@ public class BracketNotationHelper {
         );
         if (p.getPoziom() != 0) {
             s.append(" ");
-            for (Property pp : p.getElementy()) {
+            for (Value pp : p.getElementy()) {
                 s.append(writeProperty(pp));
             }
         }

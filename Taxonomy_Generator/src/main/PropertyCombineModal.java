@@ -8,7 +8,7 @@ package main;
 import exceptions.WrongNumberException;
 import java.text.NumberFormat;
 import javax.swing.JOptionPane;
-import models.Property;
+import models.Value;
 
 /**
  *
@@ -29,7 +29,7 @@ public class PropertyCombineModal extends javax.swing.JDialog {
 
     private NumberFormat doubleFormat;
 
-    private Property p;
+    private Value p;
 
     /**
      * Creates new form PropertyCombineModalInput
@@ -43,7 +43,7 @@ public class PropertyCombineModal extends javax.swing.JDialog {
         initComponents();
         getRootPane().setDefaultButton(okButton);
         kosztField.setValue((double) 0);
-        p = new Property(null, 0);
+        p = new Value(null, 0);
     }
 
     /**
@@ -186,7 +186,7 @@ public class PropertyCombineModal extends javax.swing.JDialog {
 
     }//GEN-LAST:event_okButtonActionPerformed
 
-    public Property showDialog() {
+    public Value showDialog() {
         setModal(true);
         setVisible(true);
         return p;

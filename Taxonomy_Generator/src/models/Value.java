@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author radmin
  */
-public class Property implements Comparable<Property>, Serializable {
+public class Value implements Comparable<Value>, Serializable {
 
     /**
      * kolejność z JListy
@@ -31,7 +31,7 @@ public class Property implements Comparable<Property>, Serializable {
     /**
      * tablica wartości, które mogą należeć do danej wartości
      */
-    private List<Property> _elementy = new ArrayList<Property>();
+    private List<Value> _elementy = new ArrayList<Value>();
 
     /**
      * poziom na którym znajduje się dana wartości na liście
@@ -43,7 +43,7 @@ public class Property implements Comparable<Property>, Serializable {
      *
      * @param _koszt koszt połączenia wartości
      */
-    public Property(double _koszt) {
+    public Value(double _koszt) {
         this._koszt = _koszt;
     }
 
@@ -53,7 +53,7 @@ public class Property implements Comparable<Property>, Serializable {
      * @param nazwa nazwa wartości
      * @param _koszt koszt
      */
-    public Property(String nazwa, double _koszt) {
+    public Value(String nazwa, double _koszt) {
         _nazwa = nazwa;
     }
 
@@ -62,7 +62,7 @@ public class Property implements Comparable<Property>, Serializable {
      *
      * @param id pozycja na JLiście
      */
-    public Property(int id) {
+    public Value(int id) {
         _id = id;
     }
 
@@ -73,7 +73,7 @@ public class Property implements Comparable<Property>, Serializable {
      * @param nazwa nazwa wartości
      * @param koszt koszt
      */
-    public Property(int id, String nazwa, double koszt) {
+    public Value(int id, String nazwa, double koszt) {
         _nazwa = nazwa;
         _id = id;
         _koszt = koszt;
@@ -85,7 +85,7 @@ public class Property implements Comparable<Property>, Serializable {
      * @param id pozycja na JLiście/w modelu/tablicy
      * @param nazwa nazwa (wartość)
      */
-    public Property(int id, String nazwa) {
+    public Value(int id, String nazwa) {
         _nazwa = nazwa;
         _id = id;
     }
@@ -144,7 +144,7 @@ public class Property implements Comparable<Property>, Serializable {
         if (_elementy.size() > 0) {
             Double koszt = (double) 0;
 
-            for (Property element : getElementy()) {
+            for (Value element : getElementy()) {
                 koszt += element.getKoszt();
             }
 
@@ -166,10 +166,10 @@ public class Property implements Comparable<Property>, Serializable {
     /**
      * Zwraca tablicę wartości wewnątrz tej wartości
      *
-     * @return Property[] wartości wewnątrz wartości (połączone)
+     * @return Value[] wartości wewnątrz wartości (połączone)
      */
-    public Property[] getElementy() {
-        return _elementy.toArray(new Property[_elementy.size()]);
+    public Value[] getElementy() {
+        return _elementy.toArray(new Value[_elementy.size()]);
     }
 
     /**
@@ -178,7 +178,7 @@ public class Property implements Comparable<Property>, Serializable {
      * @param p wartość, którą dodajemy
      * @throws InvalidPropertyException
      */
-    public void add(Property p) throws InvalidPropertyException {
+    public void add(Value p) throws InvalidPropertyException {
         if (this != p) {
             _elementy.add(p);
         } else {
@@ -193,7 +193,7 @@ public class Property implements Comparable<Property>, Serializable {
      * @return podaje, który obiekt ma większy koszt
      */
     @Override
-    public int compareTo(Property o) {
+    public int compareTo(Value o) {
         return Double.compare(this.getKoszt(), o.getKoszt());
     }
 
@@ -222,7 +222,7 @@ public class Property implements Comparable<Property>, Serializable {
             String ret = new String();
             int i = 0;
 
-            for (Property element : getElementy()) {
+            for (Value element : getElementy()) {
                 if (i == 0) {
                     ret = forToString ? element.toString() : element.rawNazwa(false);
                 } else {
@@ -252,7 +252,7 @@ public class Property implements Comparable<Property>, Serializable {
      */
     public void updatePoziomOnCombine() {
         int max = -1;
-        for (Property temp : _elementy) {
+        for (Value temp : _elementy) {
             if (temp.getPoziom() > max) {
                 max = temp.getPoziom();
             }
@@ -269,7 +269,7 @@ public class Property implements Comparable<Property>, Serializable {
             i = 0;
             StringBuilder tmp = new StringBuilder();
             Boolean flag = false;
-            for (Property p : getElementy()) {
+            for (Value p : getElementy()) {
                 if (i == 0) {
                     tmp.append(p.rawNazwa(false));
                     flag = true;
@@ -284,7 +284,7 @@ public class Property implements Comparable<Property>, Serializable {
             }
         } else {
             StringBuilder tmp = new StringBuilder();
-            for (Property p : getElementy()) {
+            for (Value p : getElementy()) {
                 tmp.append(p.taxonomy());
 
             }

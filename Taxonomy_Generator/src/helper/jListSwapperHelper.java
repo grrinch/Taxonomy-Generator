@@ -1,13 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package helper;
 
 import javax.swing.DefaultListModel;
 import models.Attribute;
-import models.Property;
+import models.Value;
 
 /**
  *
@@ -22,7 +17,7 @@ public class jListSwapperHelper {
      */
     public static void swapElements(int pos1, int pos2, DefaultListModel listModel) {
         try {
-        Property tmp = (Property) listModel.get(pos1);
+        Value tmp = (Value) listModel.get(pos1);
         listModel.set(pos1, listModel.get(pos2));
         listModel.set(pos2, tmp);
         }
@@ -34,7 +29,7 @@ public class jListSwapperHelper {
 //        System.out.print("Indexes attrib: ");
 //        int j = 0;
 //        Attribute _tmpA = (Attribute) attrModel.get(index);
-//        for(Property p: _tmpA.getWartości()) {
+//        for(Value p: _tmpA.getWartości()) {
 //            System.out.print((j == 0 ? "": ", ") + p.getId());
 //            j++;
 //        }
@@ -44,16 +39,16 @@ public class jListSwapperHelper {
 //        System.out.print("Indexes: ");
 //        int k = 0;
 //        for(Object o: listModel.toArray()) {
-//            System.out.print((k == 0 ? "": ", ") + ((Property) o).getId());
+//            System.out.print((k == 0 ? "": ", ") + ((Value) o).getId());
 //            k++;
 //        }
 //        System.out.println();
 //        Sp.s("-------------------------------");
         
-        Property[] prop = new Property[listModel.toArray().length];
+        Value[] prop = new Value[listModel.toArray().length];
         int i = 0;
         for(Object p: listModel.toArray()) {
-            prop[i] = (Property) p;
+            prop[i] = (Value) p;
             prop[i].setId(i);
             i++;
         }
@@ -62,7 +57,7 @@ public class jListSwapperHelper {
 //        Sp.s("AttributeListModel: " + attrModel);
 //        System.out.print("Indexes attrib: ");
 //        Attribute _tmpB = (Attribute) attrModel.get(index);
-//        for(Property p: _tmpB.getWartości()) {
+//        for(Value p: _tmpB.getWartości()) {
 //            System.out.print((j == 0 ? "": ", ") + p.getId());
 //            j++;
 //        }
@@ -72,7 +67,7 @@ public class jListSwapperHelper {
 //        System.out.print("Indexes: ");
 //        k = 0;
 //        for(Object o: listModel.toArray()) {
-//            System.out.print((k == 0 ? "": ", ") + ((Property) o).getId());
+//            System.out.print((k == 0 ? "": ", ") + ((Value) o).getId());
 //            k++;
 //        }
 //        System.out.println();

@@ -26,7 +26,7 @@ public class Attribute implements Serializable {
     /**
      * Lista jego wartości.
      */
-    private List<Property> _wartości = new ArrayList<Property>();
+    private List<Value> _wartości = new ArrayList<Value>();
 
     /* *
      * Konstruktor - pusty atrybut. Kiedy używamy: tylko w przypadku serializacji do XMLa
@@ -62,10 +62,10 @@ public class Attribute implements Serializable {
      * @param _nazwa nazwa atrybutu
      * @param wartości wartości atrybutu
      */
-    public Attribute(int _id, String _nazwa, Property[] wartości) {
+    public Attribute(int _id, String _nazwa, Value[] wartości) {
         this._id = _id;
         this._nazwa = _nazwa;
-        for (Property wlasciwosc : wartości) {
+        for (Value wlasciwosc : wartości) {
             this._wartości.add(wlasciwosc);
         }
     }
@@ -93,23 +93,23 @@ public class Attribute implements Serializable {
      *
      * @return
      */
-    public Property[] getWartości() {
-        Collections.sort(_wartości, new Comparator<Property>() {
+    public Value[] getWartości() {
+        Collections.sort(_wartości, new Comparator<Value>() {
             @Override
-            public int compare(Property p1, Property p2) {
+            public int compare(Value p1, Value p2) {
 
                 return p1.getNazwa().compareTo(p2.getNazwa());
             }
         });
 
-        Collections.sort(_wartości, new Comparator<Property>() {
+        Collections.sort(_wartości, new Comparator<Value>() {
             @Override
-            public int compare(Property p1, Property p2) {
+            public int compare(Value p1, Value p2) {
 
                 return p1.getId() - p2.getId();
             }
         });
-        return _wartości.toArray(new Property[_wartości.size()]);
+        return _wartości.toArray(new Value[_wartości.size()]);
     }
 
     /**
@@ -136,8 +136,8 @@ public class Attribute implements Serializable {
      * @param p
      * @throws InvalidPropertyException
      */
-    public void add(Property p) throws InvalidPropertyException {
-        for (Property element : _wartości) {
+    public void add(Value p) throws InvalidPropertyException {
+        for (Value element : _wartości) {
             if (p == element) {
                 throw new InvalidPropertyException("Not allowed to add the same property multiple times!");
             }
@@ -155,7 +155,7 @@ public class Attribute implements Serializable {
      * @return boolean czy zawiera
      */
     public boolean find(int id, String nazwa) {
-        for (Property prop : getWartości()) {
+        for (Value prop : getWartości()) {
             if (prop.getId() == id && prop.getNazwa().equals(nazwa)) {
                 return true;
             }
@@ -169,7 +169,7 @@ public class Attribute implements Serializable {
      * @param p wartość
      * @return boolean
      */
-    public boolean remove(Property p) {
+    public boolean remove(Value p) {
         if (_wartości.contains(p)) {
             _wartości.remove(p);
             return true;
@@ -197,10 +197,10 @@ public class Attribute implements Serializable {
      *
      * @param array wartosci
      */
-    public void recreateWartosci(Property[] wartosci) {
+    public void recreateWartosci(Value[] wartosci) {
         _wartości.clear();
 
-        for (Property p : wartosci) {
+        for (Value p : wartosci) {
             _wartości.add(p);
         }
     }
