@@ -134,6 +134,8 @@ public class Generator extends javax.swing.JFrame {
     private void initComponents() {
 
         graphObjectsPlacement = new javax.swing.ButtonGroup();
+        chartPanel = new javax.swing.JPanel();
+        reDrawButton = new javax.swing.JButton();
         rightElementsGridPanel = new javax.swing.JPanel();
         attribPanel = new javax.swing.JPanel();
         attributesListScrollPane = new javax.swing.JScrollPane();
@@ -156,12 +158,25 @@ public class Generator extends javax.swing.JFrame {
         arrowPanel = new javax.swing.JPanel();
         upArrowButton = new javax.swing.JButton();
         downArrowButton = new javax.swing.JButton();
-        chartPanel = new javax.swing.JPanel();
-        reDrawButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Taxonomy Generator");
         setName("MainFrame"); // NOI18N
+
+        chartPanel.setBackground(new java.awt.Color(254, 254, 254));
+        chartPanel.setLayout(new java.awt.BorderLayout());
+
+        reDrawButton.setText("Re Draw");
+        reDrawButton.setToolTipText("Click to redraw the graph");
+        reDrawButton.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        reDrawButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        reDrawButton.setOpaque(true);
+        reDrawButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reDrawButtonActionPerformed(evt);
+            }
+        });
+        chartPanel.add(reDrawButton, java.awt.BorderLayout.SOUTH);
 
         rightElementsGridPanel.setLayout(new java.awt.BorderLayout(0, 5));
 
@@ -307,29 +322,14 @@ public class Generator extends javax.swing.JFrame {
 
         rightElementsGridPanel.add(propertyPanel, java.awt.BorderLayout.CENTER);
 
-        chartPanel.setBackground(new java.awt.Color(254, 254, 254));
-        chartPanel.setLayout(new java.awt.BorderLayout());
-
-        reDrawButton.setText("Re Draw");
-        reDrawButton.setToolTipText("Click to redraw the graph");
-        reDrawButton.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        reDrawButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        reDrawButton.setOpaque(true);
-        reDrawButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                reDrawButtonActionPerformed(evt);
-            }
-        });
-        chartPanel.add(reDrawButton, java.awt.BorderLayout.SOUTH);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(chartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 644, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -337,9 +337,9 @@ public class Generator extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
+                    .addComponent(chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
