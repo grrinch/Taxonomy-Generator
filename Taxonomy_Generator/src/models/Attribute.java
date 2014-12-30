@@ -27,6 +27,11 @@ public class Attribute implements Serializable {
      * Lista jego wartości.
      */
     private List<Value> _wartości = new ArrayList<Value>();
+    
+    /**
+     * Wartość kosztu korzenia tego atrybutu
+     */
+    private Integer _koszt = 0;
 
     /* *
      * Konstruktor - pusty atrybut. Kiedy używamy: tylko w przypadku serializacji do XMLa
@@ -203,5 +208,21 @@ public class Attribute implements Serializable {
         for (Value p : wartosci) {
             _wartości.add(p);
         }
+    }
+
+    /**
+     * Getter dla wartości kosztu korzenia atrybutu
+     * @return koszt korzenia atrybutu
+     */
+    public Integer getKoszt() {
+        return _koszt;
+    }
+
+    /**
+     * Setter dla wartości kosztu korzenia atrybutu
+     * @param _koszt 
+     */
+    public void setKoszt(Integer _koszt) {
+        this._koszt = _koszt;
     }
 }

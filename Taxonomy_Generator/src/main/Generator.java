@@ -73,12 +73,12 @@ public class Generator extends javax.swing.JFrame {
         getRootPane().setDefaultButton(combineAttribs);
     }
 
-    private void writeBrackets(Value[] p) {
-        writeBrackets(p, null);
+    private void writeBrackets(Value[] p, Integer root_cost) {
+        writeBrackets(p, null, root_cost);
     }
 
-    private void writeBrackets(Value[] p, String rootName) {
-        BracketNotationHelper bnh = new BracketNotationHelper(p);
+    private void writeBrackets(Value[] p, String rootName, Integer root_cost) {
+        BracketNotationHelper bnh = new BracketNotationHelper(p, root_cost);
         if (rootName == null || rootName.equals("")) {
             graphTest(bnh.print());
         } else {
@@ -635,9 +635,9 @@ public class Generator extends javax.swing.JFrame {
 
     public void graphRedraw() {
         if (graphLinesCrossing.isSelected()) {
-            writeBrackets(_attributes[attributesList.getSelectedIndex()].getWartości(), _attributes[attributesList.getSelectedIndex()].getNazwa());
+            writeBrackets(_attributes[attributesList.getSelectedIndex()].getWartości(), _attributes[attributesList.getSelectedIndex()].getNazwa(), _attributes[attributesList.getSelectedIndex()].getKoszt());
         } else {
-            writeBrackets(_attributes[attributesList.getSelectedIndex()].getWartości());
+            writeBrackets(_attributes[attributesList.getSelectedIndex()].getWartości(), _attributes[attributesList.getSelectedIndex()].getKoszt());
         }
     }
 

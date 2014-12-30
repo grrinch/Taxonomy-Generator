@@ -8,17 +8,19 @@ import models.Value;
  */
 public class BracketNotationHelper {
 
-    private Value[] valuee;
-    private String root = "ROOT";
+    private Value[] _valuee;
+    private Integer _root_value = 0;
+    private String _root = "ROOT";
     public static final String BR_START = "[";
     public static final String BR_END = "]";
 
-    public BracketNotationHelper(Value[] p) {
-        valuee = p;
+    public BracketNotationHelper(Value[] p, Integer root_value) {
+        _valuee = p;
+        _root_value = root_value;
     }
 
     public void setRoot(String r) {
-        root = r;
+        _root = r;
     }
 
     public String print() {
@@ -46,8 +48,9 @@ public class BracketNotationHelper {
                 .replace("Ń", "N")
                 .replace("Ć", "C")
         );
+        s.append("_" + _root_value);
         s.append(" ");
-        for (Value pp : valuee) {
+        for (Value pp : _valuee) {
             s.append(writeProperty(pp));
         }
         s.append(" ");
@@ -85,6 +88,11 @@ public class BracketNotationHelper {
                 .replace("Ń", "N")
                 .replace("Ć", "C")
         );
+        if(p.getKoszt() != 0) {
+            s.append("_");
+            s.append(p.getKoszt());
+        }
+        
         if (p.getPoziom() != 0) {
             s.append(" ");
             for (Value pp : p.getElementy()) {
@@ -104,6 +112,6 @@ public class BracketNotationHelper {
     }
 
     public String getRoot() {
-        return root;
+        return _root;
     }
 }

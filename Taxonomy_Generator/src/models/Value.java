@@ -26,7 +26,7 @@ public class Value implements Comparable<Value>, Serializable {
     /**
      * koszt danej wartości
      */
-    private double _koszt = 0.0;
+    private Integer _koszt = 0;
 
     /**
      * tablica wartości, które mogą należeć do danej wartości
@@ -43,7 +43,7 @@ public class Value implements Comparable<Value>, Serializable {
      *
      * @param _koszt koszt połączenia wartości
      */
-    public Value(double _koszt) {
+    public Value(Integer _koszt) {
         this._koszt = _koszt;
     }
 
@@ -53,8 +53,9 @@ public class Value implements Comparable<Value>, Serializable {
      * @param nazwa nazwa wartości
      * @param _koszt koszt
      */
-    public Value(String nazwa, double _koszt) {
+    public Value(String nazwa, Integer _koszt) {
         _nazwa = nazwa;
+        this._koszt = _koszt;
     }
 
     /**
@@ -73,7 +74,7 @@ public class Value implements Comparable<Value>, Serializable {
      * @param nazwa nazwa wartości
      * @param koszt koszt
      */
-    public Value(int id, String nazwa, double koszt) {
+    public Value(int id, String nazwa, Integer koszt) {
         _nazwa = nazwa;
         _id = id;
         _koszt = koszt;
@@ -159,7 +160,7 @@ public class Value implements Comparable<Value>, Serializable {
      *
      * @param _koszt koszt
      */
-    public void setKoszt(double _koszt) {
+    public void setKoszt(Integer _koszt) {
         this._koszt = _koszt;
     }
 

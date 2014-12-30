@@ -16,7 +16,6 @@ import models.Value;
  */
 public class PropertyCombineModal extends javax.swing.JDialog {
 
-
     /**
      * minimalna liczba miejsc po przecinku dla kosztu
      */
@@ -42,7 +41,7 @@ public class PropertyCombineModal extends javax.swing.JDialog {
         formatterInit();
         initComponents();
         getRootPane().setDefaultButton(okButton);
-        kosztField.setValue((double) 0);
+        kosztField.setValue(0);
         p = new Value(null, 0);
     }
 
@@ -56,7 +55,7 @@ public class PropertyCombineModal extends javax.swing.JDialog {
          */
         //doubleFormat.setMinimumFractionDigits(PropertyCombineModalInput.MinimumFractionDigits);
         //doubleFormat.setMaximumFractionDigits(PropertyCombineModalInput.MaximumFractionDigits);
-        doubleFormat.setParseIntegerOnly(false);
+        doubleFormat.setParseIntegerOnly(true);
     }
 
     /**
@@ -161,22 +160,26 @@ public class PropertyCombineModal extends javax.swing.JDialog {
 
     /**
      * Akcja po kliknięciu przycisku ok
-     * @param evt 
+     *
+     * @param evt
      */
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         String nazwa = nazwaField.getText();
-        Double koszt = (double) 0;
+        Integer koszt = 0;
 
         try {
             if (kosztField.getValue() instanceof Long) {
                 Long k = (Long) kosztField.getValue();
-                koszt = k.doubleValue();
+                koszt = k.intValue();
             } else if (kosztField.getValue() instanceof Double) {
-                koszt = (Double) kosztField.getValue();
+                Double k = (Double) kosztField.getValue();
+                koszt = k.intValue();
+            } else if (kosztField.getValue() instanceof Integer) {
+                koszt = (Integer) kosztField.getValue();
             } else {
                 throw new WrongNumberException("Neiter double nor long given.");
             }
-            
+
             p.setKoszt(koszt);
             p.setNazwa(nazwa);
             exit();
