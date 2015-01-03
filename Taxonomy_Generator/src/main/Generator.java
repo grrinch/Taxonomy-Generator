@@ -9,6 +9,7 @@ import helper.jListSwapperHelper;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Insets;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -27,14 +28,19 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionListener;
 import models.*;
 
 /**
@@ -53,12 +59,33 @@ public class Generator extends javax.swing.JFrame {
     /**
      * Model dla JListy atrybutów
      */
-    private final DefaultListModel _attributesListModel;
+    private DefaultListModel _attributesListModel;
 
     /**
      * Model dla JListy wartości
      */
-    private final DefaultListModel _propertiesListModel;
+    private DefaultListModel _propertiesListModel;
+    
+    /**
+     * Mapa do ścieżek: otwarcia, zapisu taksonomii oraz zapisu projektu.
+     */
+    private HashMap _paths = new HashMap<String, String>(3);
+    
+    /**
+     * Poniżej 3 wartości domyślne, po których indeksowana będzie HashMapa ścieżek
+     * <b>otwarcia surowego pliku danych</b>
+     */
+    public static final String openPath = "openPath";
+    /**
+     * Poniżej 3 wartości domyślne, po których indeksowana będzie HashMapa ścieżek
+     * <b>zapis taksonomii</b>
+     */
+    public static final String savePath = "savePath";
+    /**
+     * Poniżej 3 wartości domyślne, po których indeksowana będzie HashMapa ścieżek
+     * <b>zapis projektu</b>
+     */
+    public static final String projectPath = "projectPath";
 
     /**
      * Creates new form Generator
@@ -66,11 +93,17 @@ public class Generator extends javax.swing.JFrame {
     public Generator() {
         _propertiesListModel = new DefaultListModel();
         _attributesListModel = new DefaultListModel();
-
         initComponents();
+        initPaths();
         ImageIcon icon = new ImageIcon(this.getClass().getResource("/icons/ikona.png"));
         this.setIconImage(icon.getImage());
         getRootPane().setDefaultButton(combineAttribs);
+    }
+
+    private void initPaths() {
+        _paths.put(openPath, null);
+        _paths.put(savePath, null);
+        _paths.put(projectPath, null);
     }
 
     private void writeBrackets(Value[] p, Integer root_cost) {
@@ -366,8 +399,13 @@ public class Generator extends javax.swing.JFrame {
         // nadaję oknu tytuł
         plikDanych.setDialogTitle("Select raw data file to open");
 
-        // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "data"
-        plikDanych.setCurrentDirectory(new File("../data/"));
+        try {
+            // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "data"
+            plikDanych.setCurrentDirectory(new File(_paths.get(openPath) != null ? (String) _paths.get(openPath) : this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath() + "data/"));
+//            Sp.s(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath() + "data/");
+        } catch (URISyntaxException ex) {
+            JOptionPane.showMessageDialog(this, "Unable to read selected file.\n" + ex.toString(), "Error", JOptionPane.WARNING_MESSAGE);
+        }
 
         // ustawiam filtr dozwolonych plików na *.txt, *.data oraz katalogi
         plikDanych.setFileFilter(FileChooserHelper.OpenFileChooserFilter());
@@ -381,7 +419,9 @@ public class Generator extends javax.swing.JFrame {
             clearAttributeAndPropertyLists();
             System.gc();
             try {
-                BufferedReader br = new BufferedReader(new FileReader(plikDanych.getSelectedFile().getAbsolutePath()));
+                String filename = plikDanych.getSelectedFile().getAbsolutePath();
+                nullPathSetup(filename);
+                BufferedReader br = new BufferedReader(new FileReader(filename));
                 for (String linia; (linia = br.readLine()) != null;) {
                     // każdą linię dzielimy po przecinkach na przypadki uczące (powinno ich w każdej linii być tyle samo - jest to nasza lista atrybutów
                     String[] learningCaseProperties = linia.split(",");
@@ -402,13 +442,42 @@ public class Generator extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_openButtonActionPerformed
 
+    private void nullPathSetup(String filename) {
+        if(_paths.get(savePath) == null) {
+            _paths.put(savePath, filename);
+        }
+        if(_paths.get(projectPath) == null) {
+            _paths.put(projectPath, filename);
+        }
+        if(_paths.get(openPath) == null) {
+            _paths.put(openPath, filename);
+        }
+    }
+
     /**
      * Czyści modele list atrybutów i wartości (JListy powinny być puste)
      */
     private void clearAttributeAndPropertyLists() {
         // ~...
+        
+        for(ListSelectionListener l: attributesList.getListSelectionListeners()) {
+            attributesList.removeListSelectionListener(l);
+        }
+        
+        for(MouseListener m: attributesList.getMouseListeners()) {
+            attributesList.removeMouseListener(m);
+        }
+        
+        for(MouseListener m: propertiesList.getMouseListeners()) {
+            propertiesList.removeMouseListener(m);
+        }
+        
+        attributesList.clearSelection();
+        propertiesList.clearSelection();
+
         _attributesListModel.clear();
         _propertiesListModel.clear();
+        
     }
 
     /**
@@ -416,7 +485,8 @@ public class Generator extends javax.swing.JFrame {
      */
     private void setEventListenersForAttributeAndPropertyLists() {
         attributesList.addListSelectionListener(helper.Listeners.AttributesListListener(_attributes, attributesList, _propertiesListModel, this));
-        attributesList.addMouseListener(helper.Listeners.AttributesDoubleClickListener(_attributes));
+        attributesList.addMouseListener(helper.Listeners.AttributesDoubleClickListener(_attributes, this));
+        propertiesList.addMouseListener(helper.Listeners.ValuesDoubleClickListener(_attributes, attributesList, this));
     }
 
     /**
@@ -503,8 +573,12 @@ public class Generator extends javax.swing.JFrame {
         // tytuł okna
         plikProjektu.setDialogTitle("Specify a project file to save");
 
-        // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "projects"
-        plikProjektu.setCurrentDirectory(new File("../projects/"));
+        try {
+            // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "projects"
+            plikProjektu.setCurrentDirectory(new File(_paths.get(projectPath) != null ? (String) _paths.get(projectPath) : this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath() + "projects/"));
+        } catch (URISyntaxException e) {
+            JOptionPane.showMessageDialog(this, "Unable to serialize to project file ...\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
         // ustawiam filtr dozwolonych plików na *.txt, *.data oraz katalogi
         plikProjektu.setFileFilter(FileChooserHelper.OpenSaveProjectChooserFilter());
@@ -515,6 +589,7 @@ public class Generator extends javax.swing.JFrame {
         if (result == JFileChooser.APPROVE_OPTION) {
             String filename = plikProjektu.getSelectedFile().getAbsolutePath();
             filename += filename.endsWith(".taxp") ? "" : ".taxp";
+            _paths.put(projectPath, filename);
             saveProject(filename);
         }
     }//GEN-LAST:event_saveProjectButtonActionPerformed
@@ -531,8 +606,12 @@ public class Generator extends javax.swing.JFrame {
         // tytuł okna
         plikProjektu.setDialogTitle("Specify a project file to save");
 
-        // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "projects"
-        plikProjektu.setCurrentDirectory(new File("../projects/"));
+        try {
+            // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "projects"
+            plikProjektu.setCurrentDirectory(new File(_paths.get(projectPath) != null ? (String) _paths.get(savePath) : this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath() + "projects/"));
+        } catch (URISyntaxException ex) {
+            JOptionPane.showMessageDialog(this, "Unable to read the project file ...\n" + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
         // ustawiam filtr dozwolonych plików na *.txt, *.data oraz katalogi
         plikProjektu.setFileFilter(FileChooserHelper.OpenSaveProjectChooserFilter());
@@ -542,7 +621,7 @@ public class Generator extends javax.swing.JFrame {
 
         if (result == JFileChooser.APPROVE_OPTION) {
             String filename = plikProjektu.getSelectedFile().getAbsolutePath();
-
+            nullPathSetup(filename);
             try {
                 try (ObjectInputStream ser = new ObjectInputStream(
                         new BufferedInputStream(
@@ -578,7 +657,7 @@ public class Generator extends javax.swing.JFrame {
     private void combineAttribsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combineAttribsActionPerformed
         int[] indexes = propertiesList.getSelectedIndices();
         if (indexes.length > 1) {
-            PropertyCombineModal modal = new PropertyCombineModal(this, true);
+            ValueAbstractCombineModal modal = new ValueAbstractCombineModal(this, true);
             jDialogEscapeKeyHelper.addEscapeListener(modal);
 
             // dostaję tymczasową wartość - w niej będą wszystkie połączone
@@ -618,7 +697,10 @@ public class Generator extends javax.swing.JFrame {
                 // dodajemy do listy atrybutów
                 _attributes[attributesList.getSelectedIndex()].add(p);
                 // dodajemy do modelu wartości
-                _propertiesListModel.addElement(p);
+                _propertiesListModel.clear();
+                for(Value v: _attributes[attributesList.getSelectedIndex()].getWartości()) {
+                    _propertiesListModel.addElement(v);
+                }
 
                 graphRedraw();
 
@@ -649,8 +731,12 @@ public class Generator extends javax.swing.JFrame {
         // tytuł okna
         plikTaksonomii.setDialogTitle("Specify a taxonomy file to save");
 
-        // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "taxonomy"
-        plikTaksonomii.setCurrentDirectory(new File("../taxonomy/"));
+        try {
+            // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "taxonomy"
+            plikTaksonomii.setCurrentDirectory(new File(_paths.get(savePath) != null ? (String) _paths.get(savePath) : this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath() + "taxonomy/"));
+        } catch (URISyntaxException e) {
+            JOptionPane.showMessageDialog(this, "Unable to save taxonomy file...\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
         // ustawiam filtr dozwolonych plików na *.taxonomy
         plikTaksonomii.setFileFilter(FileChooserHelper.SaveFileChooserFilter());
@@ -661,6 +747,8 @@ public class Generator extends javax.swing.JFrame {
         if (result == JFileChooser.APPROVE_OPTION) {
             String filename = plikTaksonomii.getSelectedFile().getAbsolutePath();
             filename += filename.endsWith(".taxonomy") ? "" : ".taxonomy";
+            _paths.put(savePath, filename);
+            
             try ( // Uproszczony zapis, który inspirował StackOverflow
                     // http://stackoverflow.com/questions/1053467/how-do-i-save-a-string-to-a-text-file-using-java   ser.writeObject(_attributes);
                     PrintWriter out = new PrintWriter(filename)) {
@@ -676,6 +764,7 @@ public class Generator extends javax.swing.JFrame {
                         }
                     }
                     if (flag == true) {
+                        out.print("," + a.getKoszt());
                         out.println();
                     }
                 }

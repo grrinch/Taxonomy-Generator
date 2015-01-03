@@ -88,12 +88,13 @@ public class BracketNotationHelper {
                 .replace("Ń", "N")
                 .replace("Ć", "C")
         );
-        if(p.getKoszt() != 0) {
-            s.append("_");
-            s.append(p.getKoszt());
-        }
         
         if (p.getPoziom() != 0) {
+            // najpierw koszt
+            s.append("_");
+            s.append(p.getKoszt());
+            
+            // potem reszta wartości
             s.append(" ");
             for (Value pp : p.getElementy()) {
                 s.append(writeProperty(pp));

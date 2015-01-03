@@ -225,4 +225,15 @@ public class Attribute implements Serializable {
     public void setKoszt(Integer _koszt) {
         this._koszt = _koszt;
     }
+    
+    public Integer getInternalPoziom() {
+        Integer poz = 0;
+        for(Value p: getWartości()) {
+            if(p.getPoziom() > poz) {
+                poz = p.getPoziom();
+            }
+        }
+        
+        return poz;
+    }
 }

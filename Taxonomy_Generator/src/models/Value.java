@@ -132,7 +132,7 @@ public class Value implements Comparable<Value>, Serializable {
      *
      * @return double koszt
      */
-    public double getKoszt() {
+    public Integer getKoszt() {
         return _koszt;
     }
 
@@ -264,32 +264,44 @@ public class Value implements Comparable<Value>, Serializable {
     }
 
     public String taxonomy() {
+        return taxonomy(false);
+    }
+
+    public String taxonomy(boolean noCost) {
         StringBuilder tax = new StringBuilder();
+//        tax.append("p");
+//        tax.append(getPoziom());
+//        tax.append(")");
         int i;
         if (getPoziom() < 2) {
             i = 0;
             StringBuilder tmp = new StringBuilder();
-            Boolean flag = false;
             for (Value p : getElementy()) {
                 if (i == 0) {
                     tmp.append(p.rawNazwa(false));
-                    flag = true;
                 } else {
                     tmp.append("|").append(p.rawNazwa(false));
+                    if (!noCost) {
+                        tmp.append("|").append(getKoszt());
+                    }
                 }
                 i++;
             }
-            if (flag == true) {
-                tax.append(",").append(tmp);
-                flag = false;
-            }
+            tax.append(",").append(tmp);
         } else {
             StringBuilder tmp = new StringBuilder();
+            i = 0;
             for (Value p : getElementy()) {
-                tmp.append(p.taxonomy());
-
+                if(p.getPoziom() != 0) { // test
+                    tmp.append(p.taxonomy(true));
+                    tmp.append("|").append(p.getKoszt());
+                }
+                i++;
             }
             tax.append(tmp).append(",").append(rawNazwa(false));
+            if (!noCost) {
+                tax.append("|").append(getKoszt());
+            }
         }
 
         return tax.toString();

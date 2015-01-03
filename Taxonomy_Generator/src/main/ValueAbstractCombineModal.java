@@ -6,29 +6,35 @@
 package main;
 
 import exceptions.WrongNumberException;
+import java.awt.Frame;
 import java.text.NumberFormat;
 import javax.swing.JOptionPane;
+import models.IntStringValuePair;
 import models.Value;
 
 /**
  *
  * @author radmin
  */
-public class PropertyCombineModal extends javax.swing.JDialog {
+public class ValueAbstractCombineModal extends javax.swing.JDialog {
 
     /**
      * minimalna liczba miejsc po przecinku dla kosztu
      */
-    public static int MinimumFractionDigits = 0;
+    public static final int MinimumFractionDigits = 0;
 
     /**
      * maksymalna liczba miejsc po przecinku dla kosztu
      */
-    public static int MaximumFractionDigits = 0;
+    public static final int MaximumFractionDigits = 0;
+    
+    private final Frame _parent;
 
     private NumberFormat doubleFormat;
 
     private Value p;
+    
+    private IntStringValuePair _isvp = new IntStringValuePair(0, null);
 
     /**
      * Creates new form PropertyCombineModalInput
@@ -36,8 +42,9 @@ public class PropertyCombineModal extends javax.swing.JDialog {
      * @param parent
      * @param modal
      */
-    public PropertyCombineModal(java.awt.Frame parent, boolean modal) {
+    public ValueAbstractCombineModal(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        _parent = parent;
         formatterInit();
         initComponents();
         getRootPane().setDefaultButton(okButton);
@@ -79,9 +86,9 @@ public class PropertyCombineModal extends javax.swing.JDialog {
         setName("propertyCombineModal"); // NOI18N
         setResizable(false);
 
-        nazwaLabel.setText("Combined property name");
+        nazwaLabel.setText("Abstract Value name");
 
-        kosztLabel.setText("Combine property cost");
+        kosztLabel.setText("Abstract Value cost");
 
         okButton.setText("OK");
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -104,14 +111,14 @@ public class PropertyCombineModal extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(nazwaLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(kosztLabel)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(nazwaField)
-                    .addComponent(kosztField))
+                    .addComponent(kosztField)
+                    .addComponent(nazwaLabel))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -136,7 +143,7 @@ public class PropertyCombineModal extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -177,23 +184,38 @@ public class PropertyCombineModal extends javax.swing.JDialog {
             } else if (kosztField.getValue() instanceof Integer) {
                 koszt = (Integer) kosztField.getValue();
             } else {
-                throw new WrongNumberException("Neiter double nor long given.");
+                throw new WrongNumberException("Integer must be given!");
             }
 
             p.setKoszt(koszt);
+            _isvp.setI(koszt);
             p.setNazwa(nazwa);
+            _isvp.setS(nazwa);
             exit();
         } catch (WrongNumberException ex) {
-            JOptionPane.showMessageDialog(null, "Cost value must be an integer or double.\n" + ex.toString(), "Wrong number format", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Cost value must be an integer.\n" + ex.toString(), "Wrong number format", JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_okButtonActionPerformed
 
     public Value showDialog() {
         setModal(true);
+        setLocationRelativeTo(_parent);
         setVisible(true);
         return p;
     }
+    
+    public IntStringValuePair showDialog(IntStringValuePair ivsp) {
+        setModal(true);
+        setLocationRelativeTo(_parent);
+        kosztField.setValue(ivsp.getI());
+        _isvp.setI(ivsp.getI());
+        nazwaField.setText(ivsp.getS());
+        _isvp.setS(ivsp.getS());
+        setVisible(true);
+        return _isvp;
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JPanel jPanel1;
