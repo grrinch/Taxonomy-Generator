@@ -8,8 +8,10 @@ import helper.jDialogEscapeKeyHelper;
 import helper.jListSwapperHelper;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -32,8 +34,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.DefaultListModel;
@@ -50,6 +50,8 @@ import models.*;
 public class Generator extends javax.swing.JFrame {
 
     private static final long serialVersionUID = -2707712944901661771L;
+    
+    private static final Double _version = 2.0;
 
     /**
      * atrybuty
@@ -65,12 +67,14 @@ public class Generator extends javax.swing.JFrame {
      * Model dla JListy wartości
      */
     private DefaultListModel _propertiesListModel;
-    
+
+    private String phpSyntaxTreeURL = "http://p43.pl/inz/stgraph.png.php";
+
     /**
      * Mapa do ścieżek: otwarcia, zapisu taksonomii oraz zapisu projektu.
      */
     private HashMap _paths = new HashMap<String, String>(3);
-    
+
     /**
      * Poniżej 3 wartości domyślne, po których indeksowana będzie HashMapa ścieżek
      * <b>otwarcia surowego pliku danych</b>
@@ -130,7 +134,7 @@ public class Generator extends javax.swing.JFrame {
             String toSend = URLEncoder.encode(bnh, "UTF-8");
 
             // Define the server endpoint to send the HTTP request to
-            URL serverUrl = new URL("http://p43.pl/inz/stgraph.png.php");
+            URL serverUrl = new URL(phpSyntaxTreeURL);
             HttpURLConnection urlConnection = (HttpURLConnection) serverUrl.openConnection();
 
             // Indicate that we want to write to the HTTP request body
@@ -167,8 +171,7 @@ public class Generator extends javax.swing.JFrame {
     private void initComponents() {
 
         graphObjectsPlacement = new javax.swing.ButtonGroup();
-        chartPanel = new javax.swing.JPanel();
-        reDrawButton = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
         rightElementsGridPanel = new javax.swing.JPanel();
         attribPanel = new javax.swing.JPanel();
         attributesListScrollPane = new javax.swing.JScrollPane();
@@ -191,25 +194,25 @@ public class Generator extends javax.swing.JFrame {
         arrowPanel = new javax.swing.JPanel();
         upArrowButton = new javax.swing.JButton();
         downArrowButton = new javax.swing.JButton();
+        chartPanel = new javax.swing.JPanel();
+        reDrawButton = new javax.swing.JButton();
+        mainMenuBar = new javax.swing.JMenuBar();
+        fileMenu = new javax.swing.JMenu();
+        openFileMenu = new javax.swing.JMenuItem();
+        saveFileMenu = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        openProjectMenu = new javax.swing.JMenuItem();
+        saveProjectMenu = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        exitMenu = new javax.swing.JMenuItem();
+        prefMenu = new javax.swing.JMenu();
+        phpURLMenu = new javax.swing.JMenuItem();
+        questionMarkMenu = new javax.swing.JMenu();
+        aboutMenu = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Taxonomy Generator");
         setName("MainFrame"); // NOI18N
-
-        chartPanel.setBackground(new java.awt.Color(254, 254, 254));
-        chartPanel.setLayout(new java.awt.BorderLayout());
-
-        reDrawButton.setText("Re Draw");
-        reDrawButton.setToolTipText("Click to redraw the graph");
-        reDrawButton.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        reDrawButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        reDrawButton.setOpaque(true);
-        reDrawButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                reDrawButtonActionPerformed(evt);
-            }
-        });
-        chartPanel.add(reDrawButton, java.awt.BorderLayout.SOUTH);
 
         rightElementsGridPanel.setLayout(new java.awt.BorderLayout(0, 5));
 
@@ -355,25 +358,138 @@ public class Generator extends javax.swing.JFrame {
 
         rightElementsGridPanel.add(propertyPanel, java.awt.BorderLayout.CENTER);
 
+        chartPanel.setBackground(new java.awt.Color(254, 254, 254));
+        chartPanel.setLayout(new java.awt.BorderLayout());
+
+        reDrawButton.setText("Re Draw");
+        reDrawButton.setToolTipText("Click to redraw the graph");
+        reDrawButton.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        reDrawButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        reDrawButton.setOpaque(true);
+        reDrawButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reDrawButtonActionPerformed(evt);
+            }
+        });
+        chartPanel.add(reDrawButton, java.awt.BorderLayout.SOUTH);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 643, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        fileMenu.setText("File");
+
+        openFileMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        openFileMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons_16x16/folder232.png"))); // NOI18N
+        openFileMenu.setText("Open file");
+        openFileMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openFileMenuActionPerformed(evt);
+            }
+        });
+        fileMenu.add(openFileMenu);
+
+        saveFileMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        saveFileMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons_16x16/flow2_16.png"))); // NOI18N
+        saveFileMenu.setText("Save taxonomy");
+        saveFileMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveFileMenuActionPerformed(evt);
+            }
+        });
+        fileMenu.add(saveFileMenu);
+        fileMenu.add(jSeparator1);
+
+        openProjectMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        openProjectMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons_16x16/open131.png"))); // NOI18N
+        openProjectMenu.setText("Open project");
+        openProjectMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openProjectMenuActionPerformed(evt);
+            }
+        });
+        fileMenu.add(openProjectMenu);
+
+        saveProjectMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        saveProjectMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons_16x16/save25.png"))); // NOI18N
+        saveProjectMenu.setText("Save Project");
+        saveProjectMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveProjectMenuActionPerformed(evt);
+            }
+        });
+        fileMenu.add(saveProjectMenu);
+        fileMenu.add(jSeparator2);
+
+        exitMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
+        exitMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons_16x16/door9.png"))); // NOI18N
+        exitMenu.setText("Exit");
+        exitMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitMenuActionPerformed(evt);
+            }
+        });
+        fileMenu.add(exitMenu);
+
+        mainMenuBar.add(fileMenu);
+
+        prefMenu.setText("Options");
+
+        phpURLMenu.setText("phpSyntaxTree URL");
+        phpURLMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                phpURLMenuActionPerformed(evt);
+            }
+        });
+        prefMenu.add(phpURLMenu);
+
+        mainMenuBar.add(prefMenu);
+
+        questionMarkMenu.setText("?");
+
+        aboutMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons_16x16/help1.png"))); // NOI18N
+        aboutMenu.setText("About");
+        aboutMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aboutMenuActionPerformed(evt);
+            }
+        });
+        questionMarkMenu.add(aboutMenu);
+
+        mainMenuBar.add(questionMarkMenu);
+
+        setJMenuBar(mainMenuBar);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rightElementsGridPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
-                    .addComponent(chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -393,6 +509,10 @@ public class Generator extends javax.swing.JFrame {
      * @param evt
      */
     private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
+        openRawFileAction();
+    }//GEN-LAST:event_openButtonActionPerformed
+
+    private void openRawFileAction() throws HeadlessException {
         // nowy obiekt wyboru plików
         JFileChooser plikDanych = new JFileChooser();
 
@@ -440,17 +560,26 @@ public class Generator extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Unable to read selected file.\n" + ex.toString(), "Error", JOptionPane.WARNING_MESSAGE);
             }
         }
-    }//GEN-LAST:event_openButtonActionPerformed
+    }
 
     private void nullPathSetup(String filename) {
-        if(_paths.get(savePath) == null) {
+        if (_paths.get(savePath) == null) {
             _paths.put(savePath, filename);
         }
-        if(_paths.get(projectPath) == null) {
+        if (_paths.get(projectPath) == null) {
             _paths.put(projectPath, filename);
         }
-        if(_paths.get(openPath) == null) {
+        if (_paths.get(openPath) == null) {
             _paths.put(openPath, filename);
+        }
+    }
+
+    private void setPhpSyntaxTreeURL() {
+        try {
+            String newUrl = JOptionPane.showInputDialog(this, "Please enter new phpSyntaxTree (graph generator) URL\n(default " + phpSyntaxTreeURL + "):", "Please enter new URL", JOptionPane.QUESTION_MESSAGE, null, null, phpSyntaxTreeURL).toString();
+            phpSyntaxTreeURL = newUrl;
+        } catch (NullPointerException e) {
+            JOptionPane.showMessageDialog(this, "Unable to set the new URL.\nPrevious value restored.", "Unable to change the URL", JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -459,25 +588,25 @@ public class Generator extends javax.swing.JFrame {
      */
     private void clearAttributeAndPropertyLists() {
         // ~...
-        
-        for(ListSelectionListener l: attributesList.getListSelectionListeners()) {
+
+        for (ListSelectionListener l : attributesList.getListSelectionListeners()) {
             attributesList.removeListSelectionListener(l);
         }
-        
-        for(MouseListener m: attributesList.getMouseListeners()) {
+
+        for (MouseListener m : attributesList.getMouseListeners()) {
             attributesList.removeMouseListener(m);
         }
-        
-        for(MouseListener m: propertiesList.getMouseListeners()) {
+
+        for (MouseListener m : propertiesList.getMouseListeners()) {
             propertiesList.removeMouseListener(m);
         }
-        
+
         attributesList.clearSelection();
         propertiesList.clearSelection();
 
         _attributesListModel.clear();
         _propertiesListModel.clear();
-        
+
     }
 
     /**
@@ -567,6 +696,10 @@ public class Generator extends javax.swing.JFrame {
      * @param evt
      */
     private void saveProjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveProjectButtonActionPerformed
+        saveProjectAction();
+    }//GEN-LAST:event_saveProjectButtonActionPerformed
+
+    private void saveProjectAction() throws HeadlessException {
         // okno wyboru pliku
         JFileChooser plikProjektu = new JFileChooser();
 
@@ -592,7 +725,7 @@ public class Generator extends javax.swing.JFrame {
             _paths.put(projectPath, filename);
             saveProject(filename);
         }
-    }//GEN-LAST:event_saveProjectButtonActionPerformed
+    }
 
     /**
      * Akcja po kliknięciu przycisku Otwórz projekt
@@ -600,6 +733,10 @@ public class Generator extends javax.swing.JFrame {
      * @param evt
      */
     private void openProjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openProjectButtonActionPerformed
+        openProjectAction();
+    }//GEN-LAST:event_openProjectButtonActionPerformed
+
+    private void openProjectAction() throws HeadlessException {
         // okno wyboru pliku
         JFileChooser plikProjektu = new JFileChooser();
 
@@ -647,7 +784,7 @@ public class Generator extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Unable to deserialize the project file ...\n" + ex.toString(), "Error", JOptionPane.WARNING_MESSAGE);
             }
         }
-    }//GEN-LAST:event_openProjectButtonActionPerformed
+    }
 
     /**
      * Akcja po kliknięciu przycisku Połącz wartości
@@ -698,7 +835,7 @@ public class Generator extends javax.swing.JFrame {
                 _attributes[attributesList.getSelectedIndex()].add(p);
                 // dodajemy do modelu wartości
                 _propertiesListModel.clear();
-                for(Value v: _attributes[attributesList.getSelectedIndex()].getWartości()) {
+                for (Value v : _attributes[attributesList.getSelectedIndex()].getWartości()) {
                     _propertiesListModel.addElement(v);
                 }
 
@@ -724,34 +861,32 @@ public class Generator extends javax.swing.JFrame {
     }
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        saveTaxonomyAction();
 
+    }//GEN-LAST:event_saveButtonActionPerformed
+
+    private boolean saveTaxonomyAction() throws HeadlessException {
         // okno wyboru pliku
         JFileChooser plikTaksonomii = new JFileChooser();
-
         // tytuł okna
         plikTaksonomii.setDialogTitle("Specify a taxonomy file to save");
-
         try {
             // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "taxonomy"
             plikTaksonomii.setCurrentDirectory(new File(_paths.get(savePath) != null ? (String) _paths.get(savePath) : this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath() + "taxonomy/"));
         } catch (URISyntaxException e) {
             JOptionPane.showMessageDialog(this, "Unable to save taxonomy file...\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-
         // ustawiam filtr dozwolonych plików na *.taxonomy
         plikTaksonomii.setFileFilter(FileChooserHelper.SaveFileChooserFilter());
-
         // pokaż okno i zwróć co zostało naciśnięte
         int result = plikTaksonomii.showSaveDialog(this);
-
         if (result == JFileChooser.APPROVE_OPTION) {
             String filename = plikTaksonomii.getSelectedFile().getAbsolutePath();
             filename += filename.endsWith(".taxonomy") ? "" : ".taxonomy";
             _paths.put(savePath, filename);
-            
             try ( // Uproszczony zapis, który inspirował StackOverflow
                     // http://stackoverflow.com/questions/1053467/how-do-i-save-a-string-to-a-text-file-using-java   ser.writeObject(_attributes);
-                    PrintWriter out = new PrintWriter(filename)) {
+                    final PrintWriter out = new PrintWriter(filename)) {
                 for (Attribute a : _attributes) {
                     Boolean flag = false;
                     for (Value p : a.getWartości()) {
@@ -772,13 +907,13 @@ public class Generator extends javax.swing.JFrame {
             } catch (Exception e) {
                 // komunikat o błędzie
                 JOptionPane.showMessageDialog(this, "Unable to save taxonomy file...\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                return;
+                return true;
             }
             // komunikat powodzenia
             JOptionPane.showMessageDialog(this, "Taxonomy saved successfully.", "Saved!", JOptionPane.INFORMATION_MESSAGE);
         }
-
-    }//GEN-LAST:event_saveButtonActionPerformed
+        return false;
+    }
 
     private void arrowButtonSwapAction(String direction) {
         int pos1 = propertiesList.getSelectedIndex();
@@ -814,6 +949,43 @@ public class Generator extends javax.swing.JFrame {
             graphRedraw();
         }
     }//GEN-LAST:event_reDrawButtonActionPerformed
+
+    private void phpURLMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_phpURLMenuActionPerformed
+        setPhpSyntaxTreeURL();
+    }//GEN-LAST:event_phpURLMenuActionPerformed
+
+    private void saveFileMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveFileMenuActionPerformed
+        saveTaxonomyAction();
+    }//GEN-LAST:event_saveFileMenuActionPerformed
+
+    private void openFileMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileMenuActionPerformed
+        openRawFileAction();
+    }//GEN-LAST:event_openFileMenuActionPerformed
+
+    private void saveProjectMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveProjectMenuActionPerformed
+        saveProjectAction();
+    }//GEN-LAST:event_saveProjectMenuActionPerformed
+
+    private void openProjectMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openProjectMenuActionPerformed
+        openProjectAction();
+    }//GEN-LAST:event_openProjectMenuActionPerformed
+
+    private void exitMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuActionPerformed
+        int cl = JOptionPane.showConfirmDialog(this, "Are you sure you want to close?", "Closing", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (cl == JOptionPane.OK_OPTION) {
+            this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+        }
+    }//GEN-LAST:event_exitMenuActionPerformed
+
+    private void aboutMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuActionPerformed
+        JOptionPane.showMessageDialog(this, "<html><table><tr><td>Program name:</td><td><b>Taxonomy Generator</b></td></tr>"
+                + "<tr><td>Author:</td><td>Radosław Paluszak</td></tr>"
+                + "<tr><td>E-mail address:</td><td><a href=\"mailto:radoslaw.paluszak@gmail.com\">radoslaw.paluszak@gmail.com</a></td></tr>"
+                + "<tr><td>Software version:</td><td>" + _version + "</td></tr>"
+                + "<tr><td>License:</td><td>Creative Commons BY-ND</td></tr>"
+                + "<tr><td>Icon resources</td><td>http://www.flaticon.com/</td></tr>"
+                + "</html>", "About Taxonomy Generator", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(this.getClass().getResource("/icons/logo_pp_100px.png")));
+    }//GEN-LAST:event_aboutMenuActionPerformed
 
     /**
      * Zapisuje projekt jako zaserializowany plik Javy
@@ -874,6 +1046,7 @@ public class Generator extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem aboutMenu;
     private javax.swing.JPanel arrowPanel;
     private javax.swing.JPanel attribPanel;
     private javax.swing.JList attributesList;
@@ -881,23 +1054,36 @@ public class Generator extends javax.swing.JFrame {
     private javax.swing.JPanel chartPanel;
     private javax.swing.JButton combineAttribs;
     private javax.swing.JButton downArrowButton;
+    private javax.swing.JMenuItem exitMenu;
+    private javax.swing.JMenu fileMenu;
     private javax.swing.JRadioButton graphLinesCrossing;
     private javax.swing.JRadioButton graphLinesNotCrossing;
     private javax.swing.ButtonGroup graphObjectsPlacement;
     private javax.swing.JPanel graphPropertiesPanel;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPanel listAndArrowPanel;
+    private javax.swing.JMenuBar mainMenuBar;
     private javax.swing.JButton openButton;
+    private javax.swing.JMenuItem openFileMenu;
     private javax.swing.JButton openProjectButton;
+    private javax.swing.JMenuItem openProjectMenu;
     private javax.swing.JPanel openSaveButtonPanel;
     private javax.swing.JPanel openSaveProjectButtonPanel;
+    private javax.swing.JMenuItem phpURLMenu;
+    private javax.swing.JMenu prefMenu;
     private javax.swing.JPanel projectAndGraphPropertiesPanel;
     private javax.swing.JList propertiesList;
     private javax.swing.JScrollPane propertiesListScrollPane;
     private javax.swing.JPanel propertyPanel;
+    private javax.swing.JMenu questionMarkMenu;
     private javax.swing.JButton reDrawButton;
     private javax.swing.JPanel rightElementsGridPanel;
     private javax.swing.JButton saveButton;
+    private javax.swing.JMenuItem saveFileMenu;
     private javax.swing.JButton saveProjectButton;
+    private javax.swing.JMenuItem saveProjectMenu;
     private javax.swing.JButton upArrowButton;
     // End of variables declaration//GEN-END:variables
 }
