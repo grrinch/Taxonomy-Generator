@@ -14,6 +14,11 @@ import java.util.List;
 public class Attribute implements Serializable {
 
     /**
+     * Wartość zalecana dla serializacji
+     */
+    private static final long serialVersionUID = 66L;
+
+    /**
      * kolejność na JLiście lub modelu.
      */
     private int _id = 1;
@@ -27,7 +32,7 @@ public class Attribute implements Serializable {
      * Lista jego wartości.
      */
     private List<Value> _wartości = new ArrayList<Value>();
-    
+
     /**
      * Wartość kosztu korzenia tego atrybutu
      */
@@ -37,9 +42,8 @@ public class Attribute implements Serializable {
      * Konstruktor - pusty atrybut. Kiedy używamy: tylko w przypadku serializacji do XMLa
      *
      * /
-    public Attribute() {
-    }*/
-
+     public Attribute() {
+     }*/
     /**
      * Konstruktor - podajemy id kolejności w JLiście/modelu. Kiedy używamy: podstawowy konstruktor.
      *
@@ -212,6 +216,7 @@ public class Attribute implements Serializable {
 
     /**
      * Getter dla wartości kosztu korzenia atrybutu
+     *
      * @return koszt korzenia atrybutu
      */
     public Integer getKoszt() {
@@ -220,20 +225,21 @@ public class Attribute implements Serializable {
 
     /**
      * Setter dla wartości kosztu korzenia atrybutu
-     * @param _koszt 
+     *
+     * @param _koszt
      */
     public void setKoszt(Integer _koszt) {
         this._koszt = _koszt;
     }
-    
+
     public Integer getInternalPoziom() {
         Integer poz = 0;
-        for(Value p: getWartości()) {
-            if(p.getPoziom() > poz) {
+        for (Value p : getWartości()) {
+            if (p.getPoziom() > poz) {
                 poz = p.getPoziom();
             }
         }
-        
+
         return poz;
     }
 }

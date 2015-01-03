@@ -12,6 +12,10 @@ import java.util.List;
  * @author radmin
  */
 public class Value implements Comparable<Value>, Serializable {
+    /**
+     * Wartość zalecana dla serializacji
+     */
+    private static final long serialVersionUID = 77L;
 
     /**
      * kolejność z JListy
@@ -281,18 +285,18 @@ public class Value implements Comparable<Value>, Serializable {
                     tmp.append(p.rawNazwa(false));
                 } else {
                     tmp.append("|").append(p.rawNazwa(false));
-                    if (!noCost) {
-                        tmp.append("|").append(getKoszt());
-                    }
                 }
                 i++;
+            }
+            if (!noCost) {
+                tmp.append("|").append(getKoszt());
             }
             tax.append(",").append(tmp);
         } else {
             StringBuilder tmp = new StringBuilder();
             i = 0;
             for (Value p : getElementy()) {
-                if(p.getPoziom() != 0) { // test
+                if (p.getPoziom() != 0) { // test
                     tmp.append(p.taxonomy(true));
                     tmp.append("|").append(p.getKoszt());
                 }

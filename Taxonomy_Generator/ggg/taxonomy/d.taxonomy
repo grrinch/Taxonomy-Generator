@@ -1,0 +1,5 @@
+3,not_present|severe|2,not_present|severe|high|3,0
+6,not_present|severe|1,high|not_present|severe|2,0
+11,not_observed|observed|0,0
+34,40_44|45_49|2,25_29|30_34|35_39|5,70_74|75_79|4,25_29|30_34|35_39|70_74|75_79|6,0_4|5_9|10_14|15_19|20_24|1,50_54|55_59|60_64|65_69|3,0_4|5_9|10_14|15_19|20_24|50_54|55_59|60_64|65_69|7,25_29|30_34|35_39|70_74|75_79|0_4|5_9|10_14|15_19|20_24|50_54|55_59|60_64|65_69|8,666
+35,pityriasis_rubra_pilaris|psoriasis|2,pityriasis_rubra_pilaris|psoriasis|pityriasis_rosea|0,cronic_dermatitis|lichen_planus|0,cronic_dermatitis|lichen_planus|seboreic_dermatitis|0,666

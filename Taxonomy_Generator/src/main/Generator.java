@@ -2,7 +2,6 @@ package main;
 
 import exceptions.InvalidPropertyException;
 import helper.BracketNotationHelper;
-import helper.Sp;
 import helper.FileChooserHelper;
 import helper.jDialogEscapeKeyHelper;
 import helper.jListSwapperHelper;
@@ -49,9 +48,10 @@ import models.*;
  */
 public class Generator extends javax.swing.JFrame {
 
-    private static final long serialVersionUID = -2707712944901661771L;
-    
-    private static final Double _version = 2.1;
+    /**
+     * Wersja programu
+     */
+    private static final Double _version = 2.22;
 
     /**
      * atrybuty
@@ -92,6 +92,16 @@ public class Generator extends javax.swing.JFrame {
     public static final String projectPath = "projectPath";
 
     /**
+     * Zawiera nazwę aktualnie zapisanego lub otwartego pliku
+     */
+    private String filenameBit = null;
+
+    /**
+     * Zawiera ścieżkę, w której aktualnie znajduje się plik JAR
+     */
+    private final String thisFilePath;
+
+    /**
      * Creates new form Generator
      */
     public Generator() {
@@ -99,21 +109,43 @@ public class Generator extends javax.swing.JFrame {
         _attributesListModel = new DefaultListModel();
         initComponents();
         initPaths();
+        String sss;
+        try {
+            String ss = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+            sss = System.getProperty("os.name").toLowerCase().contains("win") ? ss.substring(ss.indexOf("\\"), ss.lastIndexOf("\\")) : ss.substring(ss.indexOf("/"), ss.lastIndexOf("/"));
+        } catch (URISyntaxException ex) {
+            sss = "";
+        }
+        thisFilePath = sss;
         ImageIcon icon = new ImageIcon(this.getClass().getResource("/icons/ikona.png"));
         this.setIconImage(icon.getImage());
         getRootPane().setDefaultButton(combineAttribs);
     }
 
+    /**
+     * Ustawia początkowe wartości ścieżek na puste
+     */
     private void initPaths() {
         _paths.put(openPath, null);
         _paths.put(savePath, null);
         _paths.put(projectPath, null);
     }
 
+    /**
+     * Zaślepka dla metody writeBrackets, która nie potrzebuje nazwy atrybutu. Wyłącznie wywołuje pełną wersję writeBrackets
+     * @param p tablica wartości
+     * @param root_cost koszt korzenia atrybutu
+     */
     private void writeBrackets(Value[] p, Integer root_cost) {
         writeBrackets(p, null, root_cost);
     }
 
+    /**
+     * Tworzy za pomocą BracketNotationHelpera ciąg znaków zawierający zapis grafu atrybutu w notacji nawiasowej i przegenerowuje graf.
+     * @param p tablica wartości
+     * @param rootName nazwa korzenia atrybutu
+     * @param root_cost koszt korzenia atrybutu
+     */
     private void writeBrackets(Value[] p, String rootName, Integer root_cost) {
         BracketNotationHelper bnh = new BracketNotationHelper(p, root_cost);
         if (rootName == null || rootName.equals("")) {
@@ -123,6 +155,10 @@ public class Generator extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Łączy się z naszym webService'em, który przesyła plik graficzny z rozrysowanym grafem
+     * @param bnh postać grafu w notacji nawiasowej
+     */
     private void graphTest(String bnh) {
         try {
             Component[] comps = chartPanel.getComponents();
@@ -512,6 +548,10 @@ public class Generator extends javax.swing.JFrame {
         openRawFileAction();
     }//GEN-LAST:event_openButtonActionPerformed
 
+    /**
+     * Akcja właściwa, która otwiera plik danych uczących
+     * @throws HeadlessException 
+     */
     private void openRawFileAction() throws HeadlessException {
         // nowy obiekt wyboru plików
         JFileChooser plikDanych = new JFileChooser();
@@ -519,13 +559,8 @@ public class Generator extends javax.swing.JFrame {
         // nadaję oknu tytuł
         plikDanych.setDialogTitle("Select raw data file to open");
 
-        try {
-            // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "data"
-            plikDanych.setCurrentDirectory(new File(_paths.get(openPath) != null ? (String) _paths.get(openPath) : this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath() + "data/"));
-//            Sp.s(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath() + "data/");
-        } catch (URISyntaxException ex) {
-            JOptionPane.showMessageDialog(this, "Unable to read selected file.\n" + ex.toString(), "Error", JOptionPane.WARNING_MESSAGE);
-        }
+        // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "data"
+        plikDanych.setCurrentDirectory(new File(_paths.get(openPath) != null ? (String) _paths.get(openPath) : thisFilePath + "/data/"));
 
         // ustawiam filtr dozwolonych plików na *.txt, *.data oraz katalogi
         plikDanych.setFileFilter(FileChooserHelper.OpenFileChooserFilter());
@@ -541,6 +576,7 @@ public class Generator extends javax.swing.JFrame {
             try {
                 String filename = plikDanych.getSelectedFile().getAbsolutePath();
                 nullPathSetup(filename);
+                titleSetupOnFilename(filename);
                 BufferedReader br = new BufferedReader(new FileReader(filename));
                 for (String linia; (linia = br.readLine()) != null;) {
                     // każdą linię dzielimy po przecinkach na przypadki uczące (powinno ich w każdej linii być tyle samo - jest to nasza lista atrybutów
@@ -562,6 +598,10 @@ public class Generator extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Ustawia wszystkie puste ścieżki na tą, pod którą został zapisany lub z której został otwarty plik
+     * @param filename ścieżka pliku
+     */
     private void nullPathSetup(String filename) {
         if (_paths.get(savePath) == null) {
             _paths.put(savePath, filename);
@@ -573,7 +613,32 @@ public class Generator extends javax.swing.JFrame {
             _paths.put(openPath, filename);
         }
     }
+    
+    /**
+     * Zaślepka właściwej metody, która dopisuje do tytułu okna nazwę pliku
+     * @param filename ścieżka pliku
+     */
+    private void titleSetupOnFilename(String filename) {
+        titleSetupOnFilename(filename, false);
+    }
+    
+    /**
+     * Dopisuje do tytułu okna nazwę pliku
+     * @param filename ścieżka pliku
+     * @param onlyBitSave czy ma wyłącznie zapisać do wewnętrznej właściwości, czy również dopisać do okna
+     */
+    private void titleSetupOnFilename(String filename, Boolean onlyBitSave) {
+        int ind = 1 + (System.getProperty("os.name").toLowerCase().contains("win") ? filename.lastIndexOf("\\") : filename.lastIndexOf("/"));
+        filenameBit = filename.substring(ind);
+        if(!onlyBitSave) {
+            this.setTitle("Taxonomy Generator: '" + filenameBit + "'");
+        }
+    }
 
+    /**
+     * Ustawia adres URL dla webService, który będzie generował grafiki grafów.
+     * Domyślnie: <a href="http://p43.pl/inz/stgraph.png.php">http://p43.pl/inz/stgraph.png.php</a>
+     */
     private void setPhpSyntaxTreeURL() {
         try {
             String newUrl = JOptionPane.showInputDialog(this, "Please enter new phpSyntaxTree (graph generator) URL\n(default " + phpSyntaxTreeURL + "):", "Please enter new URL", JOptionPane.QUESTION_MESSAGE, null, null, phpSyntaxTreeURL).toString();
@@ -640,6 +705,9 @@ public class Generator extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Tworzy dla wszystkich atrybutów model sprzężony z JListą
+     */
     private void recreateAttributesListModel() {
         _attributesListModel.clear();
 
@@ -699,6 +767,10 @@ public class Generator extends javax.swing.JFrame {
         saveProjectAction();
     }//GEN-LAST:event_saveProjectButtonActionPerformed
 
+    /**
+     * Właściwa akcja, która zapisuje projekt
+     * @throws HeadlessException 
+     */
     private void saveProjectAction() throws HeadlessException {
         // okno wyboru pliku
         JFileChooser plikProjektu = new JFileChooser();
@@ -706,12 +778,8 @@ public class Generator extends javax.swing.JFrame {
         // tytuł okna
         plikProjektu.setDialogTitle("Specify a project file to save");
 
-        try {
-            // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "projects"
-            plikProjektu.setCurrentDirectory(new File(_paths.get(projectPath) != null ? (String) _paths.get(projectPath) : this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath() + "projects/"));
-        } catch (URISyntaxException e) {
-            JOptionPane.showMessageDialog(this, "Unable to serialize to project file ...\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "projects"
+        plikProjektu.setCurrentDirectory(new File(_paths.get(projectPath) != null ? (String) _paths.get(projectPath) : thisFilePath + "/projects/"));
 
         // ustawiam filtr dozwolonych plików na *.txt, *.data oraz katalogi
         plikProjektu.setFileFilter(FileChooserHelper.OpenSaveProjectChooserFilter());
@@ -722,7 +790,8 @@ public class Generator extends javax.swing.JFrame {
         if (result == JFileChooser.APPROVE_OPTION) {
             String filename = plikProjektu.getSelectedFile().getAbsolutePath();
             filename += filename.endsWith(".taxp") ? "" : ".taxp";
-            _paths.put(projectPath, filename);
+            nullPathSetup(filename);
+            titleSetupOnFilename(filename);
             saveProject(filename);
         }
     }
@@ -736,6 +805,10 @@ public class Generator extends javax.swing.JFrame {
         openProjectAction();
     }//GEN-LAST:event_openProjectButtonActionPerformed
 
+    /**
+     * Właściwa akcja, która otwiera projekt
+     * @throws HeadlessException 
+     */
     private void openProjectAction() throws HeadlessException {
         // okno wyboru pliku
         JFileChooser plikProjektu = new JFileChooser();
@@ -743,12 +816,8 @@ public class Generator extends javax.swing.JFrame {
         // tytuł okna
         plikProjektu.setDialogTitle("Specify a project file to open");
 
-        try {
-            // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "projects"
-            plikProjektu.setCurrentDirectory(new File(_paths.get(projectPath) != null ? (String) _paths.get(savePath) : this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath() + "projects/"));
-        } catch (URISyntaxException ex) {
-            JOptionPane.showMessageDialog(this, "Unable to read the project file ...\n" + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "projects"
+        plikProjektu.setCurrentDirectory(new File(_paths.get(projectPath) != null ? (String) _paths.get(savePath) : thisFilePath + "/projects/"));
 
         // ustawiam filtr dozwolonych plików na *.txt, *.data oraz katalogi
         plikProjektu.setFileFilter(FileChooserHelper.OpenSaveProjectChooserFilter());
@@ -759,6 +828,7 @@ public class Generator extends javax.swing.JFrame {
         if (result == JFileChooser.APPROVE_OPTION) {
             String filename = plikProjektu.getSelectedFile().getAbsolutePath();
             nullPathSetup(filename);
+            titleSetupOnFilename(filename);
             try {
                 try (ObjectInputStream ser = new ObjectInputStream(
                         new BufferedInputStream(
@@ -774,7 +844,7 @@ public class Generator extends javax.swing.JFrame {
                             setEventListenersForAttributeAndPropertyLists();
                         }
                         // komunikat o powodzeniu
-                        JOptionPane.showMessageDialog(this, "Project opened successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Project '" + filenameBit+ "' opened successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
 
             } catch (IOException ex) {
                 // komunikat o błędzie
@@ -852,6 +922,9 @@ public class Generator extends javax.swing.JFrame {
 
     }//GEN-LAST:event_combineAttribsActionPerformed
 
+    /**
+     * Przerysowuje graf na podstawie wybranego atrybutu
+     */
     public void graphRedraw() {
         if (graphLinesCrossing.isSelected()) {
             writeBrackets(_attributes[attributesList.getSelectedIndex()].getWartości(), _attributes[attributesList.getSelectedIndex()].getNazwa(), _attributes[attributesList.getSelectedIndex()].getKoszt());
@@ -860,22 +933,28 @@ public class Generator extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Akcja po kliknięciu przycisku zapisu taksonomii
+     * @param evt 
+     */
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         saveTaxonomyAction();
-
     }//GEN-LAST:event_saveButtonActionPerformed
 
+    /**
+     * Właściwa akcja, która zapisuje taksonomię do pliku
+     * @return
+     * @throws HeadlessException 
+     */
     private boolean saveTaxonomyAction() throws HeadlessException {
         // okno wyboru pliku
         JFileChooser plikTaksonomii = new JFileChooser();
         // tytuł okna
         plikTaksonomii.setDialogTitle("Specify a taxonomy file to save");
-        try {
-            // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "taxonomy"
-            plikTaksonomii.setCurrentDirectory(new File(_paths.get(savePath) != null ? (String) _paths.get(savePath) : this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath() + "taxonomy/"));
-        } catch (URISyntaxException e) {
-            JOptionPane.showMessageDialog(this, "Unable to save taxonomy file...\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+
+        // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "taxonomy"
+        plikTaksonomii.setCurrentDirectory(new File(_paths.get(savePath) != null ? (String) _paths.get(savePath) : thisFilePath + "/taxonomy/"));
+
         // ustawiam filtr dozwolonych plików na *.taxonomy
         plikTaksonomii.setFileFilter(FileChooserHelper.SaveFileChooserFilter());
         // pokaż okno i zwróć co zostało naciśnięte
@@ -883,7 +962,8 @@ public class Generator extends javax.swing.JFrame {
         if (result == JFileChooser.APPROVE_OPTION) {
             String filename = plikTaksonomii.getSelectedFile().getAbsolutePath();
             filename += filename.endsWith(".taxonomy") ? "" : ".taxonomy";
-            _paths.put(savePath, filename);
+            nullPathSetup(filename);
+            titleSetupOnFilename(filename, true);
             try ( // Uproszczony zapis, który inspirował StackOverflow
                     // http://stackoverflow.com/questions/1053467/how-do-i-save-a-string-to-a-text-file-using-java   ser.writeObject(_attributes);
                     final PrintWriter out = new PrintWriter(filename)) {
@@ -910,11 +990,15 @@ public class Generator extends javax.swing.JFrame {
                 return true;
             }
             // komunikat powodzenia
-            JOptionPane.showMessageDialog(this, "Taxonomy saved successfully.", "Saved!", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Taxonomy saved successfully as '" + filenameBit+ "'.", "Saved!", JOptionPane.INFORMATION_MESSAGE);
         }
         return false;
     }
 
+    /**
+     * Akcja zamieniająca miejscami 2 elementy w modelu JListy (przesuwa element w górę lub w dół)
+     * @param direction 
+     */
     private void arrowButtonSwapAction(String direction) {
         int pos1 = propertiesList.getSelectedIndex();
         int pos2 = direction.equals("up") ? propertiesList.getSelectedIndex() - 1 : propertiesList.getSelectedIndex() + 1;
@@ -926,6 +1010,10 @@ public class Generator extends javax.swing.JFrame {
         graphRedraw();
     }
 
+    /**
+     * Akcja po kliknięciu przycisku strzałki do góry (przesunięcia wartości wyżej na JLiście)
+     * @param evt 
+     */
     private void upArrowButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upArrowButtonActionPerformed
         if (propertiesList.getSelectedIndices().length != 1) {
             JOptionPane.showMessageDialog(this, "You can only move one value at the time!", "Value swap error", JOptionPane.ERROR_MESSAGE);
@@ -934,6 +1022,10 @@ public class Generator extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_upArrowButtonActionPerformed
 
+    /**
+     * Akcja po kliknięciu przycisku strzałki w dół (przesunięcia wartości niżej na JLiście)
+     * @param evt 
+     */
     private void downArrowButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downArrowButtonActionPerformed
         if (propertiesList.getSelectedIndices().length != 1) {
             JOptionPane.showMessageDialog(this, "You can only move one value at the time!", "Value swap error", JOptionPane.ERROR_MESSAGE);
@@ -942,6 +1034,10 @@ public class Generator extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_downArrowButtonActionPerformed
 
+    /**
+     * Akcja po kliknięciu przycisku przerysowania grafu
+     * @param evt 
+     */
     private void reDrawButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reDrawButtonActionPerformed
         int attr = attributesList.getSelectedIndex();
 //        Sp.i(attr);
@@ -950,26 +1046,50 @@ public class Generator extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_reDrawButtonActionPerformed
 
+    /**
+     * Akcja po wybraniu z menu zmiany URL dla webService'u
+     * @param evt 
+     */
     private void phpURLMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_phpURLMenuActionPerformed
         setPhpSyntaxTreeURL();
     }//GEN-LAST:event_phpURLMenuActionPerformed
 
+    /**
+     * Akcja po wybraniu z menu opcji zapisu taksonomii
+     * @param evt 
+     */
     private void saveFileMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveFileMenuActionPerformed
         saveTaxonomyAction();
     }//GEN-LAST:event_saveFileMenuActionPerformed
 
+    /**
+     * Akcja po wybraniu z menu opcji otwarcia pliku z danymi uczącymi
+     * @param evt 
+     */
     private void openFileMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileMenuActionPerformed
         openRawFileAction();
     }//GEN-LAST:event_openFileMenuActionPerformed
 
+    /**
+     * Akcja po wybraniu z menu opcji zapisu pliku projektu
+     * @param evt 
+     */
     private void saveProjectMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveProjectMenuActionPerformed
         saveProjectAction();
     }//GEN-LAST:event_saveProjectMenuActionPerformed
 
+    /**
+     * Akcja po wybraniu z menu opcji otwarcia pliku projektu
+     * @param evt 
+     */
     private void openProjectMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openProjectMenuActionPerformed
         openProjectAction();
     }//GEN-LAST:event_openProjectMenuActionPerformed
 
+    /**
+     * Akcja po wybraniu z menu opcji zamknięcia programu
+     * @param evt 
+     */
     private void exitMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuActionPerformed
         int cl = JOptionPane.showConfirmDialog(this, "Are you sure you want to close?", "Closing", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (cl == JOptionPane.OK_OPTION) {
@@ -977,6 +1097,10 @@ public class Generator extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_exitMenuActionPerformed
 
+    /**
+     * Akcja po wybraniu z menu opcji informacji o programie
+     * @param evt 
+     */
     private void aboutMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuActionPerformed
         JOptionPane.showMessageDialog(this, "<html><table><tr><td>Program name:</td><td><b>Taxonomy Generator</b></td></tr>"
                 + "<tr><td>Author:</td><td>Radosław Paluszak</td></tr>"
@@ -984,7 +1108,10 @@ public class Generator extends javax.swing.JFrame {
                 + "<tr><td>Software version:</td><td>" + _version + "</td></tr>"
                 + "<tr><td>License:</td><td>Creative Commons BY-ND</td></tr>"
                 + "<tr><td>Icon resources</td><td>http://www.flaticon.com/</td></tr>"
-                + "</html>", "About Taxonomy Generator", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(this.getClass().getResource("/icons/logo_pp_100px.png")));
+                + "<tr><td>Graph powered by</td><td>code.google.com/p/phpsyntaxtree</td></tr>"
+                + "<tr><td> </td><td>Copyright &copy; 2014-2015</td></tr>"
+                + "</table>"
+                + "</html>", "About Taxonomy Generator", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(this.getClass().getResource("/icons/logo_pp_i_logo_TaxGen_100px_x_166px_1.png")));
     }//GEN-LAST:event_aboutMenuActionPerformed
 
     /**
@@ -1001,7 +1128,7 @@ public class Generator extends javax.swing.JFrame {
                         ser.writeObject(_attributes);
                     }
                     // komunikat o powodzeniu
-                    JOptionPane.showMessageDialog(this, "Project saved successfully.", "Saved!", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Project saved successfully as '" + filenameBit+ "'.", "Saved!", JOptionPane.INFORMATION_MESSAGE);
                     return true;
         } catch (IOException e) {
             // komunikat o błędzie

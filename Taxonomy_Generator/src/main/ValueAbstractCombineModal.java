@@ -153,6 +153,10 @@ public class ValueAbstractCombineModal extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Akcja dla kliknięcia przycisku Cancel.
+     * @param evt 
+     */
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         exit();
     }//GEN-LAST:event_cancelButtonActionPerformed
@@ -198,6 +202,10 @@ public class ValueAbstractCombineModal extends javax.swing.JDialog {
 
     }//GEN-LAST:event_okButtonActionPerformed
 
+    /**
+     * Pokazuje modal i zwraca obiekt wartości tu <b>tworzony</b>
+     * @return 
+     */
     public Value showDialog() {
         setModal(true);
         setLocationRelativeTo(_parent);
@@ -205,6 +213,11 @@ public class ValueAbstractCombineModal extends javax.swing.JDialog {
         return p;
     }
     
+    /**
+     * Pokazuje modal i zwraca obiekt wartości tu <b>edytowany</b>
+     * @param ivsp
+     * @return 
+     */
     public IntStringValuePair showDialog(IntStringValuePair ivsp) {
         setModal(true);
         setLocationRelativeTo(_parent);

@@ -9,6 +9,7 @@ import models.IntStringValuePair;
 import models.Value;
 
 /**
+ * Umożliwia ustalenie nazwy oraz kosztu dla atrybutu
  *
  * @author radmin
  */
@@ -23,7 +24,7 @@ public class AttributeNameAndCostModal extends javax.swing.JDialog {
      * maksymalna liczba miejsc po przecinku dla kosztu
      */
     private static int MaximumFractionDigits = 0;
-    
+
     private final Frame _parent;
     private NumberFormat _doubleFormat;
     private Attribute _a;
@@ -41,7 +42,7 @@ public class AttributeNameAndCostModal extends javax.swing.JDialog {
         getRootPane().setDefaultButton(okButton);
         costInputText.setValue(0);
     }
-    
+
     /**
      * inicjuje automatycznie formatowane pole
      */
@@ -54,7 +55,7 @@ public class AttributeNameAndCostModal extends javax.swing.JDialog {
         //doubleFormat.setMaximumFractionDigits(PropertyCombineModalInput.MaximumFractionDigits);
         _doubleFormat.setParseIntegerOnly(true);
     }
-    
+
     /**
      * wyjście z modalu
      */
@@ -62,7 +63,11 @@ public class AttributeNameAndCostModal extends javax.swing.JDialog {
         setVisible(false);
         dispose();
     }
-    
+
+    /**
+     * Pokazuje modal i zwraca edytowany tutaj atrybut
+     * @return 
+     */
     public IntStringValuePair showDialog() {
         setModal(true);
         setLocationRelativeTo(_parent);
@@ -141,6 +146,10 @@ public class AttributeNameAndCostModal extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Akcja dla kliknięcia przycisku OK.
+     * @param evt 
+     */
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         _isvp.setS(nameInputText.getText());
         try {
@@ -155,7 +164,7 @@ public class AttributeNameAndCostModal extends javax.swing.JDialog {
             } else {
                 throw new WrongNumberException("Integer must be given!");
             }
-            
+
             exit();
         } catch (WrongNumberException ex) {
             JOptionPane.showMessageDialog(null, "Cost value must be an integer.\n" + ex.toString(), "Wrong number format", JOptionPane.ERROR_MESSAGE);
