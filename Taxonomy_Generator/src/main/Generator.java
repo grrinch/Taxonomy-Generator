@@ -51,7 +51,7 @@ public class Generator extends javax.swing.JFrame {
 
     private static final long serialVersionUID = -2707712944901661771L;
     
-    private static final Double _version = 2.0;
+    private static final Double _version = 2.1;
 
     /**
      * atrybuty
@@ -428,7 +428,7 @@ public class Generator extends javax.swing.JFrame {
 
         saveProjectMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         saveProjectMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons_16x16/save25.png"))); // NOI18N
-        saveProjectMenu.setText("Save Project");
+        saveProjectMenu.setText("Save project");
         saveProjectMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveProjectMenuActionPerformed(evt);
@@ -741,7 +741,7 @@ public class Generator extends javax.swing.JFrame {
         JFileChooser plikProjektu = new JFileChooser();
 
         // tytuł okna
-        plikProjektu.setDialogTitle("Specify a project file to save");
+        plikProjektu.setDialogTitle("Specify a project file to open");
 
         try {
             // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "projects"
