@@ -767,7 +767,7 @@ public class Generator extends javax.swing.JFrame {
             try {
                 _attributes[j].add(new Value(j + 1, learningCaseProperties[j]));
             } catch (InvalidPropertyException ex) {
-
+                // łapanie rzuconych wyjątków w tym miejscu nie jest konieczne
             }
         }
     }
