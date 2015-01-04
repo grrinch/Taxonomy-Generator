@@ -51,7 +51,7 @@ public class Generator extends javax.swing.JFrame {
     /**
      * Wersja programu
      */
-    private static final Double _version = 2.22;
+    private static final Double _version = 2.25;
 
     /**
      * atrybuty
@@ -67,7 +67,15 @@ public class Generator extends javax.swing.JFrame {
      * Model dla JListy wartości
      */
     private DefaultListModel _propertiesListModel;
+    
+    /**
+     * domyślny adres URL dla phpSyntaxTree
+     */
+    public static final String defaultPhpSyntaxTreeURL = "http://p43.pl/inz/stgraph.png.php";
 
+    /**
+     * aktualny adres URL dla phpSyntaxTree
+     */
     private String phpSyntaxTreeURL = "http://p43.pl/inz/stgraph.png.php";
 
     /**
@@ -112,8 +120,10 @@ public class Generator extends javax.swing.JFrame {
         String sss;
         try {
             String ss = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
-            sss = System.getProperty("os.name").toLowerCase().contains("win") ? ss.substring(ss.indexOf("\\"), ss.lastIndexOf("\\")) : ss.substring(ss.indexOf("/"), ss.lastIndexOf("/"));
+            sss = ss.substring(ss.indexOf("/"), ss.lastIndexOf("/"));
         } catch (URISyntaxException ex) {
+            sss = "";
+        } catch(Exception e) {
             sss = "";
         }
         thisFilePath = sss;
@@ -628,7 +638,7 @@ public class Generator extends javax.swing.JFrame {
      * @param onlyBitSave czy ma wyłącznie zapisać do wewnętrznej właściwości, czy również dopisać do okna
      */
     private void titleSetupOnFilename(String filename, Boolean onlyBitSave) {
-        int ind = 1 + (System.getProperty("os.name").toLowerCase().contains("win") ? filename.lastIndexOf("\\") : filename.lastIndexOf("/"));
+        int ind = 1 + filename.lastIndexOf("/");
         filenameBit = filename.substring(ind);
         if(!onlyBitSave) {
             this.setTitle("Taxonomy Generator: '" + filenameBit + "'");
@@ -641,8 +651,15 @@ public class Generator extends javax.swing.JFrame {
      */
     private void setPhpSyntaxTreeURL() {
         try {
-            String newUrl = JOptionPane.showInputDialog(this, "Please enter new phpSyntaxTree (graph generator) URL\n(default " + phpSyntaxTreeURL + "):", "Please enter new URL", JOptionPane.QUESTION_MESSAGE, null, null, phpSyntaxTreeURL).toString();
-            phpSyntaxTreeURL = newUrl;
+            phpURLModal modal = new phpURLModal(this, true, phpSyntaxTreeURL);
+            jDialogEscapeKeyHelper.addEscapeListener(modal);
+            String newUrl = modal.showDialog();
+            if (newUrl == null) {
+                throw new NullPointerException();
+            }
+            else {
+                phpSyntaxTreeURL = newUrl;
+            }
         } catch (NullPointerException e) {
             JOptionPane.showMessageDialog(this, "Unable to set the new URL.\nPrevious value restored.", "Unable to change the URL", JOptionPane.WARNING_MESSAGE);
         }
