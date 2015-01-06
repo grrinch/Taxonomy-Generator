@@ -159,9 +159,10 @@ public class phpURLModal extends javax.swing.JDialog {
                     .addComponent(connectionProgress, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(connectionTestButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cancelButton)
-                    .addComponent(okButton))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(okButton)))
                 .addContainerGap())
         );
 
@@ -187,6 +188,9 @@ public class phpURLModal extends javax.swing.JDialog {
             connectionProgress.setValue(50);
             urlConnection.setRequestProperty("User-Agent", "Mozilla 5.0");
             connectionProgress.setValue(60);
+            urlConnection.setReadTimeout(2000);
+            urlConnection.setConnectTimeout(2000);
+            connectionProgress.setValue(65);
 
             try ( // Writing the post data to the HTTP request body
                     BufferedWriter httpRequestBodyWriter = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()))) {

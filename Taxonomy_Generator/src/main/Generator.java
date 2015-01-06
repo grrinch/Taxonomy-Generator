@@ -3,6 +3,7 @@ package main;
 import exceptions.InvalidPropertyException;
 import helper.BracketNotationHelper;
 import helper.FileChooserHelper;
+import helper.Sp;
 import helper.jDialogEscapeKeyHelper;
 import helper.jListSwapperHelper;
 import java.awt.BorderLayout;
@@ -51,7 +52,7 @@ public class Generator extends javax.swing.JFrame {
     /**
      * Wersja programu
      */
-    private static final Double _version = 2.25;
+    private static final Double _version = 2.26;
 
     /**
      * atrybuty
@@ -586,6 +587,7 @@ public class Generator extends javax.swing.JFrame {
             try {
                 String filename = plikDanych.getSelectedFile().getAbsolutePath();
                 nullPathSetup(filename);
+                _paths.put(openPath, filename);
                 titleSetupOnFilename(filename);
                 BufferedReader br = new BufferedReader(new FileReader(filename));
                 for (String linia; (linia = br.readLine()) != null;) {
@@ -613,15 +615,15 @@ public class Generator extends javax.swing.JFrame {
      * @param filename ścieżka pliku
      */
     private void nullPathSetup(String filename) {
-        if (_paths.get(savePath) == null) {
-            _paths.put(savePath, filename);
-        }
-        if (_paths.get(projectPath) == null) {
-            _paths.put(projectPath, filename);
-        }
-        if (_paths.get(openPath) == null) {
-            _paths.put(openPath, filename);
-        }
+//        if (_paths.get(savePath) == null) {
+//            _paths.put(savePath, filename);
+//        }
+//        if (_paths.get(projectPath) == null) {
+//            _paths.put(projectPath, filename);
+//        }
+//        if (_paths.get(openPath) == null) {
+//            _paths.put(openPath, filename);
+//        }
     }
     
     /**
@@ -639,9 +641,17 @@ public class Generator extends javax.swing.JFrame {
      */
     private void titleSetupOnFilename(String filename, Boolean onlyBitSave) {
         int ind = 1 + filename.lastIndexOf("/");
+        if (ind == 0) {
+            try {
+                ind = 1 + filename.lastIndexOf("\\");
+            }
+            catch (Exception e) {
+                
+            }
+        }
         filenameBit = filename.substring(ind);
         if(!onlyBitSave) {
-            this.setTitle("Taxonomy Generator: '" + filenameBit + "'");
+            this.setTitle("Taxonomy Generator: '" + filenameBit +"'");
         }
     }
 
@@ -808,6 +818,7 @@ public class Generator extends javax.swing.JFrame {
             String filename = plikProjektu.getSelectedFile().getAbsolutePath();
             filename += filename.endsWith(".taxp") ? "" : ".taxp";
             nullPathSetup(filename);
+            _paths.put(projectPath, filename);
             titleSetupOnFilename(filename);
             saveProject(filename);
         }
@@ -845,6 +856,7 @@ public class Generator extends javax.swing.JFrame {
         if (result == JFileChooser.APPROVE_OPTION) {
             String filename = plikProjektu.getSelectedFile().getAbsolutePath();
             nullPathSetup(filename);
+            _paths.put(projectPath, filename);
             titleSetupOnFilename(filename);
             try {
                 try (ObjectInputStream ser = new ObjectInputStream(
@@ -980,6 +992,7 @@ public class Generator extends javax.swing.JFrame {
             String filename = plikTaksonomii.getSelectedFile().getAbsolutePath();
             filename += filename.endsWith(".taxonomy") ? "" : ".taxonomy";
             nullPathSetup(filename);
+            _paths.put(projectPath, filename);
             titleSetupOnFilename(filename, true);
             try ( // Uproszczony zapis, który inspirował StackOverflow
                     // http://stackoverflow.com/questions/1053467/how-do-i-save-a-string-to-a-text-file-using-java   ser.writeObject(_attributes);
