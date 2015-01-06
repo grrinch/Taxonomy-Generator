@@ -6,7 +6,6 @@ import java.text.NumberFormat;
 import javax.swing.JOptionPane;
 import models.Attribute;
 import models.IntStringValuePair;
-import models.Value;
 
 /**
  * Umożliwia ustalenie nazwy oraz kosztu dla atrybutu
@@ -39,7 +38,9 @@ public class AttributeNameAndCostModal extends javax.swing.JDialog {
         _a = attr;
         formatterInit();
         initComponents();
+        // ustawiam domyślny przycisk (umożliwia zatwierdzenie klawiszem Enter
         getRootPane().setDefaultButton(okButton);
+        // ustawiam domyślną wartość pola kosztu
         costInputText.setValue(0);
     }
 
@@ -65,7 +66,7 @@ public class AttributeNameAndCostModal extends javax.swing.JDialog {
     }
 
     /**
-     * Pokazuje modal i zwraca edytowany tutaj atrybut
+     * Pokazuje modal i zwraca edytowany tutaj Atrybut
      * @return 
      */
     public IntStringValuePair showDialog() {
@@ -156,6 +157,9 @@ public class AttributeNameAndCostModal extends javax.swing.JDialog {
      * @param evt 
      */
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+        /**
+         * W skrócie - sprawdzam, czy pole kosztu jest prawidłowe i uzupełniam dane do zwrócenia w obiekcie pary (koszt, nazwa)
+         */
         _isvp.setS(nameInputText.getText());
         try {
             if (costInputText.getValue() instanceof Long) {
@@ -169,13 +173,17 @@ public class AttributeNameAndCostModal extends javax.swing.JDialog {
             } else {
                 throw new WrongNumberException("Integer must be given!");
             }
-
+            // wychodzę z modalu
             exit();
         } catch (WrongNumberException ex) {
             JOptionPane.showMessageDialog(null, "Cost value must be an integer.\n" + ex.toString(), "Wrong number format", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_okButtonActionPerformed
 
+    /**
+     * Obsługa przycisku Cancel
+     * @param evt 
+     */
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         exit();
     }//GEN-LAST:event_cancelButtonActionPerformed

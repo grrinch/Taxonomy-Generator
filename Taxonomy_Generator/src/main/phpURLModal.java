@@ -1,13 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package main;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -17,13 +11,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import models.IntStringValuePair;
 
 /**
  *
@@ -31,11 +22,21 @@ import models.IntStringValuePair;
  */
 public class phpURLModal extends javax.swing.JDialog {
 
+    /**
+     * Właściwość, która utrzymuje zwracany z modalu ciąg znaków zawierający adres serwera Modułu Drzewa
+     */
     private String phpSyntaxTreeURL = null;
+    
+    /**
+     * Ramka wywułująca modal
+     */
     private final Frame _parent;
 
     /**
      * Creates new form phpURLModal
+     * @param parent
+     * @param modal
+     * @param currentUrl
      */
     public phpURLModal(java.awt.Frame parent, boolean modal, String currentUrl) {
         super(parent, modal);
@@ -169,38 +170,54 @@ public class phpURLModal extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Obsługa przycisku "Connection test"
+     * @param evt 
+     */
     private void connectionTestButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectionTestButtonActionPerformed
         try {
             connectionProgress.setStringPainted(true);
+            // tworzy i koduje do przesłania przez POST prosty graf
             String toSend = URLEncoder.encode("[ROOT [0]]", "UTF-8");
             connectionProgress.setValue(10);
 
-            // Define the server endpoint to send the HTTP request to
+            // Określa punkt końcowy serwera do wysyłania żądania HTTP
             URL serverUrl = new URL(urlInput.getText());
             connectionProgress.setValue(20);
+            // Otwieram połączenie ze zdalnym serwerem
             HttpURLConnection urlConnection = (HttpURLConnection) serverUrl.openConnection();
             connectionProgress.setValue(30);
 
-            // Indicate that we want to write to the HTTP request body
+            // Należy wskazać, że chcemy pisać do ciała żądania HTTP
             urlConnection.setDoOutput(true);
             connectionProgress.setValue(40);
+            // ustawia metodę dla połączenia
             urlConnection.setRequestMethod("POST");
             connectionProgress.setValue(50);
+            // ustawia nazwę user-agenta dla połączenia - jakaś bardzo randowomowa, by nie był to pusty string
             urlConnection.setRequestProperty("User-Agent", "Mozilla 5.0");
             connectionProgress.setValue(60);
+            
+            /**
+             * Ustawiam timeouty na 2 sekundy dla: połączenia, odbioru danych
+             */
             urlConnection.setReadTimeout(2000);
             urlConnection.setConnectTimeout(2000);
             connectionProgress.setValue(65);
 
-            try ( // Writing the post data to the HTTP request body
+            try ( // Wysyłanie danych do żądania HTTP
                     BufferedWriter httpRequestBodyWriter = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()))) {
                 httpRequestBodyWriter.write("data=" + toSend);
                 connectionProgress.setValue(70);
             }
-
+            
+            // czytam otrzymany obraz z połączenia - odbiór danych
             BufferedImage image = ImageIO.read(urlConnection.getInputStream());
             connectionProgress.setValue(80);
             
+            /**
+             * Sprawdzam czy wysokość i szerokość otrzymanego obrazu grafu testowego są większe od 0 i odpowiednio wyświetlam informację o teście
+             */
             if(image.getHeight() > 0 && image.getWidth() > 0) {
                 connectionProgress.setValue(100);
                 JOptionPane.showMessageDialog(this, "OK (Rx200)", "Connection status Rx200", JOptionPane.INFORMATION_MESSAGE);
@@ -211,22 +228,37 @@ public class phpURLModal extends javax.swing.JDialog {
             }
             
         } catch (UnsupportedEncodingException ex) {
+            // informacja o niepowodzeniu
             JOptionPane.showMessageDialog(this, "Unable to test (Rx0)", "Connection status Rx0", JOptionPane.ERROR_MESSAGE);
         } catch (MalformedURLException ex) {
+            // informacja o niepowodzeniu
             JOptionPane.showMessageDialog(this, "Unreachable (Rx400)", "Connection status Rx400", JOptionPane.ERROR_MESSAGE);
         } catch (IOException ex) {
+            // informacja o niepowodzeniu
             JOptionPane.showMessageDialog(this, "Not responding (Rx500)", "Connection status Rx500", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_connectionTestButtonActionPerformed
 
+    /**
+     * Obsługa przycisku "Set default"
+     * @param evt 
+     */
     private void setDefaultButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setDefaultButtonActionPerformed
         urlInput.setText(Generator.defaultPhpSyntaxTreeURL);
     }//GEN-LAST:event_setDefaultButtonActionPerformed
 
+    /**
+     * Obsługa przycisku Cancel
+     * @param evt 
+     */
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         exit();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
+    /**
+     * Obsługa przycisku OK
+     * @param evt 
+     */
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         phpSyntaxTreeURL = urlInput.getText();
         exit();
@@ -243,7 +275,7 @@ public class phpURLModal extends javax.swing.JDialog {
     /**
      * Pokazuje modal i zwraca edytowany tutaj atrybut
      *
-     * @return
+     * @return String
      */
     public String showDialog() {
         setModal(true);

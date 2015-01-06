@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package main;
 
 import exceptions.WrongNumberException;
@@ -28,12 +23,24 @@ public class ValueAbstractCombineModal extends javax.swing.JDialog {
      */
     public static final int MaximumFractionDigits = 0;
     
+    /**
+     * Ramka, która wywłała ten modal
+     */
     private final Frame _parent;
 
+    /**
+     * Określenie formatu dla pola numberFormat
+     */
     private NumberFormat doubleFormat;
 
+    /**
+     * Właściwość, która utrzymuje zwracają z modalu Wartość
+     */
     private Value p;
     
+    /**
+     * Właściwość, która utrzymuje zwracaną z modalu parę (Integer, String) -> (koszt, nazwa)
+     */
     private IntStringValuePair _isvp = new IntStringValuePair(0, null);
 
     /**
