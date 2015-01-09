@@ -18,7 +18,7 @@ public final class FileChooserHelper {
         return new FileFilter() {
             @Override
             public boolean accept(File f) {
-                return f.isDirectory() /*|| f.getName().startsWith("!")*/ || f.getName().matches("^[a-zA-Z0-9_-](.txt|.data)?$");
+                return f.isDirectory() /*|| f.getName().startsWith("!")*/ || f.getName().matches("^[a-zA-Z0-9_-]*(.txt|.data)?$");
             }
 
             @Override

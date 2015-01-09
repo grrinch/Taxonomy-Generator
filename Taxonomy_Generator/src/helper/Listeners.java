@@ -115,7 +115,7 @@ public class Listeners {
                                 parent.graphRedraw();
                             }
                         } else {
-                            JOptionPane.showMessageDialog(null, "Primitive values must not be changed.\nOnly Abstract Values are allowed have optional name and cost set.", "Incorrect Value selected", JOptionPane.WARNING_MESSAGE);
+                            JOptionPane.showMessageDialog(null, "Primitive values must not be changed.\nOnly Abstract Values are allowed to have optional name and cost set.", "Incorrect Value selected", JOptionPane.WARNING_MESSAGE);
                         }
 //                    }
                     }

@@ -88,7 +88,7 @@ public class ValueAbstractCombineModal extends javax.swing.JDialog {
         cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Combine properties");
+        setTitle("Combine Values");
         setModal(true);
         setName("propertyCombineModal"); // NOI18N
         setResizable(false);
@@ -156,6 +156,9 @@ public class ValueAbstractCombineModal extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
+
+        getAccessibleContext().setAccessibleName("Combine Values");
+        getAccessibleContext().setAccessibleDescription("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
