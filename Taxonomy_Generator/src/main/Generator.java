@@ -895,6 +895,10 @@ public class Generator extends javax.swing.JFrame {
     private void combineAttribsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combineAttribsActionPerformed
         int[] indexes = propertiesList.getSelectedIndices();
         if (indexes.length > 1) {
+            if(indexes.length == _propertiesListModel.size()) {
+                JOptionPane.showMessageDialog(this, "Too many Values selected.\nYou must not create Abstract Value doubling the ROOT vertex.", "Too many arguments", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             ValueAbstractCombineModal modal = new ValueAbstractCombineModal(this, true);
             jDialogEscapeKeyHelper.addEscapeListener(modal);
 
