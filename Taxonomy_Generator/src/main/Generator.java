@@ -844,8 +844,10 @@ public class Generator extends javax.swing.JFrame {
         // tytuł okna
         plikProjektu.setDialogTitle("Specify a project file to open");
 
+        String bww = (String) _paths.get(projectPath) != null ? (String) _paths.get(projectPath) : thisFilePath + "/projects/";
+
         // ustawiam domyślną lokalizację "piętro wyżej" w katalogu "projects"
-        plikProjektu.setCurrentDirectory(new File(_paths.get(projectPath) != null ? (String) _paths.get(savePath) : thisFilePath + "/projects/"));
+        plikProjektu.setCurrentDirectory(new File(bww));
 
         // ustawiam filtr dozwolonych plików na *.txt, *.data oraz katalogi
         plikProjektu.setFileFilter(FileChooserHelper.OpenSaveProjectChooserFilter());
