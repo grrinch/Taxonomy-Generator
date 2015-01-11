@@ -498,6 +498,7 @@ public class Generator extends javax.swing.JFrame {
 
         prefMenu.setText("Options");
 
+        phpURLMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons_16x16/three67.png"))); // NOI18N
         phpURLMenu.setText("phpSyntaxTree URL");
         phpURLMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
