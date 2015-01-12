@@ -1,0 +1,38 @@
+Author: Radoslaw Paluszak
+E-mail: radoslaw.paluszak@gmail.com
+
+Created at Poznan University of Technology as part of author's Engineering Thesis "Taxonomy generator for ontological Bayesian classifier".
+
+Copyright (c) 2014-2015
+
+Taxonomy Generator software is provided "as is" and author does not take any responsibility for its use or any problems and/or damage caused by the program.
+
+The attached application and its source code is provided under „Creative Commons — Attribution-NoDerivatives 4.0 International — CC BY-ND 4.0” (available: http://creativecommons.org/licenses/by-nd/4.0/) and is subject to the terms and conditions of the license.
+
+Icons used in the software are sourced with no changes from „"Free vector icons - SVG, PSD, PNG, EPS & Icon Font - Thousands of Free Icons," Graphic Resources SL” (Available: http://www.flaticon.com/) and are subject to „Creative Commons — Attribution 3.0 Unported — CC BY 3.0” (Available: http://creativecommons.org/licenses/by/3.0/) licence.
+
+Authors of the icons are as follows:
+
+[1] D. Bruce, „Flow tree - Free Business icons,” Graphic Resources SL, [Online]. Available:
+http://www.flaticon.com/free-icon/flow-tree_3637 <flow2.png - used as application logo and "Save taxonomy" icon in menu>.
+
+[2] Freepik, „Open folder with document - Free Interface icons,” Graphic Resources SL,
+[Online]. Available: http://www.flaticon.com/free-icon/open-folder-with-
+document_32743 <open131.png - used as "Open project" icon in menu>.
+
+[3] Freepik, „Help - Free Interface icons,” Graphic Resources SL, [Online]. Available:
+http://www.flaticon.com/free-icon/help_3765 <help1.png - used as "About" icon in menu>.
+
+[4] Freepik, „Open file button - Free Interface icons,” Graphic Resources SL, [Online].
+Available: http://www.flaticon.com/free-icon/open-file-button_62319 <folder232.png - used as "Open file" icon in menu>.
+
+[5] Freepik, „Three cogwheels linked by lines in triangular shape - Free Interface icons,”
+Graphic Resources SL, [Online]. Available: http://www.flaticon.com/free-icon/three-
+cogwheels-linked-by-lines-in-triangular-shape_30591 <three67.png - used as "phpSyntaxTree URL" icon in menu and icon in the modal window fired up with the same option>.
+
+[6] Icomoon, „Door exit with arrow to the right - Free Interface icons,” Graphic Resources
+SL, [Online]. Available: http://www.flaticon.com/free-icon/door-exit-with-arrow-to-the-
+right_24069 <door9.png - used as "Exit" icon in menu>.
+
+[7] Freepik, „Save in folder - Free Interface icons,” Graphic Resources SL, [Online].
+Available: http://www.flaticon.com/free-icon/save-in-folder_62327 <save25.png - used as "Save project" icon in menu>.
